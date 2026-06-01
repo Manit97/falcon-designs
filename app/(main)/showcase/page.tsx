@@ -94,8 +94,8 @@ export default function ShowcasePage() {
       <section className="py-24 px-6 md:px-10 border-b border-fd-border">
         <div className="max-w-7xl mx-auto">
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={VP}
             transition={{ duration: 0.6, ease: EXPO }}
             className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-orange mb-14 flex items-center gap-3"
@@ -108,10 +108,10 @@ export default function ShowcasePage() {
             {LIVE_PROJECTS.map((p, i) => (
               <motion.div
                 key={p.id}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
                 viewport={VP}
-                transition={{ duration: 0.8, delay: i * 0.15, ease: EXPO }}
+                transition={{ duration: 0.6, delay: i * 0.1, ease: EXPO }}
               >
                 <Link
                   href={p.href}
@@ -170,8 +170,8 @@ export default function ShowcasePage() {
       <section className="py-24 px-6 md:px-10">
         <div className="max-w-7xl mx-auto">
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={VP}
             transition={{ duration: 0.6, ease: EXPO }}
             className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-muted mb-14 flex items-center gap-3"
@@ -184,10 +184,10 @@ export default function ShowcasePage() {
             {UPCOMING.map((p, i) => (
               <motion.div
                 key={p.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
                 viewport={VP}
-                transition={{ duration: 0.7, delay: i * 0.08, ease: EXPO }}
+                transition={{ duration: 0.5, delay: i * 0.06, ease: EXPO }}
                 className="border border-fd-border border-dashed p-8 flex flex-col justify-between min-h-[200px] group hover:border-fd-border hover:bg-fd-surface/50 transition-all duration-300"
               >
                 <div>

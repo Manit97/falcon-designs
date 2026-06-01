@@ -69,8 +69,8 @@ export default function ContactPage() {
 
           {/* Left — details */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={VP}
             transition={{ duration: 0.8, ease: EXPO }}
           >
@@ -102,8 +102,8 @@ export default function ContactPage() {
 
           {/* Right — form */}
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={VP}
             transition={{ duration: 0.9, delay: 0.1, ease: EXPO }}
           >

@@ -80,8 +80,8 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto grid lg:grid-cols-[1fr_1.6fr] gap-20 items-start">
 
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={VP}
             transition={{ duration: 0.8, ease: EXPO }}
           >
@@ -90,8 +90,8 @@ export default function AboutPage() {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={VP}
             transition={{ duration: 0.9, delay: 0.1, ease: EXPO }}
             className="space-y-6"
@@ -128,8 +128,8 @@ export default function AboutPage() {
       <section className="py-24 px-6 md:px-10 border-b border-fd-border bg-fd-surface">
         <div className="max-w-7xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={VP}
             transition={{ duration: 0.6, ease: EXPO }}
             className="mb-16"
@@ -149,10 +149,10 @@ export default function AboutPage() {
             {VALUES.map((v, i) => (
               <motion.div
                 key={v.n}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
                 viewport={VP}
-                transition={{ duration: 0.7, delay: i * 0.08, ease: EXPO }}
+                transition={{ duration: 0.5, delay: i * 0.06, ease: EXPO }}
                 className="bg-fd-surface p-10 group hover:bg-fd-card transition-colors duration-300"
               >
                 <p className="font-display font-extrabold text-5xl text-fd-border group-hover:text-fd-orange transition-colors duration-500 mb-6">
@@ -170,8 +170,8 @@ export default function AboutPage() {
       <section className="py-24 px-6 md:px-10 border-b border-fd-border">
         <div className="max-w-7xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={VP}
             transition={{ duration: 0.6, ease: EXPO }}
             className="mb-16"
@@ -194,10 +194,10 @@ export default function AboutPage() {
             {PROCESS.map((p, i) => (
               <motion.div
                 key={p.n}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
                 viewport={VP}
-                transition={{ duration: 0.7, delay: i * 0.1, ease: EXPO }}
+                transition={{ duration: 0.5, delay: i * 0.07, ease: EXPO }}
                 className="group flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-12 px-8 py-10 border-b border-fd-border last:border-b-0 hover:bg-fd-surface transition-colors duration-300"
               >
                 <span className="font-display font-extrabold text-4xl text-fd-border group-hover:text-fd-orange transition-colors duration-500 min-w-[60px]">
@@ -219,8 +219,8 @@ export default function AboutPage() {
       <section className="py-24 px-6 md:px-10 border-b border-fd-border bg-fd-surface">
         <div className="max-w-7xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={VP}
             transition={{ duration: 0.6, ease: EXPO }}
             className="mb-16"
@@ -237,10 +237,10 @@ export default function AboutPage() {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={VP}
-            transition={{ duration: 0.8, delay: 0.1, ease: EXPO }}
+            transition={{ duration: 0.8, ease: EXPO }}
             className="grid md:grid-cols-2 gap-8 max-w-3xl"
           >
             <div className="border border-fd-border p-8 group hover:border-fd-orange/40 transition-all duration-300">

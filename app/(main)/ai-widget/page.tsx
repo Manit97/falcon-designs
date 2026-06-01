@@ -205,8 +205,8 @@ Tone: ${configForm.tone}. Keep replies concise (2-4 sentences). Be helpful, answ
       <section className="py-24 px-6 md:px-10 border-b border-fd-border">
         <div className="max-w-7xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={VP}
             transition={{ duration: 0.6, ease: EXPO }}
             className="mb-14"
@@ -226,10 +226,10 @@ Tone: ${configForm.tone}. Keep replies concise (2-4 sentences). Be helpful, answ
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={VP}
-            transition={{ duration: 0.7, delay: 0.1, ease: EXPO }}
+            transition={{ duration: 0.7, ease: EXPO }}
           >
             {/* Tab selector */}
             <div className="flex gap-0 mb-0 border border-fd-border w-fit">
@@ -319,8 +319,8 @@ Tone: ${configForm.tone}. Keep replies concise (2-4 sentences). Be helpful, answ
       <section className="py-24 px-6 md:px-10 border-b border-fd-border">
         <div className="max-w-7xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={VP}
             transition={{ duration: 0.6, ease: EXPO }}
             className="mb-14"
@@ -340,10 +340,10 @@ Tone: ${configForm.tone}. Keep replies concise (2-4 sentences). Be helpful, answ
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={VP}
-            transition={{ duration: 0.8, delay: 0.1, ease: EXPO }}
+            transition={{ duration: 0.8, ease: EXPO }}
             className="grid lg:grid-cols-2 gap-12 items-start"
           >
             {/* Left: form */}
