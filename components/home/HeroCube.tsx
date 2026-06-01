@@ -2,6 +2,7 @@
 
 import { useMemo, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
+import { Text } from "@react-three/drei";
 import * as THREE from "three";
 
 // ─── Edge lines via EdgesGeometry (guaranteed cross-platform) ────────────────
@@ -79,6 +80,21 @@ function Scene() {
         </mesh>
         {/* Outer edges — orange wireframe */}
         <BoxEdges size={2.4} color="#f97316" opacity={0.9} />
+
+        {/* ── FD letters — transparent fill, orange outline, spins with cube ── */}
+        <Text
+          fontSize={0.88}
+          letterSpacing={0.12}
+          fillOpacity={0}
+          outlineWidth={0.042}
+          outlineColor="#f97316"
+          outlineOpacity={1}
+          anchorX="center"
+          anchorY="middle"
+          position={[0, 0, 0]}
+        >
+          FD
+        </Text>
 
         {/* ── Inner counter-spinning cube ── */}
         <group ref={innerMeshRef}>
