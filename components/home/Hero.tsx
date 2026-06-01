@@ -120,19 +120,23 @@ export default function Hero() {
             </p>
 
             <div className="flex items-center gap-5">
-              <Link
-                href="/showcase"
-                className="group font-display font-bold text-xs tracking-widest uppercase bg-fd-orange text-fd-black px-7 py-4 hover:bg-fd-white transition-colors duration-300 flex items-center gap-3"
-              >
-                View Our Work
-                <span className="group-hover:translate-x-1 transition-transform duration-300">↗</span>
-              </Link>
-              <Link
-                href="/contact"
-                className="font-display font-semibold text-xs tracking-widest uppercase text-fd-dim border border-fd-border px-7 py-4 hover:border-fd-white hover:text-fd-white transition-all duration-300"
-              >
-                Get a Quote
-              </Link>
+              <motion.div whileHover={{ scale: 1.07 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.25, ease: EXPO }}>
+                <Link
+                  href="/showcase"
+                  className="group font-display font-bold text-xs tracking-widest uppercase bg-fd-orange text-fd-black px-7 py-4 hover:bg-fd-white transition-colors duration-300 flex items-center gap-3"
+                >
+                  View Our Work
+                  <span className="group-hover:translate-x-1 transition-transform duration-300">↗</span>
+                </Link>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.07 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.25, ease: EXPO }}>
+                <Link
+                  href="/contact"
+                  className="font-display font-semibold text-xs tracking-widest uppercase text-fd-dim border border-fd-border px-7 py-4 hover:border-fd-white hover:text-fd-white transition-all duration-300 block"
+                >
+                  Get a Quote
+                </Link>
+              </motion.div>
             </div>
           </motion.div>
         )}
