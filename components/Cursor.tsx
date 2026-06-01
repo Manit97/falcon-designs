@@ -3,61 +3,67 @@ import { useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 
 export default function Cursor() {
-  const mouseX = useMotionValue(-100);
-  const mouseY = useMotionValue(-100);
-  const [hovered, setHovered] = useState(false);
+  const mouseX = useMotionValue(-200);
+  const mouseY = useMotionValue(-200);
+  const [hovered,  setHovered]  = useState(false);
   const [clicking, setClicking] = useState(false);
-  const [hidden, setHidden] = useState(false);
+  const [hidden,   setHidden]   = useState(true);
 
-  const springCfg = { stiffness: 600, damping: 32, mass: 0.5 };
-  const x = useSpring(mouseX, springCfg);
-  const y = useSpring(mouseY, springCfg);
+  // Fast spring for the main dot
+  const x = useSpring(mouseX, { stiffness: 700, damping: 36, mass: 0.4 });
+  const y = useSpring(mouseY, { stiffness: 700, damping: 36, mass: 0.4 });
 
-  // Trailing ring (slower spring)
-  const trailX = useSpring(mouseX, { stiffness: 120, damping: 22, mass: 1 });
-  const trailY = useSpring(mouseY, { stiffness: 120, damping: 22, mass: 1 });
+  // Slow spring for the trailing ring
+  const trailX = useSpring(mouseX, { stiffness: 140, damping: 24, mass: 1 });
+  const trailY = useSpring(mouseY, { stiffness: 140, damping: 24, mass: 1 });
 
   useEffect(() => {
+    // Touch devices: skip
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+
     const move = (e: MouseEvent) => {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
+      setHidden(false);
     };
     const down  = () => setClicking(true);
     const up    = () => setClicking(false);
-    const enter = () => setHidden(false);
     const leave = () => setHidden(true);
+    const enter = () => setHidden(false);
 
-    const handleHoverOn = (e: MouseEvent) => {
+    const hoverCheck = (e: MouseEvent) => {
       const el = (e.target as Element).closest("a, button, [data-cursor-hover]");
       setHovered(!!el);
     };
 
-    window.addEventListener("mousemove", move);
-    window.addEventListener("mousedown", down);
-    window.addEventListener("mouseup", up);
+    window.addEventListener("mousemove",  move,       { passive: true });
+    window.addEventListener("mousemove",  hoverCheck, { passive: true });
+    window.addEventListener("mousedown",  down);
+    window.addEventListener("mouseup",    up);
     document.addEventListener("mouseleave", leave);
     document.addEventListener("mouseenter", enter);
-    window.addEventListener("mousemove", handleHoverOn);
 
     return () => {
-      window.removeEventListener("mousemove", move);
-      window.removeEventListener("mousedown", down);
-      window.removeEventListener("mouseup", up);
+      window.removeEventListener("mousemove",  move);
+      window.removeEventListener("mousemove",  hoverCheck);
+      window.removeEventListener("mousedown",  down);
+      window.removeEventListener("mouseup",    up);
       document.removeEventListener("mouseleave", leave);
       document.removeEventListener("mouseenter", enter);
-      window.removeEventListener("mousemove", handleHoverOn);
     };
   }, [mouseX, mouseY]);
 
-  // Touch devices — no custom cursor
-  if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) return null;
+  // Hide on touch/coarse devices — SSR-safe check happens inside useEffect above
+  if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) {
+    return null;
+  }
 
-  const dotSize = hovered ? 44 : clicking ? 6 : 10;
-  const ringSize = hovered ? 64 : clicking ? 20 : 32;
+  const dotSize  = clicking ? 6  : hovered ? 44 : 10;
+  const ringSize = clicking ? 18 : hovered ? 64 : 30;
 
   return (
     <>
-      {/* Main dot — white with mix-blend-difference: visible on dark AND orange backgrounds */}
+      {/* ── Dot: plain white, no blend mode ─────────────────────────────── */}
       <motion.div
         className="fixed top-0 left-0 pointer-events-none z-[9999] rounded-full"
         style={{
@@ -65,15 +71,18 @@ export default function Cursor() {
           y,
           translateX: "-50%",
           translateY: "-50%",
-          width: dotSize,
+          width:  dotSize,
           height: dotSize,
           backgroundColor: "#ffffff",
-          mixBlendMode: "difference",
           opacity: hidden ? 0 : 1,
-          transition: "width 0.25s cubic-bezier(0.16,1,0.3,1), height 0.25s cubic-bezier(0.16,1,0.3,1), opacity 0.15s ease",
+          // Shadow gives contrast on rare light surfaces
+          boxShadow: "0 0 0 1px rgba(0,0,0,0.25)",
+          transition:
+            "width 0.2s cubic-bezier(0.16,1,0.3,1), height 0.2s cubic-bezier(0.16,1,0.3,1), opacity 0.12s ease",
         }}
       />
-      {/* Trailing ring — no blend mode so it's always visible */}
+
+      {/* ── Trailing ring ────────────────────────────────────────────────── */}
       <motion.div
         className="fixed top-0 left-0 pointer-events-none z-[9998] rounded-full"
         style={{
@@ -81,11 +90,12 @@ export default function Cursor() {
           y: trailY,
           translateX: "-50%",
           translateY: "-50%",
-          width: ringSize,
+          width:  ringSize,
           height: ringSize,
-          border: "1px solid rgba(255,255,255,0.35)",
-          opacity: hidden ? 0 : hovered ? 0.7 : 0.45,
-          transition: "width 0.4s cubic-bezier(0.16,1,0.3,1), height 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.15s ease",
+          border: hovered ? "1.5px solid rgba(249,115,22,0.7)" : "1px solid rgba(255,255,255,0.4)",
+          opacity: hidden ? 0 : hovered ? 0.9 : 0.5,
+          transition:
+            "width 0.35s cubic-bezier(0.16,1,0.3,1), height 0.35s cubic-bezier(0.16,1,0.3,1), border 0.2s ease, opacity 0.12s ease",
         }}
       />
     </>
