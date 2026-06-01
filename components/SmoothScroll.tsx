@@ -10,10 +10,15 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
   // ── Create Lenis once ────────────────────────────────────────────────
   useEffect(() => {
     const lenis = new Lenis({
-      duration:     0.7,
-      easing:       (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      // lerp mode: each frame moves lerp% toward target — produces the
+      // infinite exponential deceleration that premium sites are known for.
+      // Unlike duration-based mode there is no hard stop; velocity tapers
+      // asymptotically to zero, which feels weightless and organic.
+      lerp:         0.08,
       orientation:  "vertical",
       smoothWheel:  true,
+      // Leave touch alone — iOS momentum scrolling is already buttery.
+      syncTouch:    false,
     });
     lenisRef.current = lenis;
 
