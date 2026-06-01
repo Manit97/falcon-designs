@@ -14,11 +14,12 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
       // infinite exponential deceleration that premium sites are known for.
       // Unlike duration-based mode there is no hard stop; velocity tapers
       // asymptotically to zero, which feels weightless and organic.
-      lerp:         0.08,
-      orientation:  "vertical",
-      smoothWheel:  true,
+      lerp:             0.06,   // slower decay → longer glide, more "floating" feel
+      wheelMultiplier:  0.7,   // less distance per wheel tick → more control & smoothness
+      orientation:      "vertical",
+      smoothWheel:      true,
       // Leave touch alone — iOS momentum scrolling is already buttery.
-      syncTouch:    false,
+      syncTouch:        false,
     });
     lenisRef.current = lenis;
 

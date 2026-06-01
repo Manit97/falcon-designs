@@ -30,6 +30,9 @@ const SERVICES = [
   },
 ];
 
+// Staggered parallax offsets — each service row floats at a different depth
+const ITEM_OFFSETS = [18, 26, 18, 26];
+
 const EXPO = [0.16, 1, 0.3, 1] as const;
 
 export default function Services() {
@@ -38,10 +41,10 @@ export default function Services() {
   const inView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="py-32 px-6 md:px-10 bg-fd-black border-t border-fd-border">
+    <section ref={ref} className="py-32 px-6 md:px-10 bg-fd-black border-t border-fd-border overflow-hidden">
       <div className="max-w-7xl mx-auto">
 
-        {/* Header */}
+        {/* Header — floats at a more prominent depth */}
         <ParallaxLayer offset={70} className="grid md:grid-cols-2 gap-10 mb-20">
           <div>
             <motion.p
@@ -73,52 +76,53 @@ export default function Services() {
           </motion.p>
         </ParallaxLayer>
 
-        {/* Service list */}
+        {/* Service list — each row at its own parallax depth */}
         <div className="divide-y divide-fd-border">
           {SERVICES.map((s, i) => (
-            <motion.div
-              key={s.num}
-              initial={{ opacity: 0, y: 30 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7, delay: 0.1 + i * 0.1, ease: EXPO }}
-              onMouseEnter={() => setHovered(i)}
-              onMouseLeave={() => setHovered(null)}
-              className="grid md:grid-cols-[80px_1fr_auto] gap-6 items-start py-10 group"
-            >
-              {/* Number */}
-              <span className="font-display font-bold text-xs tracking-widest text-fd-muted group-hover:text-fd-orange transition-colors duration-300">
-                {s.num}
-              </span>
+            <ParallaxLayer key={s.num} offset={ITEM_OFFSETS[i]}>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.7, delay: 0.1 + i * 0.1, ease: EXPO }}
+                onMouseEnter={() => setHovered(i)}
+                onMouseLeave={() => setHovered(null)}
+                className="grid md:grid-cols-[80px_1fr_auto] gap-6 items-start py-10 group"
+              >
+                {/* Number */}
+                <span className="font-display font-bold text-xs tracking-widest text-fd-muted group-hover:text-fd-orange transition-colors duration-300">
+                  {s.num}
+                </span>
 
-              {/* Title + desc */}
-              <div>
-                <h3
-                  className="font-display font-bold leading-tight mb-3 text-fd-white group-hover:text-fd-orange transition-colors duration-300"
-                  style={{ fontSize: "clamp(1.4rem, 3vw, 2.2rem)" }}
-                >
-                  {s.title}
-                </h3>
-                <motion.p
-                  animate={{ height: hovered === i ? "auto" : 0, opacity: hovered === i ? 1 : 0 }}
-                  transition={{ duration: 0.4, ease: EXPO }}
-                  className="font-body text-sm text-fd-dim leading-relaxed overflow-hidden"
-                >
-                  {s.desc}
-                </motion.p>
-              </div>
-
-              {/* Tags */}
-              <div className="flex flex-wrap gap-2 md:justify-end mt-1">
-                {s.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="font-display text-[10px] tracking-widest uppercase border border-fd-border text-fd-muted px-3 py-1 group-hover:border-fd-orange/30 group-hover:text-fd-dim transition-all duration-300"
+                {/* Title + desc */}
+                <div>
+                  <h3
+                    className="font-display font-bold leading-tight mb-3 text-fd-white group-hover:text-fd-orange transition-colors duration-300"
+                    style={{ fontSize: "clamp(1.4rem, 3vw, 2.2rem)" }}
                   >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </motion.div>
+                    {s.title}
+                  </h3>
+                  <motion.p
+                    animate={{ height: hovered === i ? "auto" : 0, opacity: hovered === i ? 1 : 0 }}
+                    transition={{ duration: 0.4, ease: EXPO }}
+                    className="font-body text-sm text-fd-dim leading-relaxed overflow-hidden"
+                  >
+                    {s.desc}
+                  </motion.p>
+                </div>
+
+                {/* Tags */}
+                <div className="flex flex-wrap gap-2 md:justify-end mt-1">
+                  {s.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="font-display text-[10px] tracking-widest uppercase border border-fd-border text-fd-muted px-3 py-1 group-hover:border-fd-orange/30 group-hover:text-fd-dim transition-all duration-300"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </motion.div>
+            </ParallaxLayer>
           ))}
         </div>
       </div>

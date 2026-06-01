@@ -13,9 +13,11 @@ export default function ContactCTA() {
   return (
     <section
       ref={ref}
-      className="relative py-40 px-6 md:px-10 overflow-hidden bg-fd-black border-t border-fd-border"
+      // No overflow-hidden here — ContactCTA is the last section on the page.
+      // Removing it lets the FD parallax extend naturally below without hard clipping.
+      className="relative py-40 px-6 md:px-10 bg-fd-black border-t border-fd-border"
     >
-      {/* Orange glow — parallax: rises faster than the page content */}
+      {/* Orange glow */}
       <ParallaxLayer
         className="absolute pointer-events-none"
         offset={150}
@@ -28,16 +30,17 @@ export default function ContactCTA() {
         }}
       />
 
-      {/* Big decorative "FD" — parallax: slower rate = feels like a deeper layer */}
+      {/* Big decorative "FD" — deepest layer, slowest movement */}
       <ParallaxLayer
         className="absolute right-0 bottom-0 font-display font-extrabold text-fd-border select-none pointer-events-none leading-none"
-        offset={120}
+        offset={60}
         style={{ fontSize: "clamp(8rem, 20vw, 20rem)", lineHeight: 0.85 }}
       >
         FD
       </ParallaxLayer>
 
-      <div className="relative z-10 max-w-5xl mx-auto text-center">
+      {/* Main content — mid-layer parallax */}
+      <ParallaxLayer offset={40} className="relative z-10 max-w-5xl mx-auto text-center">
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -88,7 +91,7 @@ export default function ContactCTA() {
             Email Directly
           </a>
         </motion.div>
-      </div>
+      </ParallaxLayer>
     </section>
   );
 }

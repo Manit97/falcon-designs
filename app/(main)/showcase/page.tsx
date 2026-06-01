@@ -66,7 +66,7 @@ export default function ShowcasePage() {
             background: "radial-gradient(circle, rgba(249,115,22,0.08) 0%, transparent 70%)",
           }}
         />
-        <div className="max-w-7xl mx-auto relative z-10">
+        <ParallaxLayer offset={45} className="max-w-7xl mx-auto relative z-10">
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -95,100 +95,105 @@ export default function ShowcasePage() {
           >
             Every template is a fully working website — live on the web, production-ready, and available to be customised for your brand.
           </motion.p>
-        </div>
+        </ParallaxLayer>
       </section>
 
       {/* ── Live deployed templates ── */}
-      <section className="py-24 px-6 md:px-10 border-b border-fd-border">
+      <section className="py-24 px-6 md:px-10 border-b border-fd-border overflow-hidden">
         <div className="max-w-7xl mx-auto">
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={VP}
-            transition={{ duration: 0.6, ease: EXPO }}
-            className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-orange mb-14 flex items-center gap-3"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-fd-orange animate-pulse" />
-            Live on Vercel
-          </motion.p>
+          <ParallaxLayer offset={50}>
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={VP}
+              transition={{ duration: 0.6, ease: EXPO }}
+              className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-orange mb-14 flex items-center gap-3"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-fd-orange animate-pulse" />
+              Live on Vercel
+            </motion.p>
+          </ParallaxLayer>
 
           <div className="grid md:grid-cols-2 gap-6">
             {LIVE_PROJECTS.map((p, i) => (
-              <motion.div
-                key={p.id}
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={VP}
-                transition={{ duration: 0.6, delay: i * 0.1, ease: EXPO }}
-              >
-                <Link
-                  href={p.href}
-                  target={p.href.startsWith("http") ? "_blank" : undefined}
-                  rel={p.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                  className="group block border border-fd-border hover:border-fd-orange/40 transition-all duration-500 overflow-hidden"
+              <ParallaxLayer key={p.id} offset={20 + i * 14}>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={VP}
+                  transition={{ duration: 0.6, delay: i * 0.1, ease: EXPO }}
                 >
-                  {/* Colour preview */}
-                  <div
-                    className="relative h-64 flex items-center justify-center overflow-hidden"
-                    style={{ background: p.bgColour }}
+                  <Link
+                    href={p.href}
+                    target={p.href.startsWith("http") ? "_blank" : undefined}
+                    rel={p.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                    className="group block border border-fd-border hover:border-fd-orange/40 transition-all duration-500 overflow-hidden"
                   >
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-48 h-48 rounded-full border opacity-10" style={{ borderColor: p.colour }} />
-                      <div className="absolute w-32 h-32 rounded-full border opacity-20" style={{ borderColor: p.colour }} />
-                      <div className="absolute w-16 h-16 rounded-full opacity-30" style={{ background: p.colour }} />
+                    {/* Colour preview */}
+                    <div
+                      className="relative h-64 flex items-center justify-center overflow-hidden"
+                      style={{ background: p.bgColour }}
+                    >
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-48 h-48 rounded-full border opacity-10" style={{ borderColor: p.colour }} />
+                        <div className="absolute w-32 h-32 rounded-full border opacity-20" style={{ borderColor: p.colour }} />
+                        <div className="absolute w-16 h-16 rounded-full opacity-30" style={{ background: p.colour }} />
+                      </div>
+                      <div className="relative z-10 text-center">
+                        <p className="font-display font-extrabold text-2xl" style={{ color: p.colour }}>{p.title}</p>
+                        <p className="font-display text-xs tracking-widest uppercase mt-1" style={{ color: p.colour, opacity: 0.6 }}>{p.category}</p>
+                      </div>
+                      <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-black/50 backdrop-blur-sm border border-white/10 px-3 py-1.5 rounded-full">
+                        <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                        <span className="font-display text-[10px] tracking-widest uppercase text-white">Live</span>
+                      </div>
+                      <div className="absolute bottom-4 right-4 w-10 h-10 bg-fd-orange flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                        <span className="text-fd-black font-bold">↗</span>
+                      </div>
                     </div>
-                    <div className="relative z-10 text-center">
-                      <p className="font-display font-extrabold text-2xl" style={{ color: p.colour }}>{p.title}</p>
-                      <p className="font-display text-xs tracking-widest uppercase mt-1" style={{ color: p.colour, opacity: 0.6 }}>{p.category}</p>
-                    </div>
-                    <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-black/50 backdrop-blur-sm border border-white/10 px-3 py-1.5 rounded-full">
-                      <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-                      <span className="font-display text-[10px] tracking-widest uppercase text-white">Live</span>
-                    </div>
-                    <div className="absolute bottom-4 right-4 w-10 h-10 bg-fd-orange flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                      <span className="text-fd-black font-bold">↗</span>
-                    </div>
-                  </div>
 
-                  {/* Info */}
-                  <div className="p-6 bg-fd-card group-hover:bg-fd-surface transition-colors duration-300">
-                    <div className="flex items-start justify-between mb-3">
-                      <h2 className="font-display font-bold text-lg text-fd-white group-hover:text-fd-orange transition-colors duration-300">
-                        {p.title}
-                      </h2>
-                      <span className="font-display text-xs text-fd-muted">{p.year}</span>
+                    {/* Info */}
+                    <div className="p-6 bg-fd-card group-hover:bg-fd-surface transition-colors duration-300">
+                      <div className="flex items-start justify-between mb-3">
+                        <h2 className="font-display font-bold text-lg text-fd-white group-hover:text-fd-orange transition-colors duration-300">
+                          {p.title}
+                        </h2>
+                        <span className="font-display text-xs text-fd-muted">{p.year}</span>
+                      </div>
+                      <p className="font-body text-sm text-fd-dim leading-relaxed mb-4">{p.desc}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {p.tech.map((t) => (
+                          <span key={t} className="font-display text-[9px] tracking-widest uppercase text-fd-muted border border-fd-border px-2 py-0.5">
+                            {t}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                    <p className="font-body text-sm text-fd-dim leading-relaxed mb-4">{p.desc}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {p.tech.map((t) => (
-                        <span key={t} className="font-display text-[9px] tracking-widest uppercase text-fd-muted border border-fd-border px-2 py-0.5">
-                          {t}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
+                  </Link>
+                </motion.div>
+              </ParallaxLayer>
             ))}
           </div>
         </div>
       </section>
 
       {/* ── Upcoming templates ── */}
-      <section className="py-24 px-6 md:px-10">
+      <section className="py-24 px-6 md:px-10 overflow-hidden">
         <div className="max-w-7xl mx-auto">
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={VP}
-            transition={{ duration: 0.6, ease: EXPO }}
-            className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-muted mb-14 flex items-center gap-3"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-fd-muted" />
-            In Development
-          </motion.p>
+          <ParallaxLayer offset={45}>
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={VP}
+              transition={{ duration: 0.6, ease: EXPO }}
+              className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-muted mb-14 flex items-center gap-3"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-fd-muted" />
+              In Development
+            </motion.p>
+          </ParallaxLayer>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <ParallaxLayer offset={28} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {UPCOMING.map((p, i) => (
               <motion.div
                 key={p.id}
@@ -208,13 +213,13 @@ export default function ShowcasePage() {
                 </span>
               </motion.div>
             ))}
-          </div>
+          </ParallaxLayer>
         </div>
       </section>
 
       {/* ── CTA ── */}
-      <section className="py-24 px-6 md:px-10 border-t border-fd-border bg-fd-surface">
-        <div className="max-w-3xl mx-auto text-center">
+      <section className="py-24 px-6 md:px-10 border-t border-fd-border bg-fd-surface overflow-hidden">
+        <ParallaxLayer offset={40} className="max-w-3xl mx-auto text-center">
           <h2 className="font-display font-extrabold leading-none tracking-tightest text-fd-white mb-6" style={{ fontSize: "clamp(2rem, 5vw, 4rem)" }}>
             WANT YOUR OWN?
           </h2>
@@ -227,7 +232,7 @@ export default function ShowcasePage() {
           >
             Start a Project <span>→</span>
           </Link>
-        </div>
+        </ParallaxLayer>
       </section>
     </div>
   );

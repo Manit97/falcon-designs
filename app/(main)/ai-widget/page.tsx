@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import AIWidget from "@/components/AIWidget";
 import Link from "next/link";
 import ParallaxLayer from "@/components/ParallaxLayer";
+// ^ used to apply scroll-depth parallax to every content section
 
 const EXPO = [0.16, 1, 0.3, 1] as const;
 const VP   = { once: true, margin: "0px 0px -80px 0px" } as const;
@@ -151,7 +152,7 @@ Tone: ${configForm.tone}. Keep replies concise (2-4 sentences). Be helpful, answ
           offset={150}
           style={{ background: "radial-gradient(circle at 70% 30%, rgba(249,115,22,0.08) 0%, transparent 60%)" }}
         />
-        <div className="max-w-7xl mx-auto relative z-10">
+        <ParallaxLayer offset={45} className="max-w-7xl mx-auto relative z-10">
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -202,12 +203,12 @@ Tone: ${configForm.tone}. Keep replies concise (2-4 sentences). Be helpful, answ
               </div>
             ))}
           </motion.div>
-        </div>
+        </ParallaxLayer>
       </section>
 
       {/* ── Live Demos ── */}
-      <section className="py-24 px-6 md:px-10 border-b border-fd-border">
-        <div className="max-w-7xl mx-auto">
+      <section className="py-24 px-6 md:px-10 border-b border-fd-border overflow-hidden">
+        <ParallaxLayer offset={40} className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -277,12 +278,12 @@ Tone: ${configForm.tone}. Keep replies concise (2-4 sentences). Be helpful, answ
               </motion.div>
             </AnimatePresence>
           </motion.div>
-        </div>
+        </ParallaxLayer>
       </section>
 
       {/* ── How It Works ── */}
-      <section className="py-24 px-6 md:px-10 border-b border-fd-border bg-fd-surface">
-        <div className="max-w-7xl mx-auto">
+      <section className="py-24 px-6 md:px-10 border-b border-fd-border bg-fd-surface overflow-hidden">
+        <ParallaxLayer offset={35} className="max-w-7xl mx-auto">
           <p className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-orange mb-14">
             How It Works
           </p>
@@ -316,12 +317,12 @@ Tone: ${configForm.tone}. Keep replies concise (2-4 sentences). Be helpful, answ
               </div>
             ))}
           </div>
-        </div>
+        </ParallaxLayer>
       </section>
 
       {/* ── Build Your Own ── */}
-      <section className="py-24 px-6 md:px-10 border-b border-fd-border">
-        <div className="max-w-7xl mx-auto">
+      <section className="py-24 px-6 md:px-10 border-b border-fd-border overflow-hidden">
+        <ParallaxLayer offset={30} className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -533,12 +534,12 @@ Tone: ${configForm.tone}. Keep replies concise (2-4 sentences). Be helpful, answ
               </AnimatePresence>
             </div>
           </motion.div>
-        </div>
+        </ParallaxLayer>
       </section>
 
       {/* ── CTA ── */}
-      <section className="py-24 px-6 md:px-10 border-t border-fd-border bg-fd-surface">
-        <div className="max-w-3xl mx-auto text-center">
+      <section className="py-24 px-6 md:px-10 border-t border-fd-border bg-fd-surface overflow-hidden">
+        <ParallaxLayer offset={40} className="max-w-3xl mx-auto text-center">
           <h2
             className="font-display font-extrabold leading-none tracking-tightest text-fd-white mb-6"
             style={{ fontSize: "clamp(2rem, 5vw, 4rem)" }}
@@ -555,7 +556,7 @@ Tone: ${configForm.tone}. Keep replies concise (2-4 sentences). Be helpful, answ
           >
             Talk to us about AI <span>→</span>
           </Link>
-        </div>
+        </ParallaxLayer>
       </section>
     </div>
   );

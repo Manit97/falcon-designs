@@ -1,6 +1,7 @@
 "use client";
 import { useRef, useEffect, useState } from "react";
 import { motion, useInView } from "framer-motion";
+import ParallaxLayer from "@/components/ParallaxLayer";
 
 const STATS = [
   { value: 4,    suffix: "+",  label: "Years Building" },
@@ -8,6 +9,9 @@ const STATS = [
   { value: 100,  suffix: "%",  label: "Client Satisfaction" },
   { value: 3,    suffix: "x",  label: "Avg. Conversion Lift" },
 ];
+
+// Each stat floats at a slightly different depth for a subtle cascade
+const STAT_OFFSETS = [20, 30, 20, 30];
 
 const EXPO = [0.16, 1, 0.3, 1] as const;
 
@@ -38,23 +42,24 @@ export default function Stats() {
   const inView = useInView(ref, { once: true, margin: "-60px" });
 
   return (
-    <section ref={ref} className="py-24 px-6 md:px-10 bg-fd-black border-t border-fd-border">
+    <section ref={ref} className="py-24 px-6 md:px-10 bg-fd-black border-t border-fd-border overflow-hidden">
       <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4">
         {STATS.map((s, i) => (
-          <motion.div
-            key={s.label}
-            initial={{ opacity: 0, y: 30 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.7, delay: i * 0.1, ease: EXPO }}
-            className="text-center md:text-left md:border-r border-fd-border last:border-0 md:px-8 first:pl-0"
-          >
-            <p className="font-display font-extrabold text-fd-white mb-1" style={{ fontSize: "clamp(3rem, 6vw, 5rem)" }}>
-              <CountUp value={s.value} suffix={s.suffix} />
-            </p>
-            <p className="font-display font-semibold text-[10px] tracking-widest2 uppercase text-fd-muted">
-              {s.label}
-            </p>
-          </motion.div>
+          <ParallaxLayer key={s.label} offset={STAT_OFFSETS[i]}>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.7, delay: i * 0.1, ease: EXPO }}
+              className="text-center md:text-left md:border-r border-fd-border last:border-0 md:px-8 first:pl-0"
+            >
+              <p className="font-display font-extrabold text-fd-white mb-1" style={{ fontSize: "clamp(3rem, 6vw, 5rem)" }}>
+                <CountUp value={s.value} suffix={s.suffix} />
+              </p>
+              <p className="font-display font-semibold text-[10px] tracking-widest2 uppercase text-fd-muted">
+                {s.label}
+              </p>
+            </motion.div>
+          </ParallaxLayer>
         ))}
       </div>
     </section>

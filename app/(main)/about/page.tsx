@@ -54,7 +54,7 @@ export default function AboutPage() {
           offset={150}
           style={{ background: "radial-gradient(ellipse at 20% 100%, rgba(249,115,22,0.07) 0%, transparent 60%)" }}
         />
-        <div className="max-w-7xl mx-auto relative z-10">
+        <ParallaxLayer offset={45} className="max-w-7xl mx-auto relative z-10">
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -74,80 +74,86 @@ export default function AboutPage() {
           >
             BUILT IN<br /><span className="text-stroke">LONDON.</span>
           </motion.h1>
-        </div>
+        </ParallaxLayer>
       </section>
 
       {/* ── Mission ── */}
-      <section className="py-24 px-6 md:px-10 border-b border-fd-border">
+      <section className="py-24 px-6 md:px-10 border-b border-fd-border overflow-hidden">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-[1fr_1.6fr] gap-20 items-start">
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={VP}
-            transition={{ duration: 0.8, ease: EXPO }}
-          >
-            <p className="font-display font-semibold text-xs tracking-widest uppercase text-fd-orange mb-4">Our Mission</p>
-            <div className="w-px h-24 bg-fd-border mt-2" />
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={VP}
-            transition={{ duration: 0.9, delay: 0.1, ease: EXPO }}
-            className="space-y-6"
-          >
-            <p
-              className="font-display font-bold text-fd-white leading-tight"
-              style={{ fontSize: "clamp(1.5rem, 3vw, 2.5rem)" }}
+          <ParallaxLayer offset={50}>
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={VP}
+              transition={{ duration: 0.8, ease: EXPO }}
             >
-              Good design isn&apos;t a luxury. It&apos;s how small businesses compete with the big ones.
-            </p>
-            <p className="font-body text-fd-dim leading-relaxed text-lg">
-              Falcon Designs was built out of one frustration: too many brilliant businesses were being handed
-              ugly, slow, forgettable websites — and paying too much for the privilege. We set out to fix that.
-            </p>
-            <p className="font-body text-fd-dim leading-relaxed">
-              We&apos;re a small team of designers and developers based in London. We work exclusively on
-              web — no social media management, no SEO packages, no upsells. Just exceptional websites
-              and AI tools, built with genuine care, for businesses that deserve better.
-            </p>
+              <p className="font-display font-semibold text-xs tracking-widest uppercase text-fd-orange mb-4">Our Mission</p>
+              <div className="w-px h-24 bg-fd-border mt-2" />
+            </motion.div>
+          </ParallaxLayer>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-0 border border-fd-border mt-10">
-              {STATS.map(({ value, label }) => (
-                <div key={label} className="border-r border-fd-border last:border-r-0 p-6">
-                  <p className="font-display font-extrabold text-2xl text-fd-orange">{value}</p>
-                  <p className="font-display text-[10px] tracking-widest uppercase text-fd-muted mt-1 leading-tight">{label}</p>
-                </div>
-              ))}
-            </div>
-          </motion.div>
+          <ParallaxLayer offset={30}>
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={VP}
+              transition={{ duration: 0.9, delay: 0.1, ease: EXPO }}
+              className="space-y-6"
+            >
+              <p
+                className="font-display font-bold text-fd-white leading-tight"
+                style={{ fontSize: "clamp(1.5rem, 3vw, 2.5rem)" }}
+              >
+                Good design isn&apos;t a luxury. It&apos;s how small businesses compete with the big ones.
+              </p>
+              <p className="font-body text-fd-dim leading-relaxed text-lg">
+                Falcon Designs was built out of one frustration: too many brilliant businesses were being handed
+                ugly, slow, forgettable websites — and paying too much for the privilege. We set out to fix that.
+              </p>
+              <p className="font-body text-fd-dim leading-relaxed">
+                We&apos;re a small team of designers and developers based in London. We work exclusively on
+                web — no social media management, no SEO packages, no upsells. Just exceptional websites
+                and AI tools, built with genuine care, for businesses that deserve better.
+              </p>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-0 border border-fd-border mt-10">
+                {STATS.map(({ value, label }) => (
+                  <div key={label} className="border-r border-fd-border last:border-r-0 p-6">
+                    <p className="font-display font-extrabold text-2xl text-fd-orange">{value}</p>
+                    <p className="font-display text-[10px] tracking-widest uppercase text-fd-muted mt-1 leading-tight">{label}</p>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </ParallaxLayer>
         </div>
       </section>
 
       {/* ── Values ── */}
-      <section className="py-24 px-6 md:px-10 border-b border-fd-border bg-fd-surface">
+      <section className="py-24 px-6 md:px-10 border-b border-fd-border bg-fd-surface overflow-hidden">
         <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={VP}
-            transition={{ duration: 0.6, ease: EXPO }}
-            className="mb-16"
-          >
-            <p className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-orange mb-3">
-              How We Think
-            </p>
-            <h2
-              className="font-display font-extrabold leading-none tracking-tightest text-fd-white"
-              style={{ fontSize: "clamp(2rem, 5vw, 4rem)" }}
+          <ParallaxLayer offset={50}>
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={VP}
+              transition={{ duration: 0.6, ease: EXPO }}
+              className="mb-16"
             >
-              OUR VALUES.
-            </h2>
-          </motion.div>
+              <p className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-orange mb-3">
+                How We Think
+              </p>
+              <h2
+                className="font-display font-extrabold leading-none tracking-tightest text-fd-white"
+                style={{ fontSize: "clamp(2rem, 5vw, 4rem)" }}
+              >
+                OUR VALUES.
+              </h2>
+            </motion.div>
+          </ParallaxLayer>
 
-          <div className="grid md:grid-cols-2 gap-px bg-fd-border border border-fd-border">
+          <ParallaxLayer offset={28} className="grid md:grid-cols-2 gap-px bg-fd-border border border-fd-border">
             {VALUES.map((v, i) => (
               <motion.div
                 key={v.n}
@@ -164,35 +170,37 @@ export default function AboutPage() {
                 <p className="font-body text-sm text-fd-dim leading-relaxed">{v.body}</p>
               </motion.div>
             ))}
-          </div>
+          </ParallaxLayer>
         </div>
       </section>
 
       {/* ── Process ── */}
-      <section className="py-24 px-6 md:px-10 border-b border-fd-border">
+      <section className="py-24 px-6 md:px-10 border-b border-fd-border overflow-hidden">
         <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={VP}
-            transition={{ duration: 0.6, ease: EXPO }}
-            className="mb-16"
-          >
-            <p className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-orange mb-3">
-              The Process
-            </p>
-            <h2
-              className="font-display font-extrabold leading-none tracking-tightest text-fd-white"
-              style={{ fontSize: "clamp(2rem, 5vw, 4rem)" }}
+          <ParallaxLayer offset={50}>
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={VP}
+              transition={{ duration: 0.6, ease: EXPO }}
+              className="mb-16"
             >
-              FROM ZERO<br /><span className="text-stroke">TO LIVE.</span>
-            </h2>
-            <p className="font-body text-fd-dim mt-5 max-w-lg leading-relaxed">
-              Most agencies take months. We move faster — without cutting corners.
-            </p>
-          </motion.div>
+              <p className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-orange mb-3">
+                The Process
+              </p>
+              <h2
+                className="font-display font-extrabold leading-none tracking-tightest text-fd-white"
+                style={{ fontSize: "clamp(2rem, 5vw, 4rem)" }}
+              >
+                FROM ZERO<br /><span className="text-stroke">TO LIVE.</span>
+              </h2>
+              <p className="font-body text-fd-dim mt-5 max-w-lg leading-relaxed">
+                Most agencies take months. We move faster — without cutting corners.
+              </p>
+            </motion.div>
+          </ParallaxLayer>
 
-          <div className="space-y-0 border border-fd-border">
+          <ParallaxLayer offset={28} className="space-y-0 border border-fd-border">
             {PROCESS.map((p, i) => (
               <motion.div
                 key={p.n}
@@ -213,39 +221,41 @@ export default function AboutPage() {
                 </div>
               </motion.div>
             ))}
-          </div>
+          </ParallaxLayer>
         </div>
       </section>
 
       {/* ── Team ── */}
-      <section className="py-24 px-6 md:px-10 border-b border-fd-border bg-fd-surface">
+      <section className="py-24 px-6 md:px-10 border-b border-fd-border bg-fd-surface overflow-hidden">
         <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={VP}
-            transition={{ duration: 0.6, ease: EXPO }}
-            className="mb-16"
-          >
-            <p className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-orange mb-3">
-              The Team
-            </p>
-            <h2
-              className="font-display font-extrabold leading-none tracking-tightest text-fd-white"
-              style={{ fontSize: "clamp(2rem, 5vw, 4rem)" }}
+          <ParallaxLayer offset={50}>
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={VP}
+              transition={{ duration: 0.6, ease: EXPO }}
+              className="mb-16"
             >
-              REAL PEOPLE.<br /><span className="text-stroke">REAL WORK.</span>
-            </h2>
-          </motion.div>
+              <p className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-orange mb-3">
+                The Team
+              </p>
+              <h2
+                className="font-display font-extrabold leading-none tracking-tightest text-fd-white"
+                style={{ fontSize: "clamp(2rem, 5vw, 4rem)" }}
+              >
+                REAL PEOPLE.<br /><span className="text-stroke">REAL WORK.</span>
+              </h2>
+            </motion.div>
+          </ParallaxLayer>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={VP}
-            transition={{ duration: 0.8, ease: EXPO }}
-            className="grid md:grid-cols-2 gap-8 max-w-3xl"
-          >
-            <div className="border border-fd-border p-8 group hover:border-fd-orange/40 transition-all duration-300">
+          <ParallaxLayer offset={30} className="grid md:grid-cols-2 gap-8 max-w-3xl">
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={VP}
+              transition={{ duration: 0.8, ease: EXPO }}
+              className="border border-fd-border p-8 group hover:border-fd-orange/40 transition-all duration-300"
+            >
               <div
                 className="w-16 h-16 rounded-full mb-6 flex items-center justify-center text-2xl font-display font-bold text-fd-orange"
                 style={{ background: "rgba(249,115,22,0.1)" }}
@@ -260,7 +270,7 @@ export default function AboutPage() {
                 We started Falcon Designs because we believed the UK&apos;s small businesses deserved world-class
                 digital presence — not cookie-cutter templates and inflated agency retainers.
               </p>
-            </div>
+            </motion.div>
 
             <div className="border border-fd-border border-dashed p-8 flex flex-col justify-between">
               <div>
@@ -282,13 +292,13 @@ export default function AboutPage() {
                 </ul>
               </div>
             </div>
-          </motion.div>
+          </ParallaxLayer>
         </div>
       </section>
 
       {/* ── CTA ── */}
-      <section className="py-24 px-6 md:px-10 border-t border-fd-border">
-        <div className="max-w-3xl mx-auto text-center">
+      <section className="py-24 px-6 md:px-10 border-t border-fd-border overflow-hidden">
+        <ParallaxLayer offset={40} className="max-w-3xl mx-auto text-center">
           <h2
             className="font-display font-extrabold leading-none tracking-tightest text-fd-white mb-6"
             style={{ fontSize: "clamp(2rem, 5vw, 4rem)" }}
@@ -312,7 +322,7 @@ export default function AboutPage() {
               See Our Work
             </Link>
           </div>
-        </div>
+        </ParallaxLayer>
       </section>
     </div>
   );

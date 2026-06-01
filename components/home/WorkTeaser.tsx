@@ -37,6 +37,9 @@ const WORKS = [
   },
 ];
 
+// Each card floats at a distinct depth
+const CARD_OFFSETS = [22, 35, 48];
+
 const EXPO = [0.16, 1, 0.3, 1] as const;
 
 export default function WorkTeaser() {
@@ -44,7 +47,7 @@ export default function WorkTeaser() {
   const inView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
-    <section ref={ref} className="py-32 px-6 md:px-10 bg-fd-surface border-t border-fd-border">
+    <section ref={ref} className="py-32 px-6 md:px-10 bg-fd-surface border-t border-fd-border overflow-hidden">
       <div className="max-w-7xl mx-auto">
 
         {/* Header */}
@@ -82,62 +85,63 @@ export default function WorkTeaser() {
           </motion.div>
         </ParallaxLayer>
 
-        {/* Work cards */}
+        {/* Work cards — staggered depths */}
         <div className="space-y-4">
           {WORKS.map((w, i) => (
-            <motion.div
-              key={w.num}
-              initial={{ opacity: 0, y: 40 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.8, delay: 0.15 + i * 0.12, ease: EXPO }}
-            >
-              <Link
-                href={w.href}
-                target={w.external ? "_blank" : undefined}
-                rel={w.external ? "noopener noreferrer" : undefined}
-                className="group flex flex-col md:flex-row md:items-center gap-6 p-8 bg-fd-card border border-fd-border hover:border-fd-orange/40 transition-all duration-400"
+            <ParallaxLayer key={w.num} offset={CARD_OFFSETS[i]}>
+              <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.8, delay: 0.15 + i * 0.12, ease: EXPO }}
               >
-                {/* Colour accent bar */}
-                <div
-                  className="hidden md:block w-1 self-stretch rounded-full flex-shrink-0 transition-all duration-300 group-hover:w-2"
-                  style={{ background: w.colour }}
-                />
+                <Link
+                  href={w.href}
+                  target={w.external ? "_blank" : undefined}
+                  rel={w.external ? "noopener noreferrer" : undefined}
+                  className="group flex flex-col md:flex-row md:items-center gap-6 p-8 bg-fd-card border border-fd-border hover:border-fd-orange/40 transition-all duration-400"
+                >
+                  {/* Colour accent bar */}
+                  <div
+                    className="hidden md:block w-1 self-stretch rounded-full flex-shrink-0 transition-all duration-300 group-hover:w-2"
+                    style={{ background: w.colour }}
+                  />
 
-                {/* Number */}
-                <span className="font-display font-bold text-xs text-fd-muted tracking-widest flex-shrink-0">
-                  {w.num}
-                </span>
+                  {/* Number */}
+                  <span className="font-display font-bold text-xs text-fd-muted tracking-widest flex-shrink-0">
+                    {w.num}
+                  </span>
 
-                {/* Content */}
-                <div className="flex-1">
-                  <div className="flex flex-wrap items-center gap-4 mb-2">
-                    <h3 className="font-display font-bold text-xl text-fd-white group-hover:text-fd-orange transition-colors duration-300">
-                      {w.title}
-                    </h3>
-                    <span className="font-display text-[10px] tracking-widest uppercase text-fd-muted border border-fd-border px-2.5 py-1">
-                      {w.category}
+                  {/* Content */}
+                  <div className="flex-1">
+                    <div className="flex flex-wrap items-center gap-4 mb-2">
+                      <h3 className="font-display font-bold text-xl text-fd-white group-hover:text-fd-orange transition-colors duration-300">
+                        {w.title}
+                      </h3>
+                      <span className="font-display text-[10px] tracking-widest uppercase text-fd-muted border border-fd-border px-2.5 py-1">
+                        {w.category}
+                      </span>
+                    </div>
+                    <p className="font-body text-sm text-fd-dim leading-relaxed max-w-xl">
+                      {w.desc}
+                    </p>
+                  </div>
+
+                  {/* Tags + arrow */}
+                  <div className="flex items-center gap-4 flex-shrink-0">
+                    <div className="hidden lg:flex flex-wrap gap-2">
+                      {w.tags.map((tag) => (
+                        <span key={tag} className="font-display text-[9px] tracking-widest uppercase text-fd-muted px-2 py-0.5 border border-fd-border/50">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <span className="font-display text-lg text-fd-muted group-hover:text-fd-orange group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300">
+                      ↗
                     </span>
                   </div>
-                  <p className="font-body text-sm text-fd-dim leading-relaxed max-w-xl">
-                    {w.desc}
-                  </p>
-                </div>
-
-                {/* Tags + arrow */}
-                <div className="flex items-center gap-4 flex-shrink-0">
-                  <div className="hidden lg:flex flex-wrap gap-2">
-                    {w.tags.map((tag) => (
-                      <span key={tag} className="font-display text-[9px] tracking-widest uppercase text-fd-muted px-2 py-0.5 border border-fd-border/50">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                  <span className="font-display text-lg text-fd-muted group-hover:text-fd-orange group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300">
-                    ↗
-                  </span>
-                </div>
-              </Link>
-            </motion.div>
+                </Link>
+              </motion.div>
+            </ParallaxLayer>
           ))}
         </div>
       </div>
