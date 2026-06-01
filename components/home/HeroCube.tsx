@@ -29,19 +29,19 @@ function BoxEdges({
 // ─── Solid 3-D "FD" block ─────────────────────────────────────────────────────
 function FDText() {
   return (
-    <Center position={[0.18, 0, 0]}>
+    <Center position={[0, 0, 0]}>
       <Text3D
         font="/fonts/helvetiker_bold.typeface.json"
-        size={0.78}
-        height={0.32}
+        size={0.95}
+        height={0.35}
         curveSegments={10}
         bevelEnabled
-        bevelThickness={0.022}
-        bevelSize={0.010}
+        bevelThickness={0.025}
+        bevelSize={0.011}
         bevelSegments={4}
-        letterSpacing={0.05}
+        letterSpacing={0.06}
       >
-        FD
+        F.
         {/* Solid orange block — no transparency */}
         <meshStandardMaterial
           color="#f97316"
