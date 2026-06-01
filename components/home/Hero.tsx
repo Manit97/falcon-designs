@@ -1,7 +1,11 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import Link from "next/link";
+
+// Load the WebGL canvas client-side only (no SSR — browser API)
+const HeroCube = dynamic(() => import("./HeroCube"), { ssr: false });
 
 const WORDS = ["BOLD.", "FAST.", "BUILT", "TO WIN."];
 const TAGLINE = "Web Design & AI Solutions for Ambitious Brands";
@@ -77,69 +81,87 @@ export default function Hero() {
         }}
       />
 
-      {/* Content */}
+      {/* ── Main content — two columns on large screens ── */}
       <div className="relative z-10 max-w-7xl mx-auto w-full">
+        <div className="grid lg:grid-cols-[58%_1fr] lg:items-center lg:gap-8">
 
-        {/* Label */}
-        {mounted && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: EXPO }}
-            className="flex items-center gap-3 mb-10"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-fd-orange animate-pulse" />
-            <span className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-orange">
-              Available for projects
-            </span>
-          </motion.div>
-        )}
+          {/* ── LEFT: text content ── */}
+          <div>
+            {/* Label */}
+            {mounted && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: EXPO }}
+                className="flex items-center gap-3 mb-10"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-fd-orange animate-pulse" />
+                <span className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-orange">
+                  Available for projects
+                </span>
+              </motion.div>
+            )}
 
-        {/* Main headline */}
-        <div className="mb-8">
+            {/* Main headline */}
+            <div className="mb-8">
+              {mounted && (
+                <>
+                  <WordReveal text="BOLD."   delay={0.1} />
+                  <WordReveal text="FAST."   delay={0.18} outline />
+                  <WordReveal text="BUILT"   delay={0.26} />
+                  <WordReveal text="TO WIN." delay={0.34} outline />
+                </>
+              )}
+            </div>
+
+            {/* Tagline + CTA row */}
+            {mounted && (
+              <motion.div
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.7, ease: EXPO }}
+                className="flex flex-col md:flex-row md:items-end justify-between gap-8"
+              >
+                <p className="font-body text-base md:text-lg text-fd-dim max-w-sm leading-relaxed">
+                  {TAGLINE}
+                </p>
+
+                <div className="flex items-center gap-5">
+                  <motion.div whileHover={{ scale: 1.07 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.25, ease: EXPO }}>
+                    <Link
+                      href="/showcase"
+                      className="group font-display font-bold text-xs tracking-widest uppercase bg-fd-orange text-fd-black px-7 py-4 hover:bg-fd-white transition-colors duration-300 flex items-center gap-3"
+                    >
+                      View Our Work
+                      <span className="group-hover:translate-x-1 transition-transform duration-300">↗</span>
+                    </Link>
+                  </motion.div>
+                  <motion.div whileHover={{ scale: 1.07 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.25, ease: EXPO }}>
+                    <Link
+                      href="/contact"
+                      className="font-display font-semibold text-xs tracking-widest uppercase text-fd-dim border border-fd-border px-7 py-4 hover:border-fd-white hover:text-fd-white transition-all duration-300 block"
+                    >
+                      Get a Quote
+                    </Link>
+                  </motion.div>
+                </div>
+              </motion.div>
+            )}
+          </div>
+
+          {/* ── RIGHT: 3D cube — desktop only ── */}
           {mounted && (
-            <>
-              <WordReveal text="BOLD."   delay={0.1} />
-              <WordReveal text="FAST."   delay={0.18} outline />
-              <WordReveal text="BUILT"   delay={0.26} />
-              <WordReveal text="TO WIN." delay={0.34} outline />
-            </>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1.2, delay: 0.5, ease: EXPO }}
+              className="hidden lg:block"
+              style={{ height: "clamp(340px, 45vw, 560px)" }}
+            >
+              <HeroCube />
+            </motion.div>
           )}
         </div>
-
-        {/* Tagline + CTA row */}
-        {mounted && (
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.7, ease: EXPO }}
-            className="flex flex-col md:flex-row md:items-end justify-between gap-8 max-w-5xl"
-          >
-            <p className="font-body text-base md:text-lg text-fd-dim max-w-sm leading-relaxed">
-              {TAGLINE}
-            </p>
-
-            <div className="flex items-center gap-5">
-              <motion.div whileHover={{ scale: 1.07 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.25, ease: EXPO }}>
-                <Link
-                  href="/showcase"
-                  className="group font-display font-bold text-xs tracking-widest uppercase bg-fd-orange text-fd-black px-7 py-4 hover:bg-fd-white transition-colors duration-300 flex items-center gap-3"
-                >
-                  View Our Work
-                  <span className="group-hover:translate-x-1 transition-transform duration-300">↗</span>
-                </Link>
-              </motion.div>
-              <motion.div whileHover={{ scale: 1.07 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.25, ease: EXPO }}>
-                <Link
-                  href="/contact"
-                  className="font-display font-semibold text-xs tracking-widest uppercase text-fd-dim border border-fd-border px-7 py-4 hover:border-fd-white hover:text-fd-white transition-all duration-300 block"
-                >
-                  Get a Quote
-                </Link>
-              </motion.div>
-            </div>
-          </motion.div>
-        )}
 
         {/* Scroll indicator */}
         {mounted && (
