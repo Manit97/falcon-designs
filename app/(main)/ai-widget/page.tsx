@@ -1,10 +1,11 @@
 "use client";
-import { useRef, useState } from "react";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import AIWidget from "@/components/AIWidget";
 import Link from "next/link";
 
 const EXPO = [0.16, 1, 0.3, 1] as const;
+const VP   = { once: true, margin: "0px 0px -80px 0px" } as const;
 
 const DEMOS = [
   {
@@ -96,18 +97,9 @@ function ConfiguratorWidget({ systemPrompt, businessName, accentColour }: {
 }
 
 export default function AIWidgetPage() {
-  const headerRef  = useRef(null);
-  const demoRef    = useRef(null);
-  const buildRef   = useRef(null);
-  const headerView = useInView(headerRef, { once: true });
-  const demoView   = useInView(demoRef,   { once: true, margin: "-80px" });
-  const buildView  = useInView(buildRef,  { once: true, margin: "-80px" });
-
-  const [activeDemo, setActiveDemo]   = useState(0);
-
-  // Configurator state
-  const [step, setStep]               = useState<"form" | "chat">("form");
-  const [configForm, setConfigForm]   = useState({
+  const [activeDemo, setActiveDemo]     = useState(0);
+  const [step, setStep]                 = useState<"form" | "chat">("form");
+  const [configForm, setConfigForm]     = useState({
     businessName: "",
     industry: "",
     tone: "friendly",
@@ -127,20 +119,19 @@ export default function AIWidgetPage() {
   ];
 
   const TONE_OPTIONS = [
-    { value: "friendly",      label: "Friendly & Casual" },
-    { value: "professional",  label: "Professional" },
-    { value: "luxury",        label: "Premium / Luxury" },
-    { value: "energetic",     label: "Bold & Energetic" },
+    { value: "friendly",     label: "Friendly & Casual" },
+    { value: "professional", label: "Professional" },
+    { value: "luxury",       label: "Premium / Luxury" },
+    { value: "energetic",    label: "Bold & Energetic" },
   ];
 
-  const buildSystemPrompt = () => {
-    return `You are an AI assistant for ${configForm.businessName} — a ${configForm.industry} business.
+  const buildSystemPrompt = () =>
+    `You are an AI assistant for ${configForm.businessName} — a ${configForm.industry} business.
 
 ${configForm.services ? `Services/Products: ${configForm.services}` : ""}
 ${configForm.keyInfo ? `Key information: ${configForm.keyInfo}` : ""}
 
 Tone: ${configForm.tone}. Keep replies concise (2-4 sentences). Be helpful, answer questions about the business, and guide customers towards getting in touch or making a purchase/booking. If you don't know specific details, invite them to call or email the business directly.`;
-  };
 
   const handleBuild = (e: React.FormEvent) => {
     e.preventDefault();
@@ -153,13 +144,14 @@ Tone: ${configForm.tone}. Keep replies concise (2-4 sentences). Be helpful, answ
     <div className="min-h-screen bg-fd-black pt-20">
 
       {/* ── Header ── */}
-      <section ref={headerRef} className="py-28 px-6 md:px-10 border-b border-fd-border overflow-hidden relative">
+      <section className="py-28 px-6 md:px-10 border-b border-fd-border overflow-hidden relative">
         <div className="absolute top-0 right-0 w-[600px] h-[600px] pointer-events-none"
           style={{ background: "radial-gradient(circle at 70% 30%, rgba(249,115,22,0.08) 0%, transparent 60%)" }} />
         <div className="max-w-7xl mx-auto relative z-10">
           <motion.p
             initial={{ opacity: 0, y: 20 }}
-            animate={headerView ? { opacity: 1, y: 0 } : {}}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.6, ease: EXPO }}
             className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-orange mb-5"
           >
@@ -167,7 +159,8 @@ Tone: ${configForm.tone}. Keep replies concise (2-4 sentences). Be helpful, answ
           </motion.p>
           <motion.h1
             initial={{ opacity: 0, y: 40 }}
-            animate={headerView ? { opacity: 1, y: 0 } : {}}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.9, delay: 0.1, ease: EXPO }}
             className="font-display font-extrabold leading-none tracking-tightest text-fd-white"
             style={{ fontSize: "clamp(3rem, 8vw, 7rem)" }}
@@ -176,7 +169,8 @@ Tone: ${configForm.tone}. Keep replies concise (2-4 sentences). Be helpful, answ
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
-            animate={headerView ? { opacity: 1, y: 0 } : {}}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.25, ease: EXPO }}
             className="font-body text-fd-dim text-lg mt-8 max-w-2xl leading-relaxed"
           >
@@ -187,15 +181,16 @@ Tone: ${configForm.tone}. Keep replies concise (2-4 sentences). Be helpful, answ
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={headerView ? { opacity: 1, y: 0 } : {}}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.4, ease: EXPO }}
             className="flex flex-wrap gap-6 mt-12"
           >
             {[
-              { stat: "< 2s",   label: "Response time" },
-              { stat: "24/7",   label: "Always on" },
-              { stat: "100%",   label: "Your brand voice" },
-              { stat: "∞",      label: "Conversations" },
+              { stat: "< 2s",  label: "Response time" },
+              { stat: "24/7",  label: "Always on" },
+              { stat: "100%",  label: "Your brand voice" },
+              { stat: "∞",     label: "Conversations" },
             ].map(({ stat, label }) => (
               <div key={label} className="border border-fd-border px-6 py-4">
                 <p className="font-display font-extrabold text-2xl text-fd-orange">{stat}</p>
@@ -207,11 +202,12 @@ Tone: ${configForm.tone}. Keep replies concise (2-4 sentences). Be helpful, answ
       </section>
 
       {/* ── Live Demos ── */}
-      <section ref={demoRef} className="py-24 px-6 md:px-10 border-b border-fd-border">
+      <section className="py-24 px-6 md:px-10 border-b border-fd-border">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={demoView ? { opacity: 1, y: 0 } : {}}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={VP}
             transition={{ duration: 0.6, ease: EXPO }}
             className="mb-14"
           >
@@ -231,7 +227,8 @@ Tone: ${configForm.tone}. Keep replies concise (2-4 sentences). Be helpful, answ
 
           <motion.div
             initial={{ opacity: 0, y: 30 }}
-            animate={demoView ? { opacity: 1, y: 0 } : {}}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={VP}
             transition={{ duration: 0.7, delay: 0.1, ease: EXPO }}
           >
             {/* Tab selector */}
@@ -302,7 +299,7 @@ Tone: ${configForm.tone}. Keep replies concise (2-4 sentences). Be helpful, answ
                 title: "It works while you sleep",
                 body: "Customers get instant answers at 3am. Leads are captured automatically. You wake up to qualified enquiries, not missed calls.",
               },
-            ].map(({ n, title, body }, i) => (
+            ].map(({ n, title, body }) => (
               <div
                 key={n}
                 className="p-10 border-r border-fd-border last:border-r-0 group hover:bg-fd-card transition-colors duration-300"
@@ -319,11 +316,12 @@ Tone: ${configForm.tone}. Keep replies concise (2-4 sentences). Be helpful, answ
       </section>
 
       {/* ── Build Your Own ── */}
-      <section ref={buildRef} className="py-24 px-6 md:px-10 border-b border-fd-border">
+      <section className="py-24 px-6 md:px-10 border-b border-fd-border">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={buildView ? { opacity: 1, y: 0 } : {}}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={VP}
             transition={{ duration: 0.6, ease: EXPO }}
             className="mb-14"
           >
@@ -343,7 +341,8 @@ Tone: ${configForm.tone}. Keep replies concise (2-4 sentences). Be helpful, answ
 
           <motion.div
             initial={{ opacity: 0, y: 30 }}
-            animate={buildView ? { opacity: 1, y: 0 } : {}}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={VP}
             transition={{ duration: 0.8, delay: 0.1, ease: EXPO }}
             className="grid lg:grid-cols-2 gap-12 items-start"
           >
@@ -383,8 +382,8 @@ Tone: ${configForm.tone}. Keep replies concise (2-4 sentences). Be helpful, answ
                         className="w-full bg-fd-surface border border-fd-border text-fd-white font-body text-sm px-5 py-4 focus:outline-none focus:border-fd-orange transition-colors duration-200 appearance-none"
                       >
                         <option value="" className="bg-fd-card">Select industry…</option>
-                        {INDUSTRIES.map((i) => (
-                          <option key={i} value={i} className="bg-fd-card">{i}</option>
+                        {INDUSTRIES.map((ind) => (
+                          <option key={ind} value={ind} className="bg-fd-card">{ind}</option>
                         ))}
                       </select>
                     </div>
@@ -416,7 +415,6 @@ Tone: ${configForm.tone}. Keep replies concise (2-4 sentences). Be helpful, answ
                     />
                   </div>
 
-                  {/* Tone */}
                   <div>
                     <label className="font-display font-semibold text-xs tracking-widest uppercase text-fd-muted mb-3 block">
                       Tone of voice
@@ -439,7 +437,6 @@ Tone: ${configForm.tone}. Keep replies concise (2-4 sentences). Be helpful, answ
                     </div>
                   </div>
 
-                  {/* Widget accent colour */}
                   <div>
                     <label className="font-display font-semibold text-xs tracking-widest uppercase text-fd-muted mb-3 block">
                       Widget colour

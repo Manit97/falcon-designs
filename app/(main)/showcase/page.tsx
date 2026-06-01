@@ -1,9 +1,9 @@
 "use client";
-import { useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 import Link from "next/link";
 
 const EXPO = [0.16, 1, 0.3, 1] as const;
+const VP   = { once: true, margin: "0px 0px -80px 0px" } as const;
 
 const LIVE_PROJECTS = [
   {
@@ -46,29 +46,23 @@ const LIVE_PROJECTS = [
 
 const UPCOMING = [
   { id: "restaurant", title: "Restaurant & Dining", category: "Food & Hospitality", colour: "#f59e0b", status: "coming" },
-  { id: "saas",       title: "SaaS Product",         category: "Technology",          colour: "#6366f1", status: "coming" },
-  { id: "agency",     title: "Creative Agency",       category: "Studio · Portfolio",  colour: "#10b981", status: "coming" },
+  { id: "saas",       title: "SaaS Product",        category: "Technology",          colour: "#6366f1", status: "coming" },
+  { id: "agency",     title: "Creative Agency",      category: "Studio · Portfolio",  colour: "#10b981", status: "coming" },
 ];
 
 export default function ShowcasePage() {
-  const headerRef  = useRef(null);
-  const liveRef    = useRef(null);
-  const upRef      = useRef(null);
-  const headerView = useInView(headerRef, { once: true });
-  const liveView   = useInView(liveRef,   { once: true, margin: "-80px" });
-  const upView     = useInView(upRef,     { once: true, margin: "-80px" });
-
   return (
     <div className="min-h-screen bg-fd-black pt-20">
 
       {/* ── Page header ── */}
-      <section ref={headerRef} className="py-28 px-6 md:px-10 border-b border-fd-border relative overflow-hidden">
+      <section className="py-28 px-6 md:px-10 border-b border-fd-border relative overflow-hidden">
         <div className="absolute top-1/2 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] pointer-events-none"
           style={{ background: "radial-gradient(circle, rgba(249,115,22,0.08) 0%, transparent 70%)" }} />
         <div className="max-w-7xl mx-auto relative z-10">
           <motion.p
             initial={{ opacity: 0, y: 20 }}
-            animate={headerView ? { opacity: 1, y: 0 } : {}}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.6, ease: EXPO }}
             className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-orange mb-5"
           >
@@ -76,7 +70,8 @@ export default function ShowcasePage() {
           </motion.p>
           <motion.h1
             initial={{ opacity: 0, y: 40 }}
-            animate={headerView ? { opacity: 1, y: 0 } : {}}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.9, delay: 0.1, ease: EXPO }}
             className="font-display font-extrabold leading-none tracking-tightest text-fd-white"
             style={{ fontSize: "clamp(3rem, 8vw, 7rem)" }}
@@ -85,7 +80,8 @@ export default function ShowcasePage() {
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
-            animate={headerView ? { opacity: 1, y: 0 } : {}}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.25, ease: EXPO }}
             className="font-body text-fd-dim text-lg mt-8 max-w-xl leading-relaxed"
           >
@@ -95,11 +91,12 @@ export default function ShowcasePage() {
       </section>
 
       {/* ── Live deployed templates ── */}
-      <section ref={liveRef} className="py-24 px-6 md:px-10 border-b border-fd-border">
+      <section className="py-24 px-6 md:px-10 border-b border-fd-border">
         <div className="max-w-7xl mx-auto">
           <motion.p
             initial={{ opacity: 0, y: 20 }}
-            animate={liveView ? { opacity: 1, y: 0 } : {}}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={VP}
             transition={{ duration: 0.6, ease: EXPO }}
             className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-orange mb-14 flex items-center gap-3"
           >
@@ -112,13 +109,14 @@ export default function ShowcasePage() {
               <motion.div
                 key={p.id}
                 initial={{ opacity: 0, y: 50 }}
-                animate={liveView ? { opacity: 1, y: 0 } : {}}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={VP}
                 transition={{ duration: 0.8, delay: i * 0.15, ease: EXPO }}
               >
                 <Link
                   href={p.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  target={p.href.startsWith("http") ? "_blank" : undefined}
+                  rel={p.href.startsWith("http") ? "noopener noreferrer" : undefined}
                   className="group block border border-fd-border hover:border-fd-orange/40 transition-all duration-500 overflow-hidden"
                 >
                   {/* Colour preview */}
@@ -126,23 +124,19 @@ export default function ShowcasePage() {
                     className="relative h-64 flex items-center justify-center overflow-hidden"
                     style={{ background: p.bgColour }}
                   >
-                    {/* Decorative circles */}
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="w-48 h-48 rounded-full border opacity-10" style={{ borderColor: p.colour }} />
                       <div className="absolute w-32 h-32 rounded-full border opacity-20" style={{ borderColor: p.colour }} />
                       <div className="absolute w-16 h-16 rounded-full opacity-30" style={{ background: p.colour }} />
                     </div>
-                    {/* Title overlay */}
                     <div className="relative z-10 text-center">
                       <p className="font-display font-extrabold text-2xl" style={{ color: p.colour }}>{p.title}</p>
                       <p className="font-display text-xs tracking-widest uppercase mt-1" style={{ color: p.colour, opacity: 0.6 }}>{p.category}</p>
                     </div>
-                    {/* Live badge */}
                     <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-black/50 backdrop-blur-sm border border-white/10 px-3 py-1.5 rounded-full">
                       <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
                       <span className="font-display text-[10px] tracking-widest uppercase text-white">Live</span>
                     </div>
-                    {/* Hover arrow */}
                     <div className="absolute bottom-4 right-4 w-10 h-10 bg-fd-orange flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
                       <span className="text-fd-black font-bold">↗</span>
                     </div>
@@ -173,11 +167,12 @@ export default function ShowcasePage() {
       </section>
 
       {/* ── Upcoming templates ── */}
-      <section ref={upRef} className="py-24 px-6 md:px-10">
+      <section className="py-24 px-6 md:px-10">
         <div className="max-w-7xl mx-auto">
           <motion.p
             initial={{ opacity: 0, y: 20 }}
-            animate={upView ? { opacity: 1, y: 0 } : {}}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={VP}
             transition={{ duration: 0.6, ease: EXPO }}
             className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-muted mb-14 flex items-center gap-3"
           >
@@ -190,7 +185,8 @@ export default function ShowcasePage() {
               <motion.div
                 key={p.id}
                 initial={{ opacity: 0, y: 30 }}
-                animate={upView ? { opacity: 1, y: 0 } : {}}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={VP}
                 transition={{ duration: 0.7, delay: i * 0.08, ease: EXPO }}
                 className="border border-fd-border border-dashed p-8 flex flex-col justify-between min-h-[200px] group hover:border-fd-border hover:bg-fd-surface/50 transition-all duration-300"
               >

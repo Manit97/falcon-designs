@@ -1,9 +1,9 @@
 "use client";
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 import Link from "next/link";
 
 const EXPO = [0.16, 1, 0.3, 1] as const;
+const VP   = { once: true, margin: "0px 0px -80px 0px" } as const;
 
 const VALUES = [
   {
@@ -29,8 +29,8 @@ const VALUES = [
 ];
 
 const PROCESS = [
-  { n: "01", title: "Discovery",    body: "We learn your business, your goals, and what sets you apart. No briefs, no forms — just a real conversation." },
-  { n: "02", title: "Strategy",     body: "We map out the site architecture, content plan, and design direction before a single pixel is placed." },
+  { n: "01", title: "Discovery",      body: "We learn your business, your goals, and what sets you apart. No briefs, no forms — just a real conversation." },
+  { n: "02", title: "Strategy",       body: "We map out the site architecture, content plan, and design direction before a single pixel is placed." },
   { n: "03", title: "Design & Build", body: "You see real designs, not wireframes. Live in your browser within days, not months." },
   { n: "04", title: "Launch & Beyond", body: "We handle everything: hosting, domain, speed checks, SEO setup. Then we stay on as your ongoing tech partner." },
 ];
@@ -43,23 +43,11 @@ const STATS = [
 ];
 
 export default function AboutPage() {
-  const headerRef  = useRef(null);
-  const missionRef = useRef(null);
-  const valuesRef  = useRef(null);
-  const processRef = useRef(null);
-  const teamRef    = useRef(null);
-
-  const headerView  = useInView(headerRef,  { once: true });
-  const missionView = useInView(missionRef, { once: true, margin: "-80px" });
-  const valuesView  = useInView(valuesRef,  { once: true, margin: "-80px" });
-  const processView = useInView(processRef, { once: true, margin: "-80px" });
-  const teamView    = useInView(teamRef,    { once: true, margin: "-80px" });
-
   return (
     <div className="min-h-screen bg-fd-black pt-20">
 
       {/* ── Header ── */}
-      <section ref={headerRef} className="py-28 px-6 md:px-10 border-b border-fd-border overflow-hidden relative">
+      <section className="py-28 px-6 md:px-10 border-b border-fd-border overflow-hidden relative">
         <div
           className="absolute bottom-0 left-0 w-[800px] h-[400px] pointer-events-none"
           style={{ background: "radial-gradient(ellipse at 20% 100%, rgba(249,115,22,0.07) 0%, transparent 60%)" }}
@@ -67,7 +55,8 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto relative z-10">
           <motion.p
             initial={{ opacity: 0, y: 20 }}
-            animate={headerView ? { opacity: 1, y: 0 } : {}}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.6, ease: EXPO }}
             className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-orange mb-5"
           >
@@ -75,7 +64,8 @@ export default function AboutPage() {
           </motion.p>
           <motion.h1
             initial={{ opacity: 0, y: 40 }}
-            animate={headerView ? { opacity: 1, y: 0 } : {}}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.9, delay: 0.1, ease: EXPO }}
             className="font-display font-extrabold leading-none tracking-tightest text-fd-white"
             style={{ fontSize: "clamp(3rem, 8vw, 7rem)" }}
@@ -86,12 +76,13 @@ export default function AboutPage() {
       </section>
 
       {/* ── Mission ── */}
-      <section ref={missionRef} className="py-24 px-6 md:px-10 border-b border-fd-border">
+      <section className="py-24 px-6 md:px-10 border-b border-fd-border">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-[1fr_1.6fr] gap-20 items-start">
 
           <motion.div
             initial={{ opacity: 0, x: -30 }}
-            animate={missionView ? { opacity: 1, x: 0 } : {}}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={VP}
             transition={{ duration: 0.8, ease: EXPO }}
           >
             <p className="font-display font-semibold text-xs tracking-widest uppercase text-fd-orange mb-4">Our Mission</p>
@@ -100,7 +91,8 @@ export default function AboutPage() {
 
           <motion.div
             initial={{ opacity: 0, y: 30 }}
-            animate={missionView ? { opacity: 1, y: 0 } : {}}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={VP}
             transition={{ duration: 0.9, delay: 0.1, ease: EXPO }}
             className="space-y-6"
           >
@@ -120,7 +112,6 @@ export default function AboutPage() {
               and AI tools, built with genuine care, for businesses that deserve better.
             </p>
 
-            {/* Stats */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-0 border border-fd-border mt-10">
               {STATS.map(({ value, label }) => (
                 <div key={label} className="border-r border-fd-border last:border-r-0 p-6">
@@ -134,11 +125,12 @@ export default function AboutPage() {
       </section>
 
       {/* ── Values ── */}
-      <section ref={valuesRef} className="py-24 px-6 md:px-10 border-b border-fd-border bg-fd-surface">
+      <section className="py-24 px-6 md:px-10 border-b border-fd-border bg-fd-surface">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={valuesView ? { opacity: 1, y: 0 } : {}}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={VP}
             transition={{ duration: 0.6, ease: EXPO }}
             className="mb-16"
           >
@@ -158,7 +150,8 @@ export default function AboutPage() {
               <motion.div
                 key={v.n}
                 initial={{ opacity: 0, y: 30 }}
-                animate={valuesView ? { opacity: 1, y: 0 } : {}}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={VP}
                 transition={{ duration: 0.7, delay: i * 0.08, ease: EXPO }}
                 className="bg-fd-surface p-10 group hover:bg-fd-card transition-colors duration-300"
               >
@@ -174,11 +167,12 @@ export default function AboutPage() {
       </section>
 
       {/* ── Process ── */}
-      <section ref={processRef} className="py-24 px-6 md:px-10 border-b border-fd-border">
+      <section className="py-24 px-6 md:px-10 border-b border-fd-border">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={processView ? { opacity: 1, y: 0 } : {}}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={VP}
             transition={{ duration: 0.6, ease: EXPO }}
             className="mb-16"
           >
@@ -201,7 +195,8 @@ export default function AboutPage() {
               <motion.div
                 key={p.n}
                 initial={{ opacity: 0, x: -20 }}
-                animate={processView ? { opacity: 1, x: 0 } : {}}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={VP}
                 transition={{ duration: 0.7, delay: i * 0.1, ease: EXPO }}
                 className="group flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-12 px-8 py-10 border-b border-fd-border last:border-b-0 hover:bg-fd-surface transition-colors duration-300"
               >
@@ -221,11 +216,12 @@ export default function AboutPage() {
       </section>
 
       {/* ── Team ── */}
-      <section ref={teamRef} className="py-24 px-6 md:px-10 border-b border-fd-border bg-fd-surface">
+      <section className="py-24 px-6 md:px-10 border-b border-fd-border bg-fd-surface">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={teamView ? { opacity: 1, y: 0 } : {}}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={VP}
             transition={{ duration: 0.6, ease: EXPO }}
             className="mb-16"
           >
@@ -242,11 +238,11 @@ export default function AboutPage() {
 
           <motion.div
             initial={{ opacity: 0, y: 30 }}
-            animate={teamView ? { opacity: 1, y: 0 } : {}}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={VP}
             transition={{ duration: 0.8, delay: 0.1, ease: EXPO }}
             className="grid md:grid-cols-2 gap-8 max-w-3xl"
           >
-            {/* Team card */}
             <div className="border border-fd-border p-8 group hover:border-fd-orange/40 transition-all duration-300">
               <div
                 className="w-16 h-16 rounded-full mb-6 flex items-center justify-center text-2xl font-display font-bold text-fd-orange"
@@ -264,7 +260,6 @@ export default function AboutPage() {
               </p>
             </div>
 
-            {/* Values card */}
             <div className="border border-fd-border border-dashed p-8 flex flex-col justify-between">
               <div>
                 <p className="font-display font-semibold text-xs tracking-widest uppercase text-fd-muted mb-6">

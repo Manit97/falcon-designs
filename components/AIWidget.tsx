@@ -28,11 +28,19 @@ export default function AIWidget({
   const [input, setInput]     = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError]     = useState(false);
-  const endRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const msgsRef      = useRef<HTMLDivElement>(null);
+  const inputRef     = useRef<HTMLInputElement>(null);
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth" });
+    // Skip the very first render — the greeting is already at the top
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    const el = msgsRef.current;
+    if (!el) return;
+    el.scrollTop = el.scrollHeight;
   }, [messages, loading]);
 
   const send = async () => {
@@ -82,7 +90,7 @@ export default function AIWidget({
       ]);
     } finally {
       setLoading(false);
-      inputRef.current?.focus();
+      inputRef.current?.focus({ preventScroll: true });
     }
   };
 
@@ -108,8 +116,8 @@ export default function AIWidget({
         </span>
       </div>
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3 scrollbar-hide">
+      {/* Messages — data-lenis-prevent stops Lenis from hijacking scroll inside this box */}
+      <div ref={msgsRef} data-lenis-prevent className="flex-1 overflow-y-auto px-5 py-4 space-y-3 scrollbar-hide">
         <AnimatePresence initial={false}>
           {messages.map((msg, i) => (
             <motion.div
@@ -153,7 +161,6 @@ export default function AIWidget({
             </div>
           </motion.div>
         )}
-        <div ref={endRef} />
       </div>
 
       {/* Input */}

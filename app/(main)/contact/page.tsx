@@ -1,19 +1,15 @@
 "use client";
-import { useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { useState } from "react";
+import { motion } from "framer-motion";
 
 const EXPO = [0.16, 1, 0.3, 1] as const;
+const VP   = { once: true, margin: "0px 0px -60px 0px" } as const;
 
 const SERVICES = [
   "New Website", "Template Customisation", "AI Widget", "Dashboard / CRM", "Full Redesign", "Other"
 ];
 
 export default function ContactPage() {
-  const headerRef  = useRef(null);
-  const formRef    = useRef(null);
-  const headerView = useInView(headerRef, { once: true });
-  const formView   = useInView(formRef,   { once: true, margin: "-60px" });
-
   const [selected, setSelected] = useState<string[]>([]);
   const [status,   setStatus]   = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [form,     setForm]     = useState({ name: "", email: "", company: "", message: "" });
@@ -41,13 +37,14 @@ export default function ContactPage() {
     <div className="min-h-screen bg-fd-black pt-20">
 
       {/* ── Header ── */}
-      <section ref={headerRef} className="py-28 px-6 md:px-10 border-b border-fd-border overflow-hidden relative">
+      <section className="py-28 px-6 md:px-10 border-b border-fd-border overflow-hidden relative">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] pointer-events-none"
           style={{ background: "radial-gradient(circle at 80% 20%, rgba(249,115,22,0.1) 0%, transparent 60%)" }} />
         <div className="max-w-7xl mx-auto relative z-10">
           <motion.p
             initial={{ opacity: 0, y: 20 }}
-            animate={headerView ? { opacity: 1, y: 0 } : {}}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.6, ease: EXPO }}
             className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-orange mb-5"
           >
@@ -55,7 +52,8 @@ export default function ContactPage() {
           </motion.p>
           <motion.h1
             initial={{ opacity: 0, y: 40 }}
-            animate={headerView ? { opacity: 1, y: 0 } : {}}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.9, delay: 0.1, ease: EXPO }}
             className="font-display font-extrabold leading-none tracking-tightest text-fd-white"
             style={{ fontSize: "clamp(3rem, 8vw, 7rem)" }}
@@ -66,13 +64,14 @@ export default function ContactPage() {
       </section>
 
       {/* ── Form + details ── */}
-      <section ref={formRef} className="py-24 px-6 md:px-10">
+      <section className="py-24 px-6 md:px-10">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-[1fr_2fr] gap-20">
 
           {/* Left — details */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
-            animate={formView ? { opacity: 1, x: 0 } : {}}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={VP}
             transition={{ duration: 0.8, ease: EXPO }}
           >
             <div className="space-y-10">
@@ -104,7 +103,8 @@ export default function ContactPage() {
           {/* Right — form */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
-            animate={formView ? { opacity: 1, y: 0 } : {}}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={VP}
             transition={{ duration: 0.9, delay: 0.1, ease: EXPO }}
           >
             {status === "sent" ? (
@@ -118,7 +118,6 @@ export default function ContactPage() {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
 
-                {/* Name + Email */}
                 <div className="grid sm:grid-cols-2 gap-4">
                   {[
                     { key: "name",    placeholder: "Your Name",    type: "text" },
@@ -137,7 +136,6 @@ export default function ContactPage() {
                   ))}
                 </div>
 
-                {/* Company */}
                 <input
                   type="text"
                   placeholder="Company / Project Name (optional)"
@@ -146,7 +144,6 @@ export default function ContactPage() {
                   className="w-full bg-fd-surface border border-fd-border text-fd-white placeholder:text-fd-muted font-body text-sm px-5 py-4 focus:outline-none focus:border-fd-orange transition-colors duration-200"
                 />
 
-                {/* Services */}
                 <div>
                   <p className="font-display font-semibold text-xs tracking-widest uppercase text-fd-muted mb-3">
                     I&apos;m interested in
@@ -169,7 +166,6 @@ export default function ContactPage() {
                   </div>
                 </div>
 
-                {/* Message */}
                 <textarea
                   placeholder="Tell us about your project — the more detail the better."
                   required
@@ -179,7 +175,6 @@ export default function ContactPage() {
                   className="w-full bg-fd-surface border border-fd-border text-fd-white placeholder:text-fd-muted font-body text-sm px-5 py-4 focus:outline-none focus:border-fd-orange transition-colors duration-200 resize-none"
                 />
 
-                {/* Submit */}
                 <button
                   type="submit"
                   disabled={status === "sending"}
