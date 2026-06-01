@@ -5,7 +5,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Center, Edges, Text3D } from "@react-three/drei";
 import * as THREE from "three";
 
-// ─── Edge lines for the box geometry ─────────────────────────────────────────
+// ─── Edge lines for the outer box ────────────────────────────────────────────
 function BoxEdges({
   size,
   color,
@@ -26,34 +26,32 @@ function BoxEdges({
   );
 }
 
-// ─── 3-D extruded "FD" — transparent fill, orange wireframe edges ─────────────
-// Wrapped in its own component so Suspense can catch the font load.
+// ─── Solid 3-D "FD" block ─────────────────────────────────────────────────────
 function FDText() {
   return (
     <Center position={[0, 0, 0]}>
       <Text3D
         font="/fonts/helvetiker_bold.typeface.json"
-        size={0.66}
-        height={0.22}          /* extrusion depth — gives real 3-D depth */
+        size={1.0}
+        height={0.4}
         curveSegments={10}
         bevelEnabled
-        bevelThickness={0.018}
-        bevelSize={0.009}
-        bevelSegments={3}
-        letterSpacing={0.04}
+        bevelThickness={0.025}
+        bevelSize={0.012}
+        bevelSegments={4}
+        letterSpacing={0.05}
       >
         FD
-        {/* Transparent fill — barely visible, lets light catch it */}
+        {/* Solid orange block — no transparency */}
         <meshStandardMaterial
           color="#f97316"
-          transparent
-          opacity={0.07}
+          roughness={0.15}
+          metalness={0.08}
           emissive="#f97316"
-          emissiveIntensity={0.55}
-          side={THREE.DoubleSide}
+          emissiveIntensity={0.28}
         />
-        {/* Orange wireframe edges traced around every significant angle (≥15°) */}
-        <Edges threshold={15} color="#f97316" />
+        {/* Darker orange edge lines for definition */}
+        <Edges threshold={15} color="#c2410c" />
       </Text3D>
     </Center>
   );
@@ -63,13 +61,14 @@ function FDText() {
 function Scene() {
   const mouseGroupRef = useRef<THREE.Group>(null!);
   const spinGroupRef  = useRef<THREE.Group>(null!);
-  const innerMeshRef  = useRef<THREE.Group>(null!);
 
   useFrame((state, delta) => {
     const t = state.clock.getElapsedTime();
 
     if (mouseGroupRef.current) {
+      // Gentle float
       mouseGroupRef.current.position.y = Math.sin(t * 0.55) * 0.18;
+      // Mouse tilt
       mouseGroupRef.current.rotation.x +=
         (-state.pointer.y * 0.22 - mouseGroupRef.current.rotation.x) * 0.04;
       mouseGroupRef.current.rotation.z +=
@@ -79,11 +78,6 @@ function Scene() {
     if (spinGroupRef.current) {
       spinGroupRef.current.rotation.y += delta * 0.26;
       spinGroupRef.current.rotation.x += delta * 0.08;
-    }
-
-    if (innerMeshRef.current) {
-      innerMeshRef.current.rotation.y -= delta * 0.52;
-      innerMeshRef.current.rotation.x += delta * 0.28;
     }
   });
 
@@ -95,7 +89,7 @@ function Scene() {
       <pointLight position={[0, 0, 5]}    intensity={1} color="#ffffff" />
 
       <group ref={spinGroupRef}>
-        {/* ── Outer cube ── */}
+        {/* ── Outer cube wireframe ── */}
         <mesh>
           <boxGeometry args={[2.4, 2.4, 2.4]} />
           <meshStandardMaterial
@@ -107,25 +101,10 @@ function Scene() {
         </mesh>
         <BoxEdges size={2.4} color="#f97316" opacity={0.9} />
 
-        {/* ── 3-D FD letters — appear once font loads, invisible fallback ── */}
+        {/* ── Solid FD block — spins with the cube ── */}
         <Suspense fallback={null}>
           <FDText />
         </Suspense>
-
-        {/* ── Inner counter-spinning cube ── */}
-        <group ref={innerMeshRef}>
-          <mesh>
-            <boxGeometry args={[1.05, 1.05, 1.05]} />
-            <meshStandardMaterial
-              color="#f97316"
-              transparent
-              opacity={0.07}
-              emissive="#f97316"
-              emissiveIntensity={0.4}
-            />
-          </mesh>
-          <BoxEdges size={1.05} color="#fb923c" opacity={0.75} />
-        </group>
       </group>
     </group>
   );
