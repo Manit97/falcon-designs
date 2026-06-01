@@ -29,7 +29,7 @@ function BoxEdges({
 // ─── Solid 3-D "FD" block ─────────────────────────────────────────────────────
 function FDText() {
   return (
-    <Center position={[0, 0, 0]}>
+    <Center position={[-0.22, 0, 0]}>
       <Text3D
         font="/fonts/helvetiker_bold.typeface.json"
         size={0.95}
