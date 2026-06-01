@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Syne, Inter } from "next/font/google";
 import Cursor from "@/components/Cursor";
+import BurgerMenu from "@/components/BurgerMenu";
 import "./globals.css";
 
 const syne = Syne({
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${syne.variable} ${inter.variable} antialiased`}>
       <body className="bg-fd-black text-fd-white font-body grain">
         <Cursor />
+        <BurgerMenu />
         {children}
       </body>
     </html>
