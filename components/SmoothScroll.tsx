@@ -17,6 +17,14 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
     });
     lenisRef.current = lenis;
 
+    // ── Relay Lenis scroll events → native window scroll events ──────────
+    // Framer Motion's useScroll listens for native 'scroll' events to update
+    // its motion values. Lenis runs its own RAF loop and does not always fire
+    // native events, so parallax transforms stall without this relay.
+    lenis.on("scroll", () => {
+      window.dispatchEvent(new Event("scroll", { bubbles: false }));
+    });
+
     let rafId: number;
     const raf = (time: number) => { lenis.raf(time); rafId = requestAnimationFrame(raf); };
     rafId = requestAnimationFrame(raf);

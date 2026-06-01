@@ -59,7 +59,7 @@ export default function ShowcasePage() {
       <section className="py-28 px-6 md:px-10 border-b border-fd-border relative overflow-hidden">
         <ParallaxLayer
           className="absolute w-[600px] h-[600px] pointer-events-none"
-          offset={80}
+          offset={150}
           style={{
             top: "calc(50% - 300px)",
             left: "calc(33.333% - 300px)",

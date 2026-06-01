@@ -42,7 +42,7 @@ export default function Services() {
       <div className="max-w-7xl mx-auto">
 
         {/* Header */}
-        <ParallaxLayer offset={30} className="grid md:grid-cols-2 gap-10 mb-20">
+        <ParallaxLayer offset={70} className="grid md:grid-cols-2 gap-10 mb-20">
           <div>
             <motion.p
               initial={{ opacity: 0, y: 20 }}

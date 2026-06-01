@@ -18,7 +18,7 @@ export default function ContactCTA() {
       {/* Orange glow — parallax: rises faster than the page content */}
       <ParallaxLayer
         className="absolute pointer-events-none"
-        offset={80}
+        offset={150}
         style={{
           width: "70vw",
           height: "70vw",
@@ -31,7 +31,7 @@ export default function ContactCTA() {
       {/* Big decorative "FD" — parallax: slower rate = feels like a deeper layer */}
       <ParallaxLayer
         className="absolute right-0 bottom-0 font-display font-extrabold text-fd-border select-none pointer-events-none leading-none"
-        offset={50}
+        offset={120}
         style={{ fontSize: "clamp(8rem, 20vw, 20rem)", lineHeight: 0.85 }}
       >
         FD

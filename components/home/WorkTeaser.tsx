@@ -48,7 +48,7 @@ export default function WorkTeaser() {
       <div className="max-w-7xl mx-auto">
 
         {/* Header */}
-        <ParallaxLayer offset={30} className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20">
+        <ParallaxLayer offset={70} className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20">
           <div>
             <motion.p
               initial={{ opacity: 0, y: 20 }}

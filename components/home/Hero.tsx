@@ -76,7 +76,7 @@ export default function Hero() {
       {/* Grid lines decoration — parallax: drifts at a slower rate than page scroll */}
       <ParallaxLayer
         className="absolute inset-0 pointer-events-none opacity-[0.03]"
-        offset={25}
+        offset={60}
         style={{
           backgroundImage:
             "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",

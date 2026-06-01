@@ -74,7 +74,7 @@ export default function AITeaser() {
         </div>
 
         {/* Right — mock widget + features, wrapped for parallax depth */}
-        <ParallaxLayer className="relative" offset={40}>
+        <ParallaxLayer className="relative" offset={100}>
         <motion.div
           initial={{ opacity: 0, x: 60 }}
           animate={inView ? { opacity: 1, x: 0 } : {}}
