@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Syne, Inter } from "next/font/google";
+import Cursor from "@/components/Cursor";
 import "./globals.css";
 
 const syne = Syne({
@@ -27,7 +28,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${syne.variable} ${inter.variable} antialiased`}>
-      <body className="bg-fd-black text-fd-white font-body grain">{children}</body>
+      <body className="bg-fd-black text-fd-white font-body grain">
+        <Cursor />
+        {children}
+      </body>
     </html>
   );
 }
