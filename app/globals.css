@@ -1,26 +1,79 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ── Custom cursor — hide native ──────────────────────────────────────────── */
+*, *::before, *::after { cursor: none !important; }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* ── Smooth scroll base ───────────────────────────────────────────────────── */
+html { scroll-behavior: auto; } /* Lenis takes over */
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #080808;
+  color: #ffffff;
+  overflow-x: hidden;
+}
+
+/* ── Marquee keyframe ─────────────────────────────────────────────────────── */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 18s linear infinite;
+}
+.marquee-track-slow {
+  display: flex;
+  width: max-content;
+  animation: marquee 36s linear infinite;
+}
+.marquee-reverse { animation-direction: reverse; }
+
+/* ── Text clip reveal ─────────────────────────────────────────────────────── */
+.clip-reveal { overflow: hidden; display: block; }
+
+/* ── Selection colour ─────────────────────────────────────────────────────── */
+::selection { background: #f97316; color: #ffffff; }
+
+/* ── Scrollbar ────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: #080808; }
+::-webkit-scrollbar-thumb { background: #f97316; border-radius: 2px; }
+
+/* ── Gradient text ────────────────────────────────────────────────────────── */
+.text-gradient {
+  background: linear-gradient(135deg, #ffffff 0%, #f97316 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Stroke text ──────────────────────────────────────────────────────────── */
+.text-stroke         { -webkit-text-stroke: 1.5px #ffffff;  color: transparent; }
+.text-stroke-orange  { -webkit-text-stroke: 1.5px #f97316;  color: transparent; }
+
+/* ── Grain overlay ────────────────────────────────────────────────────────── */
+@keyframes grain {
+  0%, 100% { transform: translate(0,0); }
+  10%  { transform: translate(-2%,-3%); }
+  20%  { transform: translate(3%,2%); }
+  30%  { transform: translate(-1%,4%); }
+  40%  { transform: translate(4%,-1%); }
+  50%  { transform: translate(-3%,2%); }
+  60%  { transform: translate(2%,3%); }
+  70%  { transform: translate(-4%,-2%); }
+  80%  { transform: translate(3%,-3%); }
+  90%  { transform: translate(-2%,4%); }
+}
+.grain::before {
+  content: "";
+  position: fixed;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  animation: grain 0.8s steps(1) infinite;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.03;
 }
