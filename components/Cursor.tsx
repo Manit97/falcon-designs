@@ -65,7 +65,7 @@ export default function Cursor() {
     <>
       {/* ── Dot: plain white, no blend mode ─────────────────────────────── */}
       <motion.div
-        className="fixed top-0 left-0 pointer-events-none z-[9999] rounded-full"
+        className="fixed top-0 left-0 pointer-events-none z-[99999] rounded-full"
         style={{
           x,
           y,
@@ -84,7 +84,7 @@ export default function Cursor() {
 
       {/* ── Trailing ring ────────────────────────────────────────────────── */}
       <motion.div
-        className="fixed top-0 left-0 pointer-events-none z-[9998] rounded-full"
+        className="fixed top-0 left-0 pointer-events-none z-[99998] rounded-full"
         style={{
           x: trailX,
           y: trailY,
