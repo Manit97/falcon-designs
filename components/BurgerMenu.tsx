@@ -17,12 +17,17 @@ export default function BurgerMenu() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
+  // Hide entirely on standalone template pages — they have their own UI
+  const isTemplate = /^\/showcase\/.+/.test(pathname);
+
   useEffect(() => { setOpen(false); }, [pathname]);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [open]);
+
+  if (isTemplate) return null;
 
   return (
     <>

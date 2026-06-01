@@ -30,13 +30,24 @@ const LIVE_PROJECTS = [
     colour: "#e2e8f0",
     bgColour: "#111111",
   },
+  {
+    id: "trades",
+    title: "Trades & Services",
+    category: "Home Services · Local",
+    year: "2026",
+    desc: "Emergency-first design for plumbers, gas engineers and tradespeople. Dark navy, 24/7 callout, services grid, reviews, areas, and contact form.",
+    tech: ["Next.js 15", "Framer Motion", "Tailwind CSS", "TypeScript"],
+    href: "/showcase/trades",
+    status: "live",
+    colour: "#f59e0b",
+    bgColour: "#0c111d",
+  },
 ];
 
 const UPCOMING = [
   { id: "restaurant", title: "Restaurant & Dining", category: "Food & Hospitality", colour: "#f59e0b", status: "coming" },
   { id: "saas",       title: "SaaS Product",         category: "Technology",          colour: "#6366f1", status: "coming" },
   { id: "agency",     title: "Creative Agency",       category: "Studio · Portfolio",  colour: "#10b981", status: "coming" },
-  { id: "trades",     title: "Trades & Services",     category: "Home Services",       colour: "#ef4444", status: "coming" },
 ];
 
 export default function ShowcasePage() {
