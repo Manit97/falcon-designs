@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 
 export default function Cursor() {
@@ -13,7 +13,7 @@ export default function Cursor() {
   const x = useSpring(mouseX, springCfg);
   const y = useSpring(mouseY, springCfg);
 
-  // Trailing dot (slower spring)
+  // Trailing ring (slower spring)
   const trailX = useSpring(mouseX, { stiffness: 120, damping: 22, mass: 1 });
   const trailY = useSpring(mouseY, { stiffness: 120, damping: 22, mass: 1 });
 
@@ -27,7 +27,6 @@ export default function Cursor() {
     const enter = () => setHidden(false);
     const leave = () => setHidden(true);
 
-    // Detect hover over interactive elements
     const handleHoverOn = (e: MouseEvent) => {
       const el = (e.target as Element).closest("a, button, [data-cursor-hover]");
       setHovered(!!el);
@@ -50,36 +49,43 @@ export default function Cursor() {
     };
   }, [mouseX, mouseY]);
 
+  // Touch devices — no custom cursor
   if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) return null;
+
+  const dotSize = hovered ? 44 : clicking ? 6 : 10;
+  const ringSize = hovered ? 64 : clicking ? 20 : 32;
 
   return (
     <>
-      {/* Main cursor dot */}
+      {/* Main dot — white with mix-blend-difference: visible on dark AND orange backgrounds */}
       <motion.div
-        className="fixed top-0 left-0 pointer-events-none z-[9999] rounded-full mix-blend-difference"
+        className="fixed top-0 left-0 pointer-events-none z-[9999] rounded-full"
         style={{
-          x, y,
+          x,
+          y,
           translateX: "-50%",
           translateY: "-50%",
-          width:  hovered ? 40 : clicking ? 8 : 12,
-          height: hovered ? 40 : clicking ? 8 : 12,
-          backgroundColor: "#f97316",
+          width: dotSize,
+          height: dotSize,
+          backgroundColor: "#ffffff",
+          mixBlendMode: "difference",
           opacity: hidden ? 0 : 1,
-          transition: "width 0.25s cubic-bezier(0.16,1,0.3,1), height 0.25s cubic-bezier(0.16,1,0.3,1), opacity 0.2s",
+          transition: "width 0.25s cubic-bezier(0.16,1,0.3,1), height 0.25s cubic-bezier(0.16,1,0.3,1), opacity 0.15s ease",
         }}
       />
-      {/* Trailing ring */}
+      {/* Trailing ring — no blend mode so it's always visible */}
       <motion.div
-        className="fixed top-0 left-0 pointer-events-none z-[9998] rounded-full border border-white/30"
+        className="fixed top-0 left-0 pointer-events-none z-[9998] rounded-full"
         style={{
           x: trailX,
           y: trailY,
           translateX: "-50%",
           translateY: "-50%",
-          width:  hovered ? 60 : 28,
-          height: hovered ? 60 : 28,
-          opacity: hidden ? 0 : 0.5,
-          transition: "width 0.4s cubic-bezier(0.16,1,0.3,1), height 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.2s",
+          width: ringSize,
+          height: ringSize,
+          border: "1px solid rgba(255,255,255,0.35)",
+          opacity: hidden ? 0 : hovered ? 0.7 : 0.45,
+          transition: "width 0.4s cubic-bezier(0.16,1,0.3,1), height 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.15s ease",
         }}
       />
     </>
