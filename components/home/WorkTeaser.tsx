@@ -1,7 +1,8 @@
 "use client";
 import { useRef } from "react";
-import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import Link from "next/link";
+import ParallaxLayer from "@/components/ParallaxLayer";
 
 const WORKS = [
   {
@@ -47,7 +48,7 @@ export default function WorkTeaser() {
       <div className="max-w-7xl mx-auto">
 
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20">
+        <ParallaxLayer offset={30} className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20">
           <div>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -79,7 +80,7 @@ export default function WorkTeaser() {
               View All Work <span>↗</span>
             </Link>
           </motion.div>
-        </div>
+        </ParallaxLayer>
 
         {/* Work cards */}
         <div className="space-y-4">

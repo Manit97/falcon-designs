@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import ParallaxLayer from "@/components/ParallaxLayer";
 
 // Load the WebGL canvas client-side only (no SSR — browser API)
 const HeroCube = dynamic(() => import("./HeroCube"), { ssr: false });
@@ -72,8 +73,10 @@ export default function Hero() {
         }}
       />
 
-      {/* Grid lines decoration */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.03]"
+      {/* Grid lines decoration — parallax: drifts at a slower rate than page scroll */}
+      <ParallaxLayer
+        className="absolute inset-0 pointer-events-none opacity-[0.03]"
+        offset={25}
         style={{
           backgroundImage:
             "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",

@@ -2,6 +2,7 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import Link from "next/link";
+import ParallaxLayer from "@/components/ParallaxLayer";
 
 const EXPO = [0.16, 1, 0.3, 1] as const;
 
@@ -72,12 +73,12 @@ export default function AITeaser() {
           </motion.div>
         </div>
 
-        {/* Right — mock widget + features */}
+        {/* Right — mock widget + features, wrapped for parallax depth */}
+        <ParallaxLayer className="relative" offset={40}>
         <motion.div
           initial={{ opacity: 0, x: 60 }}
           animate={inView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.9, delay: 0.2, ease: EXPO }}
-          className="relative"
         >
           {/* Mock chat widget */}
           <div className="bg-fd-card border border-fd-border rounded-2xl p-6 mb-6 relative">
@@ -134,6 +135,7 @@ export default function AITeaser() {
             ))}
           </div>
         </motion.div>
+        </ParallaxLayer>
       </div>
     </section>
   );

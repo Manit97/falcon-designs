@@ -2,6 +2,7 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import Link from "next/link";
+import ParallaxLayer from "@/components/ParallaxLayer";
 
 const EXPO = [0.16, 1, 0.3, 1] as const;
 
@@ -14,20 +15,27 @@ export default function ContactCTA() {
       ref={ref}
       className="relative py-40 px-6 md:px-10 overflow-hidden bg-fd-black border-t border-fd-border"
     >
-      {/* Orange glow */}
-      <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+      {/* Orange glow — parallax: rises faster than the page content */}
+      <ParallaxLayer
+        className="absolute pointer-events-none"
+        offset={80}
         style={{
-          width: "70vw", height: "70vw",
+          width: "70vw",
+          height: "70vw",
+          top: "calc(50% - 35vw)",
+          left: "calc(50% - 35vw)",
           background: "radial-gradient(circle, rgba(249,115,22,0.15) 0%, transparent 65%)",
         }}
       />
 
-      {/* Big number */}
-      <div className="absolute right-0 bottom-0 font-display font-extrabold text-fd-border select-none pointer-events-none leading-none"
-        style={{ fontSize: "clamp(8rem, 20vw, 20rem)", lineHeight: 0.85 }}>
+      {/* Big decorative "FD" — parallax: slower rate = feels like a deeper layer */}
+      <ParallaxLayer
+        className="absolute right-0 bottom-0 font-display font-extrabold text-fd-border select-none pointer-events-none leading-none"
+        offset={50}
+        style={{ fontSize: "clamp(8rem, 20vw, 20rem)", lineHeight: 0.85 }}
+      >
         FD
-      </div>
+      </ParallaxLayer>
 
       <div className="relative z-10 max-w-5xl mx-auto text-center">
         <motion.p

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import AIWidget from "@/components/AIWidget";
 import Link from "next/link";
+import ParallaxLayer from "@/components/ParallaxLayer";
 
 const EXPO = [0.16, 1, 0.3, 1] as const;
 const VP   = { once: true, margin: "0px 0px -80px 0px" } as const;
@@ -145,8 +146,11 @@ Tone: ${configForm.tone}. Keep replies concise (2-4 sentences). Be helpful, answ
 
       {/* ── Header ── */}
       <section className="py-28 px-6 md:px-10 border-b border-fd-border overflow-hidden relative">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] pointer-events-none"
-          style={{ background: "radial-gradient(circle at 70% 30%, rgba(249,115,22,0.08) 0%, transparent 60%)" }} />
+        <ParallaxLayer
+          className="absolute top-0 right-0 w-[600px] h-[600px] pointer-events-none"
+          offset={80}
+          style={{ background: "radial-gradient(circle at 70% 30%, rgba(249,115,22,0.08) 0%, transparent 60%)" }}
+        />
         <div className="max-w-7xl mx-auto relative z-10">
           <motion.p
             initial={{ opacity: 0, y: 20 }}

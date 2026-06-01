@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef } from "react";
 import { motion, useInView } from "framer-motion";
+import ParallaxLayer from "@/components/ParallaxLayer";
 
 const SERVICES = [
   {
@@ -41,7 +42,7 @@ export default function Services() {
       <div className="max-w-7xl mx-auto">
 
         {/* Header */}
-        <div className="grid md:grid-cols-2 gap-10 mb-20">
+        <ParallaxLayer offset={30} className="grid md:grid-cols-2 gap-10 mb-20">
           <div>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -70,7 +71,7 @@ export default function Services() {
           >
             We don&apos;t do average. Every project ships with world-class design, clean code, and performance built in from day one.
           </motion.p>
-        </div>
+        </ParallaxLayer>
 
         {/* Service list */}
         <div className="divide-y divide-fd-border">

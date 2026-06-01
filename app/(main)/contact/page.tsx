@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import ParallaxLayer from "@/components/ParallaxLayer";
 
 const EXPO = [0.16, 1, 0.3, 1] as const;
 const VP   = { once: true, margin: "0px 0px -60px 0px" } as const;
@@ -38,8 +39,11 @@ export default function ContactPage() {
 
       {/* ── Header ── */}
       <section className="py-28 px-6 md:px-10 border-b border-fd-border overflow-hidden relative">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] pointer-events-none"
-          style={{ background: "radial-gradient(circle at 80% 20%, rgba(249,115,22,0.1) 0%, transparent 60%)" }} />
+        <ParallaxLayer
+          className="absolute top-0 right-0 w-[500px] h-[500px] pointer-events-none"
+          offset={80}
+          style={{ background: "radial-gradient(circle at 80% 20%, rgba(249,115,22,0.1) 0%, transparent 60%)" }}
+        />
         <div className="max-w-7xl mx-auto relative z-10">
           <motion.p
             initial={{ opacity: 0, y: 20 }}
