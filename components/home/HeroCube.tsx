@@ -32,12 +32,12 @@ function FDText() {
     <Center position={[0, 0, 0]}>
       <Text3D
         font="/fonts/helvetiker_bold.typeface.json"
-        size={1.0}
-        height={0.4}
+        size={0.78}
+        height={0.32}
         curveSegments={10}
         bevelEnabled
-        bevelThickness={0.025}
-        bevelSize={0.012}
+        bevelThickness={0.022}
+        bevelSize={0.010}
         bevelSegments={4}
         letterSpacing={0.05}
       >
@@ -66,18 +66,24 @@ function Scene() {
     const t = state.clock.getElapsedTime();
 
     if (mouseGroupRef.current) {
-      // Gentle float
+      // Gentle vertical float
       mouseGroupRef.current.position.y = Math.sin(t * 0.55) * 0.18;
-      // Mouse tilt
+
+      // Mouse tilt — clamped so FD never goes upside down from pointer alone
+      const targetX = -state.pointer.y * 0.18; // max ±~10°
+      const targetZ =  state.pointer.x * 0.07; // subtle Z roll
       mouseGroupRef.current.rotation.x +=
-        (-state.pointer.y * 0.22 - mouseGroupRef.current.rotation.x) * 0.04;
+        (targetX - mouseGroupRef.current.rotation.x) * 0.04;
       mouseGroupRef.current.rotation.z +=
-        (state.pointer.x * 0.08 - mouseGroupRef.current.rotation.z) * 0.04;
+        (targetZ - mouseGroupRef.current.rotation.z) * 0.04;
     }
 
     if (spinGroupRef.current) {
+      // Y spins continuously — gives side/mirrored views, never flips text
       spinGroupRef.current.rotation.y += delta * 0.26;
-      spinGroupRef.current.rotation.x += delta * 0.08;
+
+      // X oscillates sinusoidally — max ±~18°, never reaches ±90° (upside down)
+      spinGroupRef.current.rotation.x = Math.sin(t * 0.28) * 0.32;
     }
   });
 
