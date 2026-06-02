@@ -52,15 +52,15 @@ export function ImageComparison({
       onTouchEnd={handleTouchEnd}
     >
       {/* Before label */}
-      <div className="absolute top-4 left-4 z-20 flex items-center gap-2">
-        <span className="font-display font-bold text-[10px] tracking-widest uppercase bg-black/60 backdrop-blur-sm border border-white/10 px-3 py-1.5 text-fd-muted">
+      <div className="absolute top-4 left-4 z-20">
+        <span className="font-display font-bold text-[10px] tracking-widest uppercase bg-black px-3 py-1.5 text-fd-orange">
           Before
         </span>
       </div>
 
       {/* After label */}
-      <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
-        <span className="font-display font-bold text-[10px] tracking-widest uppercase bg-fd-orange/90 backdrop-blur-sm px-3 py-1.5 text-fd-black">
+      <div className="absolute top-4 right-4 z-20">
+        <span className="font-display font-bold text-[10px] tracking-widest uppercase bg-black px-3 py-1.5 text-fd-orange">
           After
         </span>
       </div>
