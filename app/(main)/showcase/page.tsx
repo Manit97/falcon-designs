@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import ParallaxLayer from "@/components/ParallaxLayer";
 import { ImageComparison } from "@/components/ImageComparison";
+import { ImageComparisonV2 } from "@/components/ImageComparisonV2";
 
 const HeroCube = dynamic(() => import("@/components/home/HeroCube"), { ssr: false });
 
@@ -414,6 +415,30 @@ export default function ShowcasePage() {
                   Custom build by Falcon Designs — Next.js 15
                 </span>
                 <div className="w-2.5 h-2.5 rounded-full bg-fd-orange" />
+              </div>
+            </div>
+
+            {/* ── Style 2 ── */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={VP}
+              transition={{ duration: 0.9, delay: 0.1, ease: EXPO }}
+              className="border border-fd-border overflow-hidden mt-6"
+            >
+              <ImageComparisonV2
+                beforeImage="/after-website.png"
+                afterImage="/before-website.png"
+                altBefore="Rebuilt by Falcon Designs — modern, high-converting"
+                altAfter="Old plumber website — cluttered, dated design"
+              />
+            </motion.div>
+            <div className="flex items-center justify-between mt-5 px-1">
+              <div className="flex items-center gap-2.5">
+                <div className="w-2.5 h-2.5 rounded-full bg-fd-muted opacity-50" />
+                <span className="font-display text-[10px] tracking-widest uppercase text-fd-muted">
+                  Style 2 — glowing divider · watermark labels
+                </span>
               </div>
             </div>
           </ParallaxLayer>
