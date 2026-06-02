@@ -192,7 +192,7 @@ export default function VideographerTemplate() {
   const videoFixedRef = useRef<HTMLDivElement>(null);
   const stickyZoneRef = useRef<HTMLDivElement>(null);
 
-  /* ── Fixed video visibility — scroll-driven (avoids overflow-x:hidden sticky bug) ── */
+  /* ── Fixed video — scroll-driven visibility + upward slide-off ── */
   useEffect(() => {
     const zone = stickyZoneRef.current;
     const vid  = videoFixedRef.current;
@@ -201,6 +201,17 @@ export default function VideographerTemplate() {
       const rect   = zone.getBoundingClientRect();
       const active = rect.top <= 0 && rect.bottom > 0;
       vid.style.visibility = active ? "visible" : "hidden";
+      if (active) {
+        /* Once the bottom of the zone creeps above the viewport bottom,
+           translate the video upward by the same amount — making it look
+           like a real element scrolling off rather than a hard cut.       */
+        const slideUp = rect.bottom < window.innerHeight
+          ? window.innerHeight - rect.bottom
+          : 0;
+        vid.style.transform = `translateY(-${slideUp}px)`;
+      } else {
+        vid.style.transform = "translateY(0)";
+      }
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
