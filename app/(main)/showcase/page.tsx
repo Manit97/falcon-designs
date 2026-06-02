@@ -386,34 +386,36 @@ export default function ShowcasePage() {
 
           {/* Slider */}
           <ParallaxLayer offset={20}>
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={VP}
-              transition={{ duration: 0.9, delay: 0.15, ease: EXPO }}
-              className="border border-fd-border overflow-hidden"
-            >
-              <ImageComparison
-                beforeImage="/after-website.png"
-                afterImage="/before-website.png"
-                altBefore="Rebuilt by Falcon Designs — modern, high-converting"
-                altAfter="Old plumber website — cluttered, dated design"
-              />
-            </motion.div>
+            <div className="max-w-2xl mx-auto">
+              <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={VP}
+                transition={{ duration: 0.9, delay: 0.15, ease: EXPO }}
+                className="border border-fd-border overflow-hidden"
+              >
+                <ImageComparison
+                  beforeImage="/after-website.png"
+                  afterImage="/before-website.png"
+                  altBefore="Rebuilt by Falcon Designs — modern, high-converting"
+                  altAfter="Old plumber website — cluttered, dated design"
+                />
+              </motion.div>
 
-            {/* Caption row */}
-            <div className="flex items-center justify-between mt-5 px-1">
-              <div className="flex items-center gap-2.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-fd-muted opacity-50" />
-                <span className="font-display text-[10px] tracking-widest uppercase text-fd-muted">
-                  Generic DIY website — built on a page builder
-                </span>
-              </div>
-              <div className="flex items-center gap-2.5">
-                <span className="font-display text-[10px] tracking-widest uppercase text-fd-orange">
-                  Custom build by Falcon Designs — Next.js 15
-                </span>
-                <div className="w-2.5 h-2.5 rounded-full bg-fd-orange" />
+              {/* Caption row */}
+              <div className="flex items-center justify-between mt-4 px-1">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-fd-muted opacity-50" />
+                  <span className="font-display text-[9px] tracking-widest uppercase text-fd-muted">
+                    DIY page builder
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="font-display text-[9px] tracking-widest uppercase text-fd-orange">
+                    Falcon Designs · Next.js 15
+                  </span>
+                  <div className="w-2 h-2 rounded-full bg-fd-orange" />
+                </div>
               </div>
             </div>
           </ParallaxLayer>
