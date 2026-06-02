@@ -28,13 +28,21 @@ export default function Nav() {
           </span>
         </Link>
 
-        {/* Let's Talk — desktop, leaves space for the floating burger on the right */}
-        <Link
-          href="/contact"
-          className="hidden md:block font-display font-semibold text-xs tracking-widest uppercase bg-fd-orange text-fd-black px-5 py-2.5 hover:bg-fd-white transition-colors duration-300 mr-16"
-        >
-          Let&apos;s Talk
-        </Link>
+        {/* Desktop nav links */}
+        <div className="hidden md:flex items-center gap-8 mr-16">
+          <Link
+            href="/pricing"
+            className="font-display font-semibold text-xs tracking-widest uppercase text-fd-muted hover:text-fd-white transition-colors duration-300"
+          >
+            Pricing
+          </Link>
+          <Link
+            href="/contact"
+            className="font-display font-semibold text-xs tracking-widest uppercase bg-fd-orange text-fd-black px-5 py-2.5 hover:bg-fd-white transition-colors duration-300"
+          >
+            Let&apos;s Talk
+          </Link>
+        </div>
       </div>
     </header>
   );
