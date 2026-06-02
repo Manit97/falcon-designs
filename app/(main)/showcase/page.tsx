@@ -394,10 +394,10 @@ export default function ShowcasePage() {
               className="border border-fd-border overflow-hidden"
             >
               <ImageComparison
-                beforeImage="/before-website.png"
-                afterImage="/after-website.png"
-                altBefore="Old plumber website — cluttered, dated design"
-                altAfter="Rebuilt by Falcon Designs — modern, high-converting"
+                beforeImage="/after-website.png"
+                afterImage="/before-website.png"
+                altBefore="Rebuilt by Falcon Designs — modern, high-converting"
+                altAfter="Old plumber website — cluttered, dated design"
               />
             </motion.div>
 
