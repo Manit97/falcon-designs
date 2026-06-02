@@ -6,464 +6,430 @@ import { useEffect, useRef, useState } from "react";
    Design tokens
 ────────────────────────────────────────────────────────────────── */
 const T = {
-  bg:        "#070707",
-  white:     "#f0ece0",
-  gold:      "#c8b887",
-  dim:       "rgba(240,236,224,0.45)",
-  muted:     "rgba(240,236,224,0.22)",
-  border:    "rgba(240,236,224,0.08)",
-  cardBg:    "#0d0d0c",
-  surface:   "#111110",
+  bg:      "#070707",
+  white:   "#f0ece0",
+  gold:    "#c8b887",
+  dim:     "rgba(240,236,224,0.50)",
+  muted:   "rgba(240,236,224,0.24)",
+  border:  "rgba(240,236,224,0.09)",
+  cardBg:  "#0d0d0c",
+  surface: "#111110",
 };
 
 /* ─────────────────────────────────────────────────────────────────
    Data
 ────────────────────────────────────────────────────────────────── */
 const PROJECTS = [
-  {
-    id: "01",
-    title: "Solstice",
-    category: "Fashion Film",
-    year: "2025",
-    duration: "4:22",
-    colour: "#a89060",
-    bg: "#0a0907",
-  },
-  {
-    id: "02",
-    title: "Drift",
-    category: "Automotive",
-    year: "2025",
-    duration: "2:47",
-    colour: "#7a8fa0",
-    bg: "#07090a",
-  },
-  {
-    id: "03",
-    title: "Veil",
-    category: "Wedding",
-    year: "2024",
-    duration: "6:10",
-    colour: "#c4a882",
-    bg: "#0a0807",
-  },
-  {
-    id: "04",
-    title: "Monument",
-    category: "Architecture",
-    year: "2024",
-    duration: "3:55",
-    colour: "#8a9088",
-    bg: "#080908",
-  },
-  {
-    id: "05",
-    title: "Ember",
-    category: "Brand Campaign",
-    year: "2024",
-    duration: "1:30",
-    colour: "#b07050",
-    bg: "#0a0807",
-  },
+  { id: "01", title: "Solstice",  category: "Fashion Film",    year: "2025", duration: "4:22", colour: "#a89060", bg: "#0a0907" },
+  { id: "02", title: "Drift",     category: "Automotive",      year: "2025", duration: "2:47", colour: "#7a8fa0", bg: "#07090a" },
+  { id: "03", title: "Veil",      category: "Wedding",         year: "2024", duration: "6:10", colour: "#c4a882", bg: "#0a0807" },
+  { id: "04", title: "Monument",  category: "Architecture",    year: "2024", duration: "3:55", colour: "#8a9088", bg: "#080908" },
+  { id: "05", title: "Ember",     category: "Brand Campaign",  year: "2024", duration: "1:30", colour: "#b07050", bg: "#0a0807" },
 ];
 
 const SERVICES = [
-  { n: "01", title: "Narrative Film",    body: "Long-form documentary and editorial work. We build stories that unfold over time." },
-  { n: "02", title: "Brand Campaigns",   body: "Commercial and product films. Shot for screens that command attention." },
-  { n: "03", title: "Wedding & Events",  body: "Cinematic coverage for the moments that matter most. Discreet, unhurried, precise." },
-  { n: "04", title: "Music Videos",      body: "Visual interpretations of sound. We work closely with artists to realise the vision." },
+  { n: "01", title: "Narrative Film",   body: "Long-form documentary and editorial work. We build stories that unfold over time." },
+  { n: "02", title: "Brand Campaigns",  body: "Commercial and product films. Shot for screens that command attention." },
+  { n: "03", title: "Wedding & Events", body: "Cinematic coverage for the moments that matter most. Discreet, unhurried, precise." },
+  { n: "04", title: "Music Videos",     body: "Visual interpretations of sound. We work closely with artists to realise the vision." },
 ];
 
-const CLIENTS = [
-  "VOGUE", "ROLLS-ROYCE", "HARRODS", "SONY MUSIC", "TIFFANY & CO.",
-  "THE TIMES", "BURBERRY", "SOTHEBY'S", "DIOR", "BBC FILMS",
+const CLIENTS = ["VOGUE","ROLLS-ROYCE","HARRODS","SONY MUSIC","TIFFANY & CO.","THE TIMES","BURBERRY","SOTHEBY'S","DIOR","BBC FILMS"];
+
+const STATS = [
+  { value: 120, suffix: "+", label: "Projects Completed" },
+  { value: 8,   suffix: "",  label: "Years in the Industry" },
+  { value: 40,  suffix: "+", label: "Countries Filmed" },
+  { value: 12,  suffix: "",  label: "Awards Won" },
 ];
 
 /* ─────────────────────────────────────────────────────────────────
-   Grain overlay
+   Static CSS injected once
 ────────────────────────────────────────────────────────────────── */
-const GRAIN_SVG = `<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='200' height='200' filter='url(#n)' opacity='1'/></svg>`;
+const GLOBAL_CSS = `
+  :root { --bg: #070707; --white: #f0ece0; --gold: #c8b887; --border: rgba(240,236,224,0.09); }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--white); overflow-x: hidden; cursor: none !important; }
+  a, button { cursor: none !important; }
+
+  /* Cursor */
+  #vg-cursor-ring {
+    position: fixed; top: 0; left: 0; z-index: 9998; pointer-events: none;
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 1px solid var(--white);
+    opacity: 0.35;
+    display: flex; align-items: center; justify-content: center;
+    will-change: transform;
+    transition: width 0.22s cubic-bezier(.16,1,.3,1),
+                height 0.22s cubic-bezier(.16,1,.3,1),
+                border-color 0.22s ease,
+                opacity 0.22s ease;
+  }
+  #vg-cursor-ring.hovered {
+    width: 60px; height: 60px;
+    border-color: var(--gold); opacity: 1;
+  }
+  #vg-cursor-dot {
+    position: fixed; top: 0; left: 0; z-index: 9999; pointer-events: none;
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--white); opacity: 1;
+    will-change: transform;
+    transition: opacity 0.15s ease;
+  }
+  #vg-cursor-dot.hovered { opacity: 0; }
+  #vg-cursor-label {
+    font-family: "Courier New", monospace; font-size: 7px;
+    letter-spacing: 0.14em; color: var(--gold); text-transform: uppercase;
+  }
+
+  /* Grain overlay */
+  #vg-grain {
+    position: fixed; inset: 0; z-index: 9997; pointer-events: none;
+    opacity: 0.032; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    animation: grainShift 0.5s steps(2) infinite;
+  }
+  @keyframes grainShift {
+    0%  { background-position: 0 0 }
+    25% { background-position: -10px 5px }
+    50% { background-position: 8px -6px }
+    75% { background-position: -5px 9px }
+  }
+
+  /* Loader */
+  #vg-loader {
+    position: fixed; inset: 0; z-index: 9000;
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 24px;
+    transition: opacity 0.9s cubic-bezier(.16,1,.3,1), visibility 0.9s;
+  }
+  #vg-loader.done { opacity: 0; visibility: hidden; pointer-events: none; }
+  #vg-loader-bar-track { width: 140px; height: 1px; background: var(--border); position: relative; overflow: hidden; }
+  #vg-loader-bar { position: absolute; inset: 0; background: var(--gold); transform: scaleX(0); transform-origin: left;
+    animation: loaderFill 2.1s cubic-bezier(.16,1,.3,1) forwards; }
+  @keyframes loaderFill { to { transform: scaleX(1) } }
+
+  /* Marquee */
+  @keyframes marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+  .vg-marquee { animation: marquee 22s linear infinite; will-change: transform; }
+
+  /* Nav links hidden on mobile */
+  @media (max-width: 768px) { .vg-nav-links { display: none !important; } }
+
+  /* Reveal base state */
+  .gsap-reveal { will-change: transform, opacity; }
+
+  /* Horizontal track */
+  #vg-track { will-change: transform; }
+
+  /* Service row hover via CSS — no JS re-render */
+  .vg-service-row { transition: background 0.3s ease; }
+  .vg-service-row:hover { background: #111110; }
+
+  /* Reel modal */
+  #vg-modal {
+    position: fixed; inset: 0; z-index: 8000;
+    background: rgba(0,0,0,0.96); backdrop-filter: blur(10px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity 0.4s ease, visibility 0.4s;
+  }
+  #vg-modal.open { opacity: 1; visibility: visible; pointer-events: auto; }
+
+  /* Hero char overflow clip */
+  .vg-hero-clip { overflow: hidden; padding-bottom: 0.08em; }
+`;
 
 /* ─────────────────────────────────────────────────────────────────
-   Main component
+   Component
 ────────────────────────────────────────────────────────────────── */
 export default function VideographerTemplate() {
-  const [loaded,     setLoaded]     = useState(false);
-  const [reelOpen,   setReelOpen]   = useState(false);
-  const [menuOpen,   setMenuOpen]   = useState(false);
-  const [cursorPos,  setCursorPos]  = useState({ x: -100, y: -100 });
-  const [cursorHover,setCursorHover]= useState(false);
-  const [cursorText, setCursorText] = useState("");
-  const [scrolled,   setScrolled]   = useState(false);
+  /* Only two pieces of React state — neither in a hot path */
+  const [loaded,   setLoaded]   = useState(false);
+  const [reelOpen, setReelOpen] = useState(false);
 
-  const containerRef  = useRef<HTMLDivElement>(null);
+  /* DOM refs — everything animated lives here */
+  const navRef        = useRef<HTMLElement>(null);
   const heroTitleRef  = useRef<HTMLHeadingElement>(null);
   const projectsRef   = useRef<HTMLDivElement>(null);
   const trackRef      = useRef<HTMLDivElement>(null);
-  const lenisRef      = useRef<unknown>(null);
 
   /* ── Loader ── */
   useEffect(() => {
-    const t = setTimeout(() => setLoaded(true), 2200);
+    const t = setTimeout(() => {
+      setLoaded(true);
+      document.getElementById("vg-loader")?.classList.add("done");
+    }, 2200);
     return () => clearTimeout(t);
   }, []);
 
-  /* ── Lenis + GSAP ── */
+  /* ── Cursor — pure RAF, zero React state ── */
   useEffect(() => {
-    if (!loaded) return;
+    const ring  = document.getElementById("vg-cursor-ring")!;
+    const dot   = document.getElementById("vg-cursor-dot")!;
+    if (!ring || !dot) return;
 
-    let cleanup: (() => void) | undefined;
+    let mx = -200, my = -200;
+    let rx = -200, ry = -200;
+    let rafId: number;
+
+    const onMove = (e: MouseEvent) => { mx = e.clientX; my = e.clientY; };
+
+    const tick = () => {
+      rx += (mx - rx) * 0.13;
+      ry += (my - ry) * 0.13;
+      ring.style.transform = `translate3d(${rx}px,${ry}px,0) translate(-50%,-50%)`;
+      dot.style.transform  = `translate3d(${mx}px,${my}px,0) translate(-50%,-50%)`;
+      rafId = requestAnimationFrame(tick);
+    };
+
+    window.addEventListener("mousemove", onMove, { passive: true });
+    rafId = requestAnimationFrame(tick);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      cancelAnimationFrame(rafId);
+    };
+  }, []);
+
+  /* ── GSAP + Lenis — initialises on mount, NOT gated on loaded ── */
+  useEffect(() => {
+    let destroyed = false;
+    let lenisCleaner: (() => void) | undefined;
 
     (async () => {
-      const [{ default: Lenis }, gsapMod, { ScrollTrigger }, { default: SplitType }] = await Promise.all([
+      const [{ default: Lenis }, { gsap }, { ScrollTrigger }, { default: SplitType }] = await Promise.all([
         import("lenis"),
         import("gsap"),
         import("gsap/ScrollTrigger"),
         import("split-type"),
       ]);
-      const gsap = gsapMod.gsap ?? gsapMod.default ?? gsapMod;
+      if (destroyed) return;
+
       gsap.registerPlugin(ScrollTrigger);
 
       /* Lenis */
       const lenis = new Lenis({
-        lerp:            0.07,
-        wheelMultiplier: 0.75,
+        lerp:            0.09,
+        wheelMultiplier: 0.85,
         orientation:     "vertical",
         smoothWheel:     true,
         syncTouch:       false,
       });
-      lenisRef.current = lenis;
+
+      /* Nav via direct DOM — no setScrolled */
+      lenis.on("scroll", (e: { scroll: number }) => {
+        const nav = navRef.current;
+        if (!nav) return;
+        const past = e.scroll > 60;
+        nav.style.background    = past ? "rgba(7,7,7,0.92)" : "transparent";
+        nav.style.backdropFilter= past ? "blur(14px)" : "none";
+        nav.style.borderBottomColor = past ? T.border : "transparent";
+      });
 
       lenis.on("scroll", ScrollTrigger.update);
-      lenis.on("scroll", () => {
-        setScrolled(lenis.scroll > 60);
-        window.dispatchEvent(new Event("scroll", { bubbles: false }));
-      });
-
-      gsap.ticker.add((time: number) => lenis.raf(time * 1000));
+      const tickerFn = (time: number) => lenis.raf(time * 1000);
+      gsap.ticker.add(tickerFn);
       gsap.ticker.lagSmoothing(0);
 
-      /* ── Hero title SplitType stagger ── */
+      /* Hero title — fires at delay 2.4s (after loader fades at 2.2s) */
       if (heroTitleRef.current) {
         const split = new SplitType(heroTitleRef.current, { types: "chars" });
-        gsap.fromTo(
-          split.chars,
-          { yPercent: 120, opacity: 0 },
-          {
-            yPercent:     0,
-            opacity:      1,
-            duration:     1.1,
-            ease:         "expo.out",
-            stagger:      0.03,
-            delay:        0.3,
-          }
-        );
-      }
-
-      /* ── Horizontal scroll for projects ── */
-      if (projectsRef.current && trackRef.current) {
-        const track    = trackRef.current;
-        const section  = projectsRef.current;
-        const cards    = track.querySelectorAll<HTMLElement>(".proj-card");
-        const cardW    = cards[0]?.offsetWidth ?? 480;
-        const gap      = 24;
-        const totalW   = (cardW + gap) * cards.length - gap;
-        const viewW    = window.innerWidth;
-        const scrollDist = totalW - viewW + 96; // 96px = 6rem padding
-
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: section,
-            start:   "top top",
-            end:     `+=${scrollDist}`,
-            pin:     true,
-            scrub:   1.2,
-            anticipatePin: 1,
-          },
+        gsap.set(split.chars, { yPercent: 120, opacity: 0 });
+        gsap.to(split.chars, {
+          yPercent:  0,
+          opacity:   1,
+          duration:  1.2,
+          ease:      "expo.out",
+          stagger:   0.025,
+          delay:     2.4,
+          force3D:   true,
         });
-        tl.to(track, { x: -scrollDist, ease: "none" });
       }
 
-      /* ── Fade-in reveals ── */
-      gsap.utils.toArray<HTMLElement>(".gsap-reveal").forEach((el) => {
-        gsap.fromTo(el,
-          { opacity: 0, y: 40 },
-          {
-            opacity: 1,
-            y:       0,
-            duration: 0.9,
-            ease:    "expo.out",
+      /* Horizontal scroll — projects gallery */
+      if (projectsRef.current && trackRef.current) {
+        const track  = trackRef.current;
+        const cards  = track.querySelectorAll<HTMLElement>(".proj-card");
+        const gap    = 24;
+        const cardW  = cards[0]?.offsetWidth ?? 460;
+        const dist   = (cardW + gap) * cards.length - gap - window.innerWidth + 96;
+
+        if (dist > 0) {
+          gsap.timeline({
             scrollTrigger: {
-              trigger: el,
-              start:   "top 88%",
-              toggleActions: "play none none none",
+              trigger:       projectsRef.current,
+              start:         "top top",
+              end:           `+=${dist}`,
+              pin:           true,
+              scrub:         1.2,
+              anticipatePin: 1,
             },
-          }
+          }).to(track, { x: -dist, ease: "none", force3D: true });
+        }
+      }
+
+      /* Scroll-reveal — every .gsap-reveal */
+      gsap.utils.toArray<HTMLElement>(".gsap-reveal").forEach((el) => {
+        gsap.fromTo(
+          el,
+          { opacity: 0, y: 55, force3D: true },
+          {
+            opacity:   1,
+            y:         0,
+            duration:  1,
+            ease:      "expo.out",
+            force3D:   true,
+            scrollTrigger: {
+              trigger:      el,
+              start:        "top 87%",
+              toggleActions:"play none none none",
+            },
+          },
         );
       });
 
-      /* ── Counter numbers ── */
+      /* Stat counters */
       gsap.utils.toArray<HTMLElement>(".gsap-counter").forEach((el) => {
         const target = parseFloat(el.dataset.target ?? "0");
-        gsap.fromTo(el,
+        gsap.fromTo(
+          el,
           { innerText: 0 },
           {
             innerText: target,
             snap:      { innerText: 1 },
-            duration:  1.8,
-            ease:      "power2.out",
-            scrollTrigger: {
-              trigger: el,
-              start:   "top 85%",
-              toggleActions: "play none none none",
-            },
-          }
+            duration:  2,
+            ease:      "power3.out",
+            scrollTrigger: { trigger: el, start: "top 86%", toggleActions: "play none none none" },
+          },
         );
       });
 
-      cleanup = () => {
+      lenisCleaner = () => {
         lenis.destroy();
+        gsap.ticker.remove(tickerFn);
         ScrollTrigger.getAll().forEach((t) => t.kill());
-        gsap.ticker.remove((time: number) => lenis.raf(time * 1000));
       };
     })();
 
-    return () => cleanup?.();
-  }, [loaded]);
-
-  /* ── Custom cursor ── */
-  useEffect(() => {
-    const move = (e: MouseEvent) => setCursorPos({ x: e.clientX, y: e.clientY });
-    window.addEventListener("mousemove", move);
-    return () => window.removeEventListener("mousemove", move);
+    return () => {
+      destroyed = true;
+      lenisCleaner?.();
+    };
   }, []);
 
-  /* ── Cursor hover helpers ── */
-  const onEnter = (text = "") => { setCursorHover(true); setCursorText(text); };
-  const onLeave = ()           => { setCursorHover(false); setCursorText(""); };
+  /* ── Cursor helpers — direct DOM, no setState ── */
+  const cursorEnter = (text = "") => {
+    document.getElementById("vg-cursor-ring")?.classList.add("hovered");
+    document.getElementById("vg-cursor-dot")?.classList.add("hovered");
+    const lbl = document.getElementById("vg-cursor-label");
+    if (lbl) lbl.textContent = text;
+  };
+  const cursorLeave = () => {
+    document.getElementById("vg-cursor-ring")?.classList.remove("hovered");
+    document.getElementById("vg-cursor-dot")?.classList.remove("hovered");
+    const lbl = document.getElementById("vg-cursor-label");
+    if (lbl) lbl.textContent = "";
+  };
 
   return (
     <>
-      {/* ── Film grain overlay ── */}
-      <div
-        aria-hidden
-        style={{
-          position:        "fixed",
-          inset:           0,
-          zIndex:          9999,
-          pointerEvents:   "none",
-          opacity:         0.035,
-          backgroundImage: `url("data:image/svg+xml,${encodeURIComponent(GRAIN_SVG)}")`,
-          backgroundRepeat:"repeat",
-          mixBlendMode:    "overlay",
-        }}
-      />
+      <style suppressHydrationWarning>{GLOBAL_CSS}</style>
 
-      {/* ── Custom cursor ── */}
-      <div
-        aria-hidden
-        style={{
-          position:   "fixed",
-          left:       cursorPos.x,
-          top:        cursorPos.y,
-          zIndex:     9998,
-          pointerEvents: "none",
-          transform:  "translate(-50%, -50%)",
-          transition: "opacity 0.2s",
-        }}
-      >
-        {/* Ring */}
-        <div style={{
-          width:      cursorHover ? 56 : 36,
-          height:     cursorHover ? 56 : 36,
-          borderRadius: "50%",
-          border:     `1px solid ${cursorHover ? T.gold : T.white}`,
-          opacity:    cursorHover ? 0.9 : 0.35,
-          transition: "all 0.25s cubic-bezier(0.16,1,0.3,1)",
-          display:    "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}>
-          {cursorText && (
-            <span style={{ fontSize: 7, letterSpacing: "0.12em", color: T.gold, textTransform: "uppercase", fontFamily: "Courier New" }}>
-              {cursorText}
-            </span>
-          )}
-        </div>
-        {/* Dot */}
-        <div style={{
-          position:  "absolute",
-          top:       "50%",
-          left:      "50%",
-          transform: "translate(-50%, -50%)",
-          width:     cursorHover ? 0 : 3,
-          height:    cursorHover ? 0 : 3,
-          borderRadius: "50%",
-          background: T.white,
-          opacity:   cursorHover ? 0 : 1,
-          transition: "all 0.25s cubic-bezier(0.16,1,0.3,1)",
-        }} />
+      {/* Grain */}
+      <div id="vg-grain" aria-hidden />
+
+      {/* Cursor */}
+      <div id="vg-cursor-ring" aria-hidden>
+        <span id="vg-cursor-label" />
       </div>
+      <div id="vg-cursor-dot" aria-hidden />
 
-      {/* ── Loader ── */}
-      <div style={{
-        position:   "fixed",
-        inset:      0,
-        zIndex:     9000,
-        background: T.bg,
-        display:    "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        flexDirection: "column",
-        gap:        24,
-        transition: "opacity 0.8s ease, visibility 0.8s ease",
-        opacity:    loaded ? 0 : 1,
-        visibility: loaded ? "hidden" : "visible",
-        pointerEvents: loaded ? "none" : "auto",
-      }}>
+      {/* Loader */}
+      <div id="vg-loader" aria-hidden>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <span style={{ fontFamily: "Georgia, serif", fontSize: 13, letterSpacing: "0.3em", color: T.gold, textTransform: "uppercase" }}>
-            JAMES HOLT
+            James Holt
           </span>
-          <span style={{ width: 1, height: 16, background: T.gold, opacity: 0.4 }} />
-          <span style={{ fontFamily: "Courier New, monospace", fontSize: 9, letterSpacing: "0.25em", color: T.dim, textTransform: "uppercase" }}>
-            CINEMATOGRAPHER
+          <span style={{ width: 1, height: 16, background: T.gold, opacity: 0.3 }} />
+          <span style={{ fontFamily: "'Courier New', monospace", fontSize: 8, letterSpacing: "0.25em", color: T.muted, textTransform: "uppercase" }}>
+            Cinematographer
           </span>
         </div>
-        {/* Loading bar */}
-        <div style={{ width: 120, height: 1, background: T.border, position: "relative", overflow: "hidden" }}>
-          <div style={{
-            position:   "absolute",
-            inset:      0,
-            background: T.gold,
-            transformOrigin: "left",
-            animation:  "loaderBar 2s cubic-bezier(0.16,1,0.3,1) forwards",
-          }} />
+        <div id="vg-loader-bar-track">
+          <div id="vg-loader-bar" />
         </div>
-        <style>{`
-          @keyframes loaderBar { from { transform: scaleX(0) } to { transform: scaleX(1) } }
-          @keyframes marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }
-          @keyframes grain { 0%,100%{transform:translate(0,0)} 10%{transform:translate(-2%,-3%)} 20%{transform:translate(2%,3%)} 30%{transform:translate(-1%,2%)} 40%{transform:translate(1%,-2%)} 50%{transform:translate(-2%,1%)} 60%{transform:translate(2%,-1%)} 70%{transform:translate(-1%,3%)} 80%{transform:translate(1%,-3%)} 90%{transform:translate(-2%,2%)} }
-        `}</style>
       </div>
 
-      {/* ── Site ── */}
-      <div
-        ref={containerRef}
-        style={{ background: T.bg, color: T.white, minHeight: "100vh", cursor: "none" }}
-      >
+      {/* ── SITE ── */}
+      <div style={{ background: T.bg, minHeight: "100vh" }}>
 
-        {/* ── NAV ── */}
-        <nav style={{
-          position:   "fixed",
-          top:        0,
-          left:       0,
-          right:      0,
-          zIndex:     100,
-          padding:    "0 40px",
-          height:     72,
-          display:    "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          borderBottom: scrolled ? `1px solid ${T.border}` : "1px solid transparent",
-          background:  scrolled ? `rgba(7,7,7,0.9)` : "transparent",
-          backdropFilter: scrolled ? "blur(12px)" : "none",
-          transition: "all 0.5s cubic-bezier(0.16,1,0.3,1)",
-        }}>
-          <a href="#hero" style={{ fontFamily: "Georgia, serif", fontSize: 13, letterSpacing: "0.25em", color: T.white, textDecoration: "none", textTransform: "uppercase" }}>
-            James Holt
-          </a>
-          <div style={{ display: "flex", alignItems: "center", gap: 40 }}>
-            <div className="vg-nav-links" style={{ display: "flex", gap: 40 }}>
-              {["Work","Services","About","Contact"].map((item) => (
-                <a
-                  key={item}
-                  href={`#${item.toLowerCase()}`}
-                  onMouseEnter={() => onEnter()}
-                  onMouseLeave={onLeave}
-                  style={{
-                    fontFamily: "Courier New, monospace",
-                    fontSize:   9,
-                    letterSpacing: "0.2em",
-                    color:      T.dim,
-                    textDecoration: "none",
-                    textTransform: "uppercase",
-                    transition: "color 0.3s",
-                  }}
-                >
-                  {item}
-                </a>
-              ))}
-            </div>
-            <button
-              onClick={() => setReelOpen(true)}
-              onMouseEnter={() => onEnter("PLAY")}
-              onMouseLeave={onLeave}
-              style={{
-                fontFamily: "Courier New, monospace",
-                fontSize:   9,
-                letterSpacing: "0.2em",
-                color:      T.bg,
-                background: T.gold,
-                border:     "none",
-                padding:    "10px 20px",
-                textTransform: "uppercase",
-                cursor:     "none",
-                transition: "background 0.3s",
-              }}
-            >
-              View Reel
-            </button>
-          </div>
-        </nav>
-
-        {/* ── HERO ── */}
-        <section
-          id="hero"
+        {/* NAV */}
+        <nav
+          ref={navRef}
           style={{
-            minHeight:  "100vh",
-            display:    "flex",
-            flexDirection: "column",
-            justifyContent: "flex-end",
-            padding:    "0 48px 80px",
-            position:   "relative",
-            overflow:   "hidden",
+            position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
+            padding:  "0 48px", height: 72,
+            display:  "flex", alignItems: "center", justifyContent: "space-between",
+            borderBottom: `1px solid transparent`,
+            background: "transparent", backdropFilter: "none",
+            transition: "background 0.5s ease, backdrop-filter 0.5s ease, border-color 0.5s ease",
           }}
         >
-          {/* Background lines */}
-          <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
-            {[20, 50, 80].map((pct) => (
-              <div key={pct} style={{
-                position:  "absolute",
-                top:       0,
-                bottom:    0,
-                left:      `${pct}%`,
-                width:     1,
-                background: T.border,
-              }} />
+          <a
+            href="#hero"
+            style={{ fontFamily: "Georgia, serif", fontSize: 13, letterSpacing: "0.25em", color: T.white, textDecoration: "none", textTransform: "uppercase" }}
+            onMouseEnter={() => cursorEnter()} onMouseLeave={cursorLeave}
+          >
+            James Holt
+          </a>
+
+          <div className="vg-nav-links" style={{ display: "flex", alignItems: "center", gap: 40 }}>
+            {(["Work","Services","About","Contact"] as const).map((item) => (
+              <a
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                onMouseEnter={() => cursorEnter()} onMouseLeave={cursorLeave}
+                style={{ fontFamily: "'Courier New', monospace", fontSize: 9, letterSpacing: "0.2em", color: T.dim, textDecoration: "none", textTransform: "uppercase", transition: "color 0.25s" }}
+                onMouseOver={(e) => (e.currentTarget.style.color = T.white)}
+                onMouseOut={(e)  => (e.currentTarget.style.color = T.dim)}
+              >
+                {item}
+              </a>
             ))}
           </div>
 
-          {/* Hero label top-right */}
-          <div style={{
-            position:   "absolute",
-            top:        96,
-            right:      48,
-            display:    "flex",
-            flexDirection: "column",
-            alignItems: "flex-end",
-            gap:        6,
-          }}>
-            <span style={{ fontFamily: "Courier New, monospace", fontSize: 8, letterSpacing: "0.25em", color: T.muted, textTransform: "uppercase" }}>
-              London — Based
-            </span>
-            <span style={{ fontFamily: "Courier New, monospace", fontSize: 8, letterSpacing: "0.25em", color: T.muted, textTransform: "uppercase" }}>
-              Available 2026
-            </span>
+          <button
+            onClick={() => setReelOpen(true)}
+            onMouseEnter={() => cursorEnter("PLAY")} onMouseLeave={cursorLeave}
+            style={{
+              fontFamily: "'Courier New', monospace", fontSize: 9, letterSpacing: "0.18em",
+              color: T.bg, background: T.gold, border: "none",
+              padding: "11px 22px", textTransform: "uppercase",
+              transition: "background 0.25s, color 0.25s",
+            }}
+            onMouseOver={(e) => { (e.currentTarget as HTMLButtonElement).style.background = T.white; }}
+            onMouseOut={(e)  => { (e.currentTarget as HTMLButtonElement).style.background = T.gold; }}
+          >
+            View Reel
+          </button>
+        </nav>
+
+        {/* HERO */}
+        <section id="hero" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: "0 48px 80px", position: "relative", overflow: "hidden" }}>
+          {/* Vertical rules */}
+          {[20, 50, 80].map((p) => (
+            <div key={p} aria-hidden style={{ position: "absolute", top: 0, bottom: 0, left: `${p}%`, width: 1, background: T.border, pointerEvents: "none" }} />
+          ))}
+
+          {/* Top-right label */}
+          <div style={{ position: "absolute", top: 96, right: 48, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
+            <span style={{ fontFamily: "'Courier New', monospace", fontSize: 8, letterSpacing: "0.25em", color: T.muted, textTransform: "uppercase" }}>London — Based</span>
+            <span style={{ fontFamily: "'Courier New', monospace", fontSize: 8, letterSpacing: "0.25em", color: T.muted, textTransform: "uppercase" }}>Available 2026</span>
           </div>
 
-          {/* Main heading — GSAP SplitType target */}
-          <div style={{ overflow: "hidden", paddingBottom: 8 }}>
+          {/* Heading */}
+          <div className="vg-hero-clip">
             <h1
               ref={heroTitleRef}
               style={{
@@ -472,8 +438,7 @@ export default function VideographerTemplate() {
                 fontWeight: 400,
                 lineHeight: 0.9,
                 letterSpacing: "-0.02em",
-                color:      T.white,
-                margin:     0,
+                color: T.white,
               }}
             >
               MOTION<br />
@@ -481,37 +446,24 @@ export default function VideographerTemplate() {
             </h1>
           </div>
 
-          {/* Sub row */}
-          <div style={{
-            display:    "flex",
-            alignItems: "flex-end",
-            justifyContent: "space-between",
-            marginTop:  40,
-            paddingTop: 32,
-            borderTop:  `1px solid ${T.border}`,
-          }}>
-            <p style={{ fontFamily: "Courier New, monospace", fontSize: 10, letterSpacing: "0.18em", color: T.dim, textTransform: "uppercase", maxWidth: 300, lineHeight: 1.8 }}>
+          {/* Sub-row */}
+          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginTop: 40, paddingTop: 32, borderTop: `1px solid ${T.border}` }}>
+            <p style={{ fontFamily: "'Courier New', monospace", fontSize: 10, letterSpacing: "0.18em", color: T.dim, textTransform: "uppercase", maxWidth: 300, lineHeight: 1.9 }}>
               Award-winning cinematographer<br />based in London, UK
             </p>
             <button
               onClick={() => setReelOpen(true)}
-              onMouseEnter={() => onEnter("PLAY")}
-              onMouseLeave={onLeave}
+              onMouseEnter={() => cursorEnter("PLAY")} onMouseLeave={cursorLeave}
               style={{
-                display:    "flex",
-                alignItems: "center",
-                gap:        14,
-                background: "transparent",
-                border:     `1px solid ${T.border}`,
-                color:      T.white,
-                padding:    "16px 28px",
-                cursor:     "none",
-                fontFamily: "Courier New, monospace",
-                fontSize:   9,
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
-                transition: "border-color 0.3s, color 0.3s",
+                display: "flex", alignItems: "center", gap: 14,
+                background: "transparent", border: `1px solid ${T.border}`,
+                color: T.white, padding: "16px 28px",
+                fontFamily: "'Courier New', monospace", fontSize: 9,
+                letterSpacing: "0.2em", textTransform: "uppercase",
+                transition: "border-color 0.25s, color 0.25s",
               }}
+              onMouseOver={(e) => { const b = e.currentTarget as HTMLButtonElement; b.style.borderColor = T.gold; b.style.color = T.gold; }}
+              onMouseOut={(e)  => { const b = e.currentTarget as HTMLButtonElement; b.style.borderColor = T.border; b.style.color = T.white; }}
             >
               <span style={{ width: 0, height: 0, borderStyle: "solid", borderWidth: "5px 0 5px 9px", borderColor: `transparent transparent transparent ${T.gold}` }} />
               Watch Showreel
@@ -519,330 +471,184 @@ export default function VideographerTemplate() {
           </div>
 
           {/* Scroll cue */}
-          <div style={{
-            position:   "absolute",
-            bottom:     80,
-            left:       "50%",
-            transform:  "translateX(-50%)",
-            display:    "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap:        12,
-          }}>
-            <span style={{ fontFamily: "Courier New, monospace", fontSize: 7, letterSpacing: "0.3em", color: T.muted, textTransform: "uppercase" }}>Scroll</span>
+          <div style={{ position: "absolute", bottom: 80, left: "50%", transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
+            <span style={{ fontFamily: "'Courier New', monospace", fontSize: 7, letterSpacing: "0.3em", color: T.muted, textTransform: "uppercase" }}>Scroll</span>
             <div style={{ width: 1, height: 40, background: `linear-gradient(to bottom, ${T.gold}, transparent)` }} />
           </div>
         </section>
 
-        {/* ── STATEMENT ── */}
+        {/* STATEMENT */}
         <section style={{ padding: "160px 48px", borderTop: `1px solid ${T.border}`, overflow: "hidden" }}>
-          <div className="gsap-reveal" style={{ maxWidth: 900, margin: "0 auto", textAlign: "center" }}>
-            <p style={{
-              fontFamily:  "Courier New, monospace",
-              fontSize:    9,
-              letterSpacing: "0.28em",
-              color:       T.gold,
-              textTransform: "uppercase",
-              marginBottom: 32,
-            }}>
-              Philosophy
-            </p>
-            <blockquote style={{
-              fontFamily:  "Georgia, serif",
-              fontSize:    "clamp(1.8rem, 4vw, 3.5rem)",
-              fontWeight:  400,
-              fontStyle:   "italic",
-              lineHeight:  1.25,
-              color:       T.white,
-              margin:      0,
-            }}>
+          <div className="gsap-reveal" style={{ maxWidth: 880, margin: "0 auto", textAlign: "center" }}>
+            <p style={{ fontFamily: "'Courier New', monospace", fontSize: 8, letterSpacing: "0.3em", color: T.gold, textTransform: "uppercase", marginBottom: 32 }}>Philosophy</p>
+            <blockquote style={{ fontFamily: "Georgia, serif", fontSize: "clamp(1.6rem, 3.5vw, 3rem)", fontWeight: 400, fontStyle: "italic", lineHeight: 1.3, color: T.white }}>
               &ldquo;Every frame is a decision. Every cut, a breath. I make films for people who believe that how something looks is inseparable from what it means.&rdquo;
             </blockquote>
           </div>
         </section>
 
-        {/* ── STATS ── */}
+        {/* STATS */}
         <section style={{ borderTop: `1px solid ${T.border}`, borderBottom: `1px solid ${T.border}` }}>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)" }}>
-            {[
-              { value: 120, suffix: "+", label: "Projects Completed" },
-              { value: 8,   suffix: "",  label: "Years in the Industry" },
-              { value: 40,  suffix: "+", label: "Countries Filmed" },
-              { value: 12,  suffix: "",  label: "Awards Won" },
-            ].map((s, i) => (
-              <div
-                key={s.label}
-                className="gsap-reveal"
-                style={{
-                  padding:      "56px 40px",
-                  borderRight:  i < 3 ? `1px solid ${T.border}` : "none",
-                  textAlign:    "center",
-                }}
-              >
-                <p style={{ fontFamily: "Georgia, serif", fontSize: "clamp(2.5rem, 5vw, 4rem)", color: T.gold, margin: "0 0 8px" }}>
-                  <span className="gsap-counter" data-target={s.value}>{s.value}</span>
-                  {s.suffix}
+            {STATS.map((s, i) => (
+              <div key={s.label} className="gsap-reveal" style={{ padding: "56px 40px", borderRight: i < 3 ? `1px solid ${T.border}` : "none", textAlign: "center" }}>
+                <p style={{ fontFamily: "Georgia, serif", fontSize: "clamp(2.5rem, 5vw, 4rem)", color: T.gold, marginBottom: 8 }}>
+                  <span className="gsap-counter" data-target={s.value}>{s.value}</span>{s.suffix}
                 </p>
-                <p style={{ fontFamily: "Courier New, monospace", fontSize: 8, letterSpacing: "0.22em", color: T.muted, textTransform: "uppercase" }}>
-                  {s.label}
-                </p>
+                <p style={{ fontFamily: "'Courier New', monospace", fontSize: 8, letterSpacing: "0.22em", color: T.muted, textTransform: "uppercase" }}>{s.label}</p>
               </div>
             ))}
           </div>
         </section>
 
-        {/* ── PROJECTS (horizontal scroll) ── */}
+        {/* PROJECTS — horizontal scroll */}
         <section id="work" ref={projectsRef} style={{ overflow: "hidden" }}>
           <div style={{ padding: "80px 48px 40px" }}>
-            <p className="gsap-reveal" style={{ fontFamily: "Courier New, monospace", fontSize: 9, letterSpacing: "0.25em", color: T.gold, textTransform: "uppercase" }}>
+            <p className="gsap-reveal" style={{ fontFamily: "'Courier New', monospace", fontSize: 9, letterSpacing: "0.25em", color: T.gold, textTransform: "uppercase" }}>
               Selected Work
             </p>
           </div>
 
-          {/* Horizontal track */}
-          <div style={{ display: "flex", alignItems: "center", overflow: "hidden", paddingLeft: 48 }}>
-            <div ref={trackRef} style={{ display: "flex", gap: 24, paddingRight: 96, willChange: "transform" }}>
+          <div style={{ overflow: "hidden", paddingLeft: 48 }}>
+            <div id="vg-track" ref={trackRef} style={{ display: "flex", gap: 24, paddingRight: 96 }}>
               {PROJECTS.map((p) => (
                 <div
                   key={p.id}
                   className="proj-card"
-                  onMouseEnter={() => onEnter("VIEW")}
-                  onMouseLeave={onLeave}
-                  style={{
-                    width:        "min(480px, 72vw)",
-                    flexShrink:   0,
-                    cursor:       "none",
-                  }}
+                  onMouseEnter={() => cursorEnter("VIEW")} onMouseLeave={cursorLeave}
+                  style={{ width: "min(460px, 70vw)", flexShrink: 0 }}
                 >
-                  {/* Thumbnail */}
                   <div style={{
-                    height:         320,
-                    background:     p.bg,
-                    position:       "relative",
-                    overflow:       "hidden",
-                    marginBottom:   20,
-                    display:        "flex",
-                    alignItems:     "center",
-                    justifyContent: "center",
-                    transition:     "transform 0.6s cubic-bezier(0.16,1,0.3,1)",
+                    height: 320, background: p.bg, position: "relative", overflow: "hidden",
+                    marginBottom: 20, display: "flex", alignItems: "center", justifyContent: "center",
                   }}>
-                    {/* Decorative circles */}
-                    <div style={{ width: 200, height: 200, borderRadius: "50%", border: `1px solid ${p.colour}`, opacity: 0.15, position: "absolute" }} />
-                    <div style={{ width: 120, height: 120, borderRadius: "50%", border: `1px solid ${p.colour}`, opacity: 0.25, position: "absolute" }} />
-                    <div style={{ width: 48, height: 48, borderRadius: "50%", background: p.colour, opacity: 0.3, position: "absolute" }} />
-                    <p style={{ fontFamily: "Georgia, serif", fontSize: "clamp(3rem, 8vw, 6rem)", fontWeight: 400, fontStyle: "italic", color: p.colour, position: "relative", zIndex: 1, margin: 0, opacity: 0.7 }}>
+                    <div style={{ width: 220, height: 220, borderRadius: "50%", border: `1px solid ${p.colour}`, opacity: 0.12, position: "absolute" }} />
+                    <div style={{ width: 130, height: 130, borderRadius: "50%", border: `1px solid ${p.colour}`, opacity: 0.22, position: "absolute" }} />
+                    <div style={{ width: 50, height: 50, borderRadius: "50%", background: p.colour, opacity: 0.28, position: "absolute" }} />
+                    <p style={{ fontFamily: "Georgia, serif", fontSize: "clamp(3rem, 7vw, 5rem)", fontWeight: 400, fontStyle: "italic", color: p.colour, position: "relative", zIndex: 1, opacity: 0.75 }}>
                       {p.title}
                     </p>
-                    {/* Duration badge */}
-                    <div style={{
-                      position:   "absolute",
-                      top:        16,
-                      right:      16,
-                      fontFamily: "Courier New, monospace",
-                      fontSize:   8,
-                      letterSpacing: "0.2em",
-                      color:      T.muted,
-                      background: "rgba(0,0,0,0.6)",
-                      backdropFilter: "blur(6px)",
-                      padding:    "6px 10px",
-                    }}>
+                    <div style={{ position: "absolute", top: 14, right: 14, fontFamily: "'Courier New', monospace", fontSize: 8, letterSpacing: "0.18em", color: T.muted, background: "rgba(0,0,0,0.55)", backdropFilter: "blur(6px)", padding: "6px 10px" }}>
                       {p.duration}
                     </div>
                   </div>
-
-                  {/* Info */}
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
                     <div>
-                      <p style={{ fontFamily: "Georgia, serif", fontSize: 22, fontWeight: 400, color: T.white, margin: "0 0 4px" }}>{p.title}</p>
-                      <p style={{ fontFamily: "Courier New, monospace", fontSize: 8, letterSpacing: "0.2em", color: T.muted, textTransform: "uppercase", margin: 0 }}>{p.category}</p>
+                      <p style={{ fontFamily: "Georgia, serif", fontSize: 22, fontWeight: 400, color: T.white, marginBottom: 4 }}>{p.title}</p>
+                      <p style={{ fontFamily: "'Courier New', monospace", fontSize: 8, letterSpacing: "0.2em", color: T.muted, textTransform: "uppercase" }}>{p.category}</p>
                     </div>
-                    <span style={{ fontFamily: "Courier New, monospace", fontSize: 10, color: T.muted }}>{p.year}</span>
+                    <span style={{ fontFamily: "'Courier New', monospace", fontSize: 10, color: T.muted }}>{p.year}</span>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-          <div style={{ padding: "40px 48px", borderTop: `1px solid ${T.border}`, marginTop: 80, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <p style={{ fontFamily: "Courier New, monospace", fontSize: 8, letterSpacing: "0.2em", color: T.muted, textTransform: "uppercase" }}>
-              Drag or scroll to explore →
-            </p>
-            <span style={{ fontFamily: "Courier New, monospace", fontSize: 8, letterSpacing: "0.2em", color: T.muted }}>
-              {PROJECTS.length} films
-            </span>
+
+          <div style={{ padding: "40px 48px", borderTop: `1px solid ${T.border}`, marginTop: 80, display: "flex", justifyContent: "space-between" }}>
+            <p style={{ fontFamily: "'Courier New', monospace", fontSize: 8, letterSpacing: "0.2em", color: T.muted, textTransform: "uppercase" }}>Scroll to explore →</p>
+            <span style={{ fontFamily: "'Courier New', monospace", fontSize: 8, letterSpacing: "0.2em", color: T.muted }}>{PROJECTS.length} films</span>
           </div>
         </section>
 
-        {/* ── SERVICES ── */}
+        {/* SERVICES */}
         <section id="services" style={{ padding: "160px 48px", borderTop: `1px solid ${T.border}`, overflow: "hidden" }}>
           <div style={{ maxWidth: 1200, margin: "0 auto" }}>
             <div className="gsap-reveal" style={{ marginBottom: 80 }}>
-              <p style={{ fontFamily: "Courier New, monospace", fontSize: 9, letterSpacing: "0.25em", color: T.gold, textTransform: "uppercase", marginBottom: 16 }}>
-                Services
-              </p>
-              <h2 style={{ fontFamily: "Georgia, serif", fontSize: "clamp(2rem, 5vw, 4rem)", fontWeight: 400, color: T.white, margin: 0, lineHeight: 1.1 }}>
-                What I Create
-              </h2>
+              <p style={{ fontFamily: "'Courier New', monospace", fontSize: 9, letterSpacing: "0.25em", color: T.gold, textTransform: "uppercase", marginBottom: 16 }}>Services</p>
+              <h2 style={{ fontFamily: "Georgia, serif", fontSize: "clamp(2rem, 5vw, 4rem)", fontWeight: 400, color: T.white, lineHeight: 1.1 }}>What I Create</h2>
             </div>
 
             <div style={{ border: `1px solid ${T.border}` }}>
               {SERVICES.map((s, i) => (
                 <div
                   key={s.n}
-                  className="gsap-reveal"
-                  onMouseEnter={(e) => { onEnter(); (e.currentTarget as HTMLElement).style.background = T.surface; }}
-                  onMouseLeave={(e) => { onLeave(); (e.currentTarget as HTMLElement).style.background = "transparent"; }}
+                  className="gsap-reveal vg-service-row"
+                  onMouseEnter={() => cursorEnter()} onMouseLeave={cursorLeave}
                   style={{
-                    display:    "flex",
-                    alignItems: "center",
-                    gap:        48,
-                    padding:    "40px 40px",
+                    display: "flex", alignItems: "center", gap: 48,
+                    padding: "40px 40px",
                     borderBottom: i < SERVICES.length - 1 ? `1px solid ${T.border}` : "none",
-                    transition: "background 0.3s",
-                    cursor:     "none",
                   }}
                 >
-                  <span style={{ fontFamily: "Courier New, monospace", fontSize: 11, color: T.muted, minWidth: 32 }}>{s.n}</span>
+                  <span style={{ fontFamily: "'Courier New', monospace", fontSize: 11, color: T.muted, minWidth: 32 }}>{s.n}</span>
                   <div style={{ borderLeft: `1px solid ${T.border}`, paddingLeft: 40, flex: 1 }}>
-                    <h3 style={{ fontFamily: "Georgia, serif", fontSize: "clamp(1.2rem, 2.5vw, 2rem)", fontWeight: 400, color: T.white, margin: "0 0 8px" }}>{s.title}</h3>
-                    <p style={{ fontFamily: "Courier New, monospace", fontSize: 9, letterSpacing: "0.12em", color: T.muted, lineHeight: 1.8, margin: 0, maxWidth: 500 }}>{s.body}</p>
+                    <h3 style={{ fontFamily: "Georgia, serif", fontSize: "clamp(1.2rem, 2.5vw, 2rem)", fontWeight: 400, color: T.white, marginBottom: 8 }}>{s.title}</h3>
+                    <p style={{ fontFamily: "'Courier New', monospace", fontSize: 9, letterSpacing: "0.1em", color: T.muted, lineHeight: 1.9, maxWidth: 500 }}>{s.body}</p>
                   </div>
-                  <span style={{ fontFamily: "Courier New, monospace", fontSize: 9, color: T.gold, letterSpacing: "0.15em" }}>→</span>
+                  <span style={{ fontFamily: "'Courier New', monospace", fontSize: 10, color: T.gold, letterSpacing: "0.15em", flexShrink: 0 }}>→</span>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* ── CLIENTS MARQUEE ── */}
-        <section style={{ borderTop: `1px solid ${T.border}`, borderBottom: `1px solid ${T.border}`, padding: "32px 0", overflow: "hidden" }}>
-          <div style={{
-            display:   "flex",
-            animation: "marquee 20s linear infinite",
-            whiteSpace: "nowrap",
-          }}>
+        {/* CLIENTS MARQUEE */}
+        <section style={{ borderTop: `1px solid ${T.border}`, borderBottom: `1px solid ${T.border}`, padding: "28px 0", overflow: "hidden" }}>
+          <div className="vg-marquee" style={{ display: "flex", whiteSpace: "nowrap" }}>
             {[...CLIENTS, ...CLIENTS].map((c, i) => (
-              <span
-                key={i}
-                style={{
-                  fontFamily:   "Courier New, monospace",
-                  fontSize:     9,
-                  letterSpacing: "0.3em",
-                  color:        i % 2 === 0 ? T.muted : T.dim,
-                  textTransform: "uppercase",
-                  padding:      "0 48px",
-                  flexShrink:   0,
-                }}
-              >
+              <span key={i} style={{ fontFamily: "'Courier New', monospace", fontSize: 9, letterSpacing: "0.3em", color: i % 2 === 0 ? T.muted : T.dim, textTransform: "uppercase", padding: "0 56px", flexShrink: 0 }}>
                 {c}
               </span>
             ))}
           </div>
         </section>
 
-        {/* ── ABOUT ── */}
+        {/* ABOUT */}
         <section id="about" style={{ padding: "160px 48px", borderBottom: `1px solid ${T.border}`, overflow: "hidden" }}>
           <div style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "center" }}>
             <div className="gsap-reveal">
-              <p style={{ fontFamily: "Courier New, monospace", fontSize: 9, letterSpacing: "0.25em", color: T.gold, textTransform: "uppercase", marginBottom: 24 }}>
-                About
-              </p>
-              <h2 style={{ fontFamily: "Georgia, serif", fontSize: "clamp(2rem, 4vw, 3.5rem)", fontWeight: 400, color: T.white, margin: "0 0 32px", lineHeight: 1.1 }}>
+              <p style={{ fontFamily: "'Courier New', monospace", fontSize: 9, letterSpacing: "0.25em", color: T.gold, textTransform: "uppercase", marginBottom: 24 }}>About</p>
+              <h2 style={{ fontFamily: "Georgia, serif", fontSize: "clamp(2rem, 4vw, 3.5rem)", fontWeight: 400, color: T.white, marginBottom: 32, lineHeight: 1.1 }}>
                 Ten years behind<br />the lens.
               </h2>
-              <p style={{ fontFamily: "Courier New, monospace", fontSize: 9, letterSpacing: "0.1em", color: T.dim, lineHeight: 2, margin: "0 0 20px" }}>
+              <p style={{ fontFamily: "'Courier New', monospace", fontSize: 9, letterSpacing: "0.1em", color: T.dim, lineHeight: 2, marginBottom: 20 }}>
                 I started with a borrowed camera and an obsession with how light behaves. I&apos;ve since shot on four continents for clients ranging from independent artists to global luxury houses.
               </p>
-              <p style={{ fontFamily: "Courier New, monospace", fontSize: 9, letterSpacing: "0.1em", color: T.muted, lineHeight: 2, margin: 0 }}>
+              <p style={{ fontFamily: "'Courier New', monospace", fontSize: 9, letterSpacing: "0.1em", color: T.muted, lineHeight: 2 }}>
                 My approach is slow, deliberate, and always in service of the story. I don&apos;t take on every project — only the ones that demand real craft.
               </p>
             </div>
 
-            {/* Visual element */}
             <div className="gsap-reveal" style={{ position: "relative" }}>
-              <div style={{
-                aspectRatio:   "4/5",
-                background:    T.cardBg,
-                border:        `1px solid ${T.border}`,
-                position:      "relative",
-                overflow:      "hidden",
-                display:       "flex",
-                alignItems:    "center",
-                justifyContent:"center",
-              }}>
-                <span style={{ fontFamily: "Georgia, serif", fontSize: "clamp(8rem, 18vw, 16rem)", fontWeight: 400, fontStyle: "italic", color: T.gold, opacity: 0.06, lineHeight: 1 }}>
-                  JH
-                </span>
+              <div style={{ aspectRatio: "4/5", background: T.cardBg, border: `1px solid ${T.border}`, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", position: "relative" }}>
+                <span style={{ fontFamily: "Georgia, serif", fontSize: "clamp(8rem, 18vw, 16rem)", fontWeight: 400, fontStyle: "italic", color: T.gold, opacity: 0.055, lineHeight: 1 }}>JH</span>
                 <div style={{ position: "absolute", bottom: 24, left: 24, right: 24 }}>
-                  <div style={{ height: 1, background: T.border, marginBottom: 16 }} />
-                  <p style={{ fontFamily: "Courier New, monospace", fontSize: 8, letterSpacing: "0.2em", color: T.muted, textTransform: "uppercase" }}>
-                    James Holt — London
-                  </p>
+                  <div style={{ height: 1, background: T.border, marginBottom: 14 }} />
+                  <p style={{ fontFamily: "'Courier New', monospace", fontSize: 8, letterSpacing: "0.2em", color: T.muted, textTransform: "uppercase" }}>James Holt — London</p>
                 </div>
               </div>
-              {/* Offset label */}
-              <div style={{
-                position:   "absolute",
-                top:        24,
-                right:      -20,
-                fontFamily: "Courier New, monospace",
-                fontSize:   8,
-                letterSpacing: "0.2em",
-                color:      T.gold,
-                textTransform: "uppercase",
-                writingMode: "vertical-rl",
-                transform:  "rotate(180deg)",
-              }}>
+              <div style={{ position: "absolute", top: 24, right: -20, fontFamily: "'Courier New', monospace", fontSize: 8, letterSpacing: "0.2em", color: T.gold, textTransform: "uppercase", writingMode: "vertical-rl", transform: "rotate(180deg)" }}>
                 Available for new projects
               </div>
             </div>
           </div>
         </section>
 
-        {/* ── CONTACT ── */}
+        {/* CONTACT */}
         <section id="contact" style={{ padding: "160px 48px", overflow: "hidden" }}>
           <div className="gsap-reveal" style={{ maxWidth: 900, margin: "0 auto", textAlign: "center" }}>
-            <p style={{ fontFamily: "Courier New, monospace", fontSize: 9, letterSpacing: "0.25em", color: T.gold, textTransform: "uppercase", marginBottom: 32 }}>
+            <p style={{ fontFamily: "'Courier New', monospace", fontSize: 9, letterSpacing: "0.25em", color: T.gold, textTransform: "uppercase", marginBottom: 32 }}>
               Let&apos;s Work Together
             </p>
-            <h2 style={{ fontFamily: "Georgia, serif", fontSize: "clamp(3rem, 8vw, 7rem)", fontWeight: 400, lineHeight: 0.95, color: T.white, margin: "0 0 48px", letterSpacing: "-0.02em" }}>
-              START A<br />
-              <em style={{ fontStyle: "italic", color: T.gold }}>PROJECT</em>
+            <h2 style={{ fontFamily: "Georgia, serif", fontSize: "clamp(3rem, 8vw, 7rem)", fontWeight: 400, lineHeight: 0.95, color: T.white, marginBottom: 48, letterSpacing: "-0.02em" }}>
+              START A<br /><em style={{ fontStyle: "italic", color: T.gold }}>PROJECT</em>
             </h2>
             <a
               href="mailto:james@jamesholt.film"
-              onMouseEnter={() => onEnter("MAIL")}
-              onMouseLeave={onLeave}
-              style={{
-                fontFamily:   "Courier New, monospace",
-                fontSize:     "clamp(0.8rem, 2vw, 1.1rem)",
-                letterSpacing:"0.1em",
-                color:        T.white,
-                textDecoration:"none",
-                display:      "inline-block",
-                borderBottom: `1px solid ${T.gold}`,
-                paddingBottom: 4,
-                transition:   "color 0.3s",
-              }}
+              onMouseEnter={() => cursorEnter("MAIL")} onMouseLeave={cursorLeave}
+              style={{ fontFamily: "'Courier New', monospace", fontSize: "clamp(0.8rem, 2vw, 1.1rem)", letterSpacing: "0.1em", color: T.white, textDecoration: "none", display: "inline-block", borderBottom: `1px solid ${T.gold}`, paddingBottom: 4, transition: "color 0.25s" }}
+              onMouseOver={(e) => (e.currentTarget.style.color = T.gold)}
+              onMouseOut={(e)  => (e.currentTarget.style.color = T.white)}
             >
               james@jamesholt.film
             </a>
 
-            <div style={{ marginTop: 80, paddingTop: 48, borderTop: `1px solid ${T.border}`, display: "flex", justifyContent: "center", gap: 40, flexWrap: "wrap" }}>
-              {["Instagram", "Vimeo", "LinkedIn"].map((link) => (
-                <a
-                  key={link}
-                  href="#"
-                  onMouseEnter={() => onEnter()}
-                  onMouseLeave={onLeave}
-                  style={{
-                    fontFamily:   "Courier New, monospace",
-                    fontSize:     8,
-                    letterSpacing:"0.2em",
-                    color:        T.muted,
-                    textDecoration:"none",
-                    textTransform: "uppercase",
-                    transition:   "color 0.3s",
-                  }}
+            <div style={{ marginTop: 80, paddingTop: 48, borderTop: `1px solid ${T.border}`, display: "flex", justifyContent: "center", gap: 48, flexWrap: "wrap" }}>
+              {["Instagram","Vimeo","LinkedIn"].map((link) => (
+                <a key={link} href="#" onMouseEnter={() => cursorEnter()} onMouseLeave={cursorLeave}
+                  style={{ fontFamily: "'Courier New', monospace", fontSize: 8, letterSpacing: "0.22em", color: T.muted, textDecoration: "none", textTransform: "uppercase", transition: "color 0.25s" }}
+                  onMouseOver={(e) => (e.currentTarget.style.color = T.white)}
+                  onMouseOut={(e)  => (e.currentTarget.style.color = T.muted)}
                 >
                   {link}
                 </a>
@@ -851,83 +657,40 @@ export default function VideographerTemplate() {
           </div>
         </section>
 
-        {/* ── FOOTER ── */}
-        <footer style={{
-          borderTop:   `1px solid ${T.border}`,
-          padding:     "32px 48px",
-          display:     "flex",
-          justifyContent: "space-between",
-          alignItems:  "center",
-          flexWrap:    "wrap",
-          gap:         16,
-        }}>
-          <span style={{ fontFamily: "Georgia, serif", fontSize: 11, letterSpacing: "0.2em", color: T.muted, textTransform: "uppercase" }}>
-            © 2026 James Holt
-          </span>
-          <span style={{ fontFamily: "Courier New, monospace", fontSize: 7, letterSpacing: "0.18em", color: T.muted, textTransform: "uppercase" }}>
-            Site by Falcon Designs
-          </span>
+        {/* FOOTER */}
+        <footer style={{ borderTop: `1px solid ${T.border}`, padding: "28px 48px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
+          <span style={{ fontFamily: "Georgia, serif", fontSize: 11, letterSpacing: "0.2em", color: T.muted, textTransform: "uppercase" }}>© 2026 James Holt</span>
+          <span style={{ fontFamily: "'Courier New', monospace", fontSize: 7, letterSpacing: "0.18em", color: T.muted, textTransform: "uppercase" }}>Site by Falcon Designs</span>
         </footer>
-
-        {/* ── REEL MODAL ── */}
-        {reelOpen && (
-          <div
-            onClick={() => setReelOpen(false)}
-            style={{
-              position:   "fixed",
-              inset:      0,
-              zIndex:     8000,
-              background: "rgba(0,0,0,0.95)",
-              display:    "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              backdropFilter: "blur(8px)",
-              animation:  "fadeIn 0.4s ease",
-            }}
-          >
-            <div onClick={(e) => e.stopPropagation()} style={{ width: "min(900px, 90vw)", position: "relative" }}>
-              <button
-                onClick={() => setReelOpen(false)}
-                style={{
-                  position:   "absolute",
-                  top:        -40,
-                  right:      0,
-                  background: "transparent",
-                  border:     "none",
-                  color:      T.dim,
-                  fontFamily: "Courier New, monospace",
-                  fontSize:   9,
-                  letterSpacing: "0.2em",
-                  textTransform: "uppercase",
-                  cursor:     "none",
-                }}
-              >
-                Close ✕
-              </button>
-              <div style={{ aspectRatio: "16/9", background: T.cardBg, border: `1px solid ${T.border}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <iframe
-                  src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=0&rel=0&modestbranding=1"
-                  style={{ width: "100%", height: "100%", border: "none" }}
-                  allow="autoplay; fullscreen"
-                  title="Showreel"
-                />
-              </div>
-            </div>
-          </div>
-        )}
 
       </div>
 
-      <style>{`
-        @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
-        @media (max-width: 768px) {
-          .stat-grid { grid-template-columns: repeat(2, 1fr) !important; }
-          .about-grid { grid-template-columns: 1fr !important; }
-          .vg-nav-links { display: none !important; }
-        }
-      `}</style>
+      {/* REEL MODAL — toggled via class, no forced re-render on close */}
+      <div
+        id="vg-modal"
+        className={reelOpen ? "open" : ""}
+        onClick={() => setReelOpen(false)}
+      >
+        <div onClick={(e) => e.stopPropagation()} style={{ width: "min(900px, 90vw)", position: "relative" }}>
+          <button
+            onClick={() => setReelOpen(false)}
+            onMouseEnter={() => cursorEnter()} onMouseLeave={cursorLeave}
+            style={{ position: "absolute", top: -36, right: 0, background: "transparent", border: "none", color: T.dim, fontFamily: "'Courier New', monospace", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase" }}
+          >
+            Close ✕
+          </button>
+          <div style={{ aspectRatio: "16/9", background: T.cardBg, border: `1px solid ${T.border}` }}>
+            {reelOpen && (
+              <iframe
+                src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&rel=0&modestbranding=1"
+                style={{ width: "100%", height: "100%", border: "none" }}
+                allow="autoplay; fullscreen"
+                title="Showreel"
+              />
+            )}
+          </div>
+        </div>
+      </div>
     </>
   );
 }
