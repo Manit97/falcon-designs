@@ -4,7 +4,6 @@ import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import ParallaxLayer from "@/components/ParallaxLayer";
-import { ImageComparison } from "@/components/ImageComparison";
 import { ImageComparisonElectric } from "@/components/ImageComparisonElectric";
 
 const HeroCube = dynamic(() => import("@/components/home/HeroCube"), { ssr: false });
@@ -385,7 +384,7 @@ export default function ShowcasePage() {
             </div>
           </ParallaxLayer>
 
-          {/* Slider */}
+          {/* Electric arc comparison */}
           <ParallaxLayer offset={20}>
             <motion.div
               initial={{ opacity: 0, y: 40 }}
@@ -393,38 +392,6 @@ export default function ShowcasePage() {
               viewport={VP}
               transition={{ duration: 0.9, delay: 0.15, ease: EXPO }}
               className="border border-fd-border overflow-hidden"
-            >
-              <ImageComparison
-                beforeImage="/after-website.png"
-                afterImage="/before-website.png"
-                altBefore="Rebuilt by Falcon Designs — modern, high-converting"
-                altAfter="Old plumber website — cluttered, dated design"
-              />
-            </motion.div>
-
-            {/* Caption row */}
-            <div className="flex items-center justify-between mt-5 px-1">
-              <div className="flex items-center gap-2.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-fd-muted opacity-50" />
-                <span className="font-display text-[10px] tracking-widest uppercase text-fd-muted">
-                  Generic DIY website — built on a page builder
-                </span>
-              </div>
-              <div className="flex items-center gap-2.5">
-                <span className="font-display text-[10px] tracking-widest uppercase text-fd-orange">
-                  Custom build by Falcon Designs — Next.js 15
-                </span>
-                <div className="w-2.5 h-2.5 rounded-full bg-fd-orange" />
-              </div>
-            </div>
-
-            {/* ── Style 2 — Electric arc hover ── */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={VP}
-              transition={{ duration: 0.9, delay: 0.1, ease: EXPO }}
-              className="border border-fd-border overflow-hidden mt-6"
             >
               <ImageComparisonElectric
                 leftImage="/after-website.png"
@@ -437,8 +404,14 @@ export default function ShowcasePage() {
               <div className="flex items-center gap-2.5">
                 <div className="w-2.5 h-2.5 rounded-full bg-fd-muted opacity-50" />
                 <span className="font-display text-[10px] tracking-widest uppercase text-fd-muted">
-                  Style 2 — electric arc divider · hover to reveal
+                  Generic DIY website — built on a page builder
                 </span>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <span className="font-display text-[10px] tracking-widest uppercase text-fd-orange">
+                  Custom build by Falcon Designs — Next.js 15
+                </span>
+                <div className="w-2.5 h-2.5 rounded-full bg-fd-orange" />
               </div>
             </div>
           </ParallaxLayer>
