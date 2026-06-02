@@ -8,7 +8,8 @@ const LINKS = [
   { label: "Showcase",  href: "/showcase",  num: "01" },
   { label: "AI Widget", href: "/ai-widget", num: "02" },
   { label: "About",     href: "/about",     num: "03" },
-  { label: "Contact",   href: "/contact",   num: "04" },
+  { label: "Pricing",   href: "/pricing",   num: "04" },
+  { label: "Contact",   href: "/contact",   num: "05" },
 ];
 
 const EXPO = [0.16, 1, 0.3, 1] as const;
