@@ -92,6 +92,32 @@ export default function AboutPage() {
               <div className="w-px h-24 bg-fd-border mt-2" />
 
               {/* ── Animated mission graphic ── */}
+              <style>{`
+                @keyframes missionFloat {
+                  0%   { transform: translateY(0px)   rotateZ(-0.6deg); }
+                  50%  { transform: translateY(-14px) rotateZ(0.6deg);  }
+                  100% { transform: translateY(0px)   rotateZ(-0.6deg); }
+                }
+                @keyframes missionGlow {
+                  0%,100% { filter: drop-shadow(0 8px 24px rgba(249,115,22,0.12)); }
+                  50%     { filter: drop-shadow(0 20px 36px rgba(249,115,22,0.22)); }
+                }
+                .mission-float {
+                  animation:
+                    missionFloat 6s  ease-in-out infinite,
+                    missionGlow  6s  ease-in-out infinite;
+                  will-change: transform, filter;
+                  display: inline-block;
+                  transform-origin: center bottom;
+                }
+                .mission-float:hover {
+                  animation-play-state: paused;
+                  filter: drop-shadow(0 0 28px rgba(249,115,22,0.40)) !important;
+                  transform: scale(1.04) !important;
+                  transition: filter 0.4s ease, transform 0.4s ease;
+                }
+              `}</style>
+
               <motion.div
                 initial={{ opacity: 0, y: 28 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -99,47 +125,22 @@ export default function AboutPage() {
                 transition={{ duration: 1, delay: 0.35, ease: EXPO }}
                 className="mt-10 select-none"
               >
-                {/* float loop wrapper */}
-                <motion.div
-                  animate={{ y: [0, -12, 0] }}
-                  transition={{
-                    duration: 5.5,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  whileHover={{
-                    scale: 1.04,
-                    filter: "drop-shadow(0 0 28px rgba(249,115,22,0.30)) drop-shadow(0 0 8px rgba(249,115,22,0.20))",
-                    transition: { duration: 0.4, ease: "easeOut" },
-                  }}
-                  style={{ transformOrigin: "center bottom", display: "inline-block" }}
-                >
-                  {/* subtle slow rotation for depth feel */}
-                  <motion.div
-                    animate={{ rotateZ: [-0.8, 0.8, -0.8] }}
-                    transition={{
-                      duration: 8,
-                      repeat: Infinity,
-                      ease: "easeInOut",
+                <div className="mission-float">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/mission-graphic.svg"
+                    alt="Falcon Designs — Our Mission"
+                    loading="lazy"
+                    draggable={false}
+                    style={{
+                      width: "100%",
+                      maxWidth: 280,
+                      height: "auto",
+                      display: "block",
+                      mixBlendMode: "screen",
                     }}
-                    style={{ display: "inline-block" }}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src="/mission-graphic.svg"
-                      alt="Falcon Designs — Our Mission"
-                      loading="lazy"
-                      draggable={false}
-                      style={{
-                        width: "100%",
-                        maxWidth: 280,
-                        height: "auto",
-                        display: "block",
-                        mixBlendMode: "screen",   /* makes black bg transparent on dark site */
-                      }}
-                    />
-                  </motion.div>
-                </motion.div>
+                  />
+                </div>
               </motion.div>
             </motion.div>
           </ParallaxLayer>
