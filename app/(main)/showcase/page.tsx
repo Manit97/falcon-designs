@@ -43,6 +43,18 @@ const LIVE_PROJECTS = [
     colour: "#f59e0b",
     bgColour: "#0c111d",
   },
+  {
+    id: "videographer",
+    title: "Videographer Portfolio",
+    category: "Creative · Film",
+    year: "2026",
+    desc: "Cinematic dark portfolio for cinematographers and directors. GSAP horizontal scroll gallery, SplitType hero reveal, Lenis smooth scroll, and film-grain overlay.",
+    tech: ["Next.js 15", "GSAP", "SplitType", "Lenis"],
+    href: "/showcase/videographer",
+    status: "live",
+    colour: "#c8b887",
+    bgColour: "#070707",
+  },
 ];
 
 const UPCOMING = [
