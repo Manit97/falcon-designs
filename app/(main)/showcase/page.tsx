@@ -126,7 +126,140 @@ export default function ShowcasePage() {
             </motion.p>
           </ParallaxLayer>
 
+          {/* Inject keyframes for WebGL card animation */}
+          <style>{`
+            @keyframes wgGlow1 { 0%,100%{transform:translate(-8%,-15%) scale(1.15)} 50%{transform:translate(8%,15%) scale(.9)} }
+            @keyframes wgGlow2 { 0%,100%{transform:translate(12%,10%) scale(1)} 50%{transform:translate(-12%,-10%) scale(1.25)} }
+            @keyframes wgGlow3 { 0%,100%{transform:translate(0%,8%) scale(1.1)} 50%{transform:translate(0%,-8%) scale(.95)} }
+            @keyframes wgGrid  { 0%{background-position:0 0} 100%{background-position:60px 60px} }
+            @keyframes wgPulse { 0%,100%{opacity:.6} 50%{opacity:1} }
+          `}</style>
+
           <div className="grid md:grid-cols-2 gap-6">
+
+            {/* ── WebGL Feature Showcase — spans both columns ── */}
+            <ParallaxLayer offset={16} className="md:col-span-2">
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={VP}
+                transition={{ duration: 0.8, ease: EXPO }}
+              >
+                <Link
+                  href="/showcase/webgl"
+                  className="group block border border-fd-border hover:border-[#6c63ff]/50 transition-all duration-500 overflow-hidden"
+                  style={{ borderColor: "rgba(108,99,255,0.25)" }}
+                >
+                  {/* ── Preview — same h-64 as regular cards ── */}
+                  <div className="relative h-64 overflow-hidden" style={{ background: "#050510" }}>
+
+                    {/* Animated fluid glow blobs */}
+                    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                      <div style={{
+                        position: "absolute", width: "55%", height: "160%",
+                        top: "-30%", left: "5%",
+                        background: "radial-gradient(ellipse, rgba(108,99,255,0.18) 0%, transparent 65%)",
+                        animation: "wgGlow1 9s ease-in-out infinite",
+                      }}/>
+                      <div style={{
+                        position: "absolute", width: "50%", height: "150%",
+                        top: "-25%", right: "5%",
+                        background: "radial-gradient(ellipse, rgba(0,212,255,0.10) 0%, transparent 65%)",
+                        animation: "wgGlow2 11s ease-in-out infinite",
+                      }}/>
+                      <div style={{
+                        position: "absolute", width: "40%", height: "120%",
+                        top: "-10%", left: "30%",
+                        background: "radial-gradient(ellipse, rgba(200,184,135,0.08) 0%, transparent 65%)",
+                        animation: "wgGlow3 13s ease-in-out infinite",
+                      }}/>
+                    </div>
+
+                    {/* Subtle grid overlay */}
+                    <div className="absolute inset-0 pointer-events-none" style={{
+                      backgroundImage: "linear-gradient(rgba(108,99,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(108,99,255,0.06) 1px, transparent 1px)",
+                      backgroundSize: "60px 60px",
+                      animation: "wgGrid 12s linear infinite",
+                    }}/>
+
+                    {/* Scan-line overlay */}
+                    <div className="absolute inset-0 pointer-events-none" style={{
+                      background: "repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(5,5,16,0.15) 3px, rgba(5,5,16,0.15) 4px)",
+                    }}/>
+
+                    {/* Centre content */}
+                    <div className="absolute inset-0 flex items-center justify-center z-10">
+                      <div className="text-center">
+                        <p
+                          className="font-display font-extrabold tracking-tightest"
+                          style={{
+                            fontSize: "clamp(2.8rem,7vw,5.5rem)",
+                            background: "linear-gradient(135deg, #6c63ff 0%, #00d4ff 45%, #c8b887 100%)",
+                            WebkitBackgroundClip: "text",
+                            backgroundClip: "text",
+                            WebkitTextFillColor: "transparent",
+                            letterSpacing: "-0.02em",
+                            lineHeight: 1,
+                          }}
+                        >
+                          WEBGL
+                        </p>
+                        <p className="font-display text-[11px] tracking-widest3 uppercase mt-3"
+                           style={{ color: "rgba(232,228,252,0.38)", animation: "wgPulse 3s ease-in-out infinite" }}>
+                          Interactive Technology Demo
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Tech badges — top left */}
+                    <div className="absolute top-4 left-4 flex items-center gap-2 z-10">
+                      {["Three.js", "GLSL", "Particles"].map((t) => (
+                        <span key={t} className="font-display text-[9px] tracking-widest uppercase px-2 py-1 border"
+                          style={{ borderColor: "rgba(108,99,255,0.35)", color: "#6c63ff", background: "rgba(108,99,255,0.08)" }}>
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Live badge — top right */}
+                    <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-black/50 backdrop-blur-sm border border-white/10 px-3 py-1.5 rounded-full z-10">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#6c63ff] animate-pulse" />
+                      <span className="font-display text-[10px] tracking-widest uppercase text-white">Live</span>
+                    </div>
+
+                    {/* Arrow — bottom right */}
+                    <div className="absolute bottom-4 right-4 w-10 h-10 flex items-center justify-center z-10 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300"
+                         style={{ background: "#6c63ff" }}>
+                      <span className="text-white font-bold">↗</span>
+                    </div>
+                  </div>
+
+                  {/* ── Info — same structure as regular cards ── */}
+                  <div className="p-6 bg-fd-card group-hover:bg-fd-surface transition-colors duration-300">
+                    <div className="flex items-start justify-between mb-3">
+                      <h2 className="font-display font-bold text-lg text-fd-white transition-colors duration-300"
+                          style={{}} onMouseEnter={(e) => (e.currentTarget.style.color="#6c63ff")}
+                          onMouseLeave={(e) => (e.currentTarget.style.color="")}>
+                        WebGL Interactive Experience
+                      </h2>
+                      <span className="font-display text-xs text-fd-muted">2026</span>
+                    </div>
+                    <p className="font-body text-sm text-fd-dim leading-relaxed mb-4">
+                      GPU-accelerated fluid simulation, interactive particle physics, and a 3D parallax tilt effect that responds to every cursor movement. The most technically advanced template in the collection — built with Three.js, custom GLSL shaders, and GSAP.
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {["Three.js", "GLSL Shaders", "Particle Physics", "GSAP", "Lenis", "SplitType", "WebGL 2.0"].map((t) => (
+                        <span key={t} className="font-display text-[9px] tracking-widest uppercase text-fd-muted border border-fd-border px-2 py-0.5">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            </ParallaxLayer>
+
+            {/* ── Regular template cards ── */}
             {LIVE_PROJECTS.map((p, i) => (
               <ParallaxLayer key={p.id} offset={20 + i * 14}>
                 <motion.div
