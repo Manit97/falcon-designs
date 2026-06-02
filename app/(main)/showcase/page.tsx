@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import ParallaxLayer from "@/components/ParallaxLayer";
+import { ImageComparison } from "@/components/ImageComparison";
 
 const HeroCube = dynamic(() => import("@/components/home/HeroCube"), { ssr: false });
 
@@ -61,11 +62,6 @@ const LIVE_PROJECTS = [
   },
 ];
 
-const UPCOMING = [
-  { id: "restaurant", title: "Restaurant & Dining", category: "Food & Hospitality", colour: "#f59e0b", status: "coming" },
-  { id: "saas",       title: "SaaS Product",        category: "Technology",          colour: "#6366f1", status: "coming" },
-  { id: "agency",     title: "Creative Agency",      category: "Studio · Portfolio",  colour: "#10b981", status: "coming" },
-];
 
 export default function ShowcasePage() {
   const [mounted, setMounted] = useState(false);
@@ -347,43 +343,81 @@ export default function ShowcasePage() {
         </div>
       </section>
 
-      {/* ── Upcoming templates ── */}
-      <section className="py-24 px-6 md:px-10 overflow-hidden">
+      {/* ── Before / After transformation ── */}
+      <section className="py-24 px-6 md:px-10 border-b border-fd-border overflow-hidden">
         <div className="max-w-7xl mx-auto">
+
+          {/* Header */}
           <ParallaxLayer offset={45}>
-            <motion.p
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={VP}
-              transition={{ duration: 0.6, ease: EXPO }}
-              className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-muted mb-14 flex items-center gap-3"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-fd-muted" />
-              In Development
-            </motion.p>
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14">
+              <div>
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={VP}
+                  transition={{ duration: 0.6, ease: EXPO }}
+                  className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-orange mb-5 flex items-center gap-3"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-fd-orange animate-pulse" />
+                  The Transformation
+                </motion.p>
+                <motion.h2
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={VP}
+                  transition={{ duration: 0.8, delay: 0.1, ease: EXPO }}
+                  className="font-display font-extrabold leading-none tracking-tightest text-fd-white"
+                  style={{ fontSize: "clamp(2.2rem, 5vw, 4.5rem)" }}
+                >
+                  BEFORE &amp; <span className="text-stroke">AFTER.</span>
+                </motion.h2>
+              </div>
+              <motion.p
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={VP}
+                transition={{ duration: 0.7, delay: 0.2, ease: EXPO }}
+                className="font-body text-fd-dim text-base max-w-sm leading-relaxed md:text-right"
+              >
+                Drag the handle to see exactly what a Falcon Designs rebuild looks like — same business, completely different story.
+              </motion.p>
+            </div>
           </ParallaxLayer>
 
-          <ParallaxLayer offset={28} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {UPCOMING.map((p, i) => (
-              <motion.div
-                key={p.id}
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={VP}
-                transition={{ duration: 0.5, delay: i * 0.06, ease: EXPO }}
-                className="border border-fd-border border-dashed p-8 flex flex-col justify-between min-h-[200px] group hover:border-fd-border hover:bg-fd-surface/50 transition-all duration-300"
-              >
-                <div>
-                  <div className="w-3 h-3 rounded-full mb-5 opacity-60" style={{ background: p.colour }} />
-                  <h3 className="font-display font-bold text-base text-fd-white mb-1">{p.title}</h3>
-                  <p className="font-display text-xs text-fd-muted tracking-widest uppercase">{p.category}</p>
-                </div>
-                <span className="font-display text-[10px] tracking-widest uppercase text-fd-muted border border-dashed border-fd-border px-3 py-1 self-start mt-6">
-                  Coming Soon
+          {/* Slider */}
+          <ParallaxLayer offset={20}>
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={VP}
+              transition={{ duration: 0.9, delay: 0.15, ease: EXPO }}
+              className="border border-fd-border overflow-hidden"
+            >
+              <ImageComparison
+                beforeImage="/before-website.png"
+                afterImage="/after-website.png"
+                altBefore="Old plumber website — cluttered, dated design"
+                altAfter="Rebuilt by Falcon Designs — modern, high-converting"
+              />
+            </motion.div>
+
+            {/* Caption row */}
+            <div className="flex items-center justify-between mt-5 px-1">
+              <div className="flex items-center gap-2.5">
+                <div className="w-2.5 h-2.5 rounded-full bg-fd-muted opacity-50" />
+                <span className="font-display text-[10px] tracking-widest uppercase text-fd-muted">
+                  Generic DIY website — built on a page builder
                 </span>
-              </motion.div>
-            ))}
+              </div>
+              <div className="flex items-center gap-2.5">
+                <span className="font-display text-[10px] tracking-widest uppercase text-fd-orange">
+                  Custom build by Falcon Designs — Next.js 15
+                </span>
+                <div className="w-2.5 h-2.5 rounded-full bg-fd-orange" />
+              </div>
+            </div>
           </ParallaxLayer>
+
         </div>
       </section>
 

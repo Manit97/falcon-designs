@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Dave's Plumbing — Rebuilt by Falcon Designs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Barlow:ital,wght@0,700;0,800;0,900;1,700&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #080808;
+    color: #f0f0f0;
+    width: 1280px;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: relative;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    background: rgba(8,8,8,0.95);
+    backdrop-filter: blur(12px);
+  }
+  .nav-logo {
+    font-family: 'Barlow', sans-serif;
+    font-weight: 900;
+    font-size: 18px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #f0f0f0;
+  }
+  .nav-logo span { color: #f97316; }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 36px;
+  }
+  .nav-links a {
+    font-family: 'Barlow', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(240,240,240,0.45);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: #f0f0f0; }
+  .nav-cta {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #f97316;
+    color: #080808;
+    padding: 11px 22px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 580px;
+    display: flex;
+    align-items: flex-end;
+    padding: 0 48px 64px;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #0c0c14 0%, #0a080c 60%, #0c0808 100%);
+  }
+  .hero-glow {
+    position: absolute;
+    width: 900px; height: 900px;
+    top: -200px; left: -100px;
+    background: radial-gradient(circle, rgba(249,115,22,0.07) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 80px 80px;
+    pointer-events: none;
+  }
+  .hero-gradient {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 200px;
+    background: linear-gradient(to bottom, transparent, #080808);
+    pointer-events: none;
+  }
+  .hero-content { position: relative; z-index: 2; max-width: 720px; }
+  .hero-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+  .eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: #f97316; }
+  .eyebrow-text {
+    font-family: 'Barlow', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #f97316;
+  }
+  .hero-title {
+    font-family: 'Barlow', sans-serif;
+    font-weight: 900;
+    font-size: 92px;
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+    color: #f0f0f0;
+    margin-bottom: 28px;
+  }
+  .hero-title .outline {
+    -webkit-text-stroke: 1.5px rgba(240,240,240,0.35);
+    color: transparent;
+  }
+  .hero-sub {
+    font-size: 17px;
+    line-height: 1.7;
+    color: rgba(240,240,240,0.5);
+    max-width: 500px;
+    margin-bottom: 36px;
+    font-weight: 300;
+  }
+  .hero-actions { display: flex; align-items: center; gap: 16px; }
+  .btn-primary {
+    background: #f97316;
+    color: #080808;
+    padding: 16px 32px;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .btn-secondary {
+    border: 1px solid rgba(240,240,240,0.15);
+    color: rgba(240,240,240,0.55);
+    padding: 16px 32px;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  .hero-right-panel {
+    position: absolute;
+    right: 48px;
+    bottom: 64px;
+    z-index: 2;
+  }
+  .emergency-card {
+    background: rgba(249,115,22,0.08);
+    border: 1px solid rgba(249,115,22,0.25);
+    padding: 24px 28px;
+    min-width: 260px;
+  }
+  .emergency-label {
+    font-family: 'Barlow', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #f97316;
+    margin-bottom: 10px;
+  }
+  .emergency-phone {
+    font-family: 'Barlow', sans-serif;
+    font-weight: 900;
+    font-size: 30px;
+    color: #f0f0f0;
+    letter-spacing: -0.01em;
+    margin-bottom: 6px;
+  }
+  .emergency-note {
+    font-size: 11px;
+    color: rgba(240,240,240,0.4);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .stat-item {
+    padding: 32px 40px;
+    border-right: 1px solid rgba(255,255,255,0.07);
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-value {
+    font-family: 'Barlow', sans-serif;
+    font-weight: 900;
+    font-size: 40px;
+    color: #f0f0f0;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-value span { color: #f97316; }
+  .stat-label {
+    font-family: 'Barlow', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(240,240,240,0.35);
+  }
+
+  /* ── SERVICES ── */
+  .services-section { padding: 80px 48px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+  .section-eyebrow {
+    font-family: 'Barlow', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #f97316;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-eyebrow::before { content: ''; width: 28px; height: 1px; background: #f97316; }
+  .section-heading {
+    font-family: 'Barlow', sans-serif;
+    font-weight: 900;
+    font-size: 52px;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: #f0f0f0;
+    margin-bottom: 60px;
+  }
+  .section-heading .outline {
+    -webkit-text-stroke: 1.5px rgba(240,240,240,0.25);
+    color: transparent;
+  }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border: 1px solid rgba(255,255,255,0.07);
+  }
+  .service-item {
+    padding: 36px 28px;
+    border-right: 1px solid rgba(255,255,255,0.07);
+    transition: background 0.3s;
+    position: relative;
+  }
+  .service-item:last-child { border-right: none; }
+  .service-item:hover { background: rgba(255,255,255,0.025); }
+  .service-num {
+    font-family: 'Barlow', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: rgba(240,240,240,0.2);
+    margin-bottom: 20px;
+  }
+  .service-icon-line {
+    width: 32px; height: 2px;
+    background: #f97316;
+    margin-bottom: 20px;
+  }
+  .service-name {
+    font-family: 'Barlow', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: #f0f0f0;
+    margin-bottom: 10px;
+    letter-spacing: 0.01em;
+  }
+  .service-desc {
+    font-size: 13px;
+    line-height: 1.7;
+    color: rgba(240,240,240,0.45);
+    font-weight: 300;
+  }
+  .service-arrow {
+    position: absolute;
+    bottom: 28px;
+    right: 28px;
+    width: 32px; height: 32px;
+    border: 1px solid rgba(240,240,240,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: rgba(240,240,240,0.3);
+  }
+
+  /* ── WHY US ── */
+  .why-section {
+    padding: 80px 48px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .why-left .section-heading { margin-bottom: 20px; font-size: 44px; }
+  .why-left p { font-size: 15px; line-height: 1.8; color: rgba(240,240,240,0.5); font-weight: 300; margin-bottom: 32px; }
+  .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: rgba(255,255,255,0.07); }
+  .why-item {
+    padding: 28px;
+    background: #080808;
+  }
+  .why-item-num {
+    font-family: 'Barlow', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: #f97316;
+    margin-bottom: 14px;
+  }
+  .why-item h4 {
+    font-family: 'Barlow', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: #f0f0f0;
+    margin-bottom: 8px;
+    letter-spacing: 0.02em;
+  }
+  .why-item p { font-size: 12px; line-height: 1.7; color: rgba(240,240,240,0.45); font-weight: 300; }
+
+  /* ── REVIEWS ── */
+  .reviews-section { padding: 80px 48px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+  .reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgba(255,255,255,0.07); margin-top: 48px; }
+  .review-card {
+    background: #0d0d0d;
+    padding: 36px 32px;
+  }
+  .review-stars {
+    display: flex;
+    gap: 3px;
+    margin-bottom: 18px;
+  }
+  .star { width: 10px; height: 10px; background: #f97316; clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
+  .review-text {
+    font-size: 14px;
+    line-height: 1.8;
+    color: rgba(240,240,240,0.6);
+    font-weight: 300;
+    font-style: italic;
+    margin-bottom: 20px;
+  }
+  .review-divider { width: 24px; height: 1px; background: #f97316; margin-bottom: 14px; }
+  .review-author { font-family: 'Barlow', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(240,240,240,0.4); }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 60px 48px 32px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 48px;
+  }
+  .footer-brand-name {
+    font-family: 'Barlow', sans-serif;
+    font-weight: 900;
+    font-size: 22px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #f0f0f0;
+    margin-bottom: 12px;
+  }
+  .footer-brand-name span { color: #f97316; }
+  footer p { font-size: 13px; color: rgba(240,240,240,0.35); line-height: 1.8; font-weight: 300; }
+  .footer-heading {
+    font-family: 'Barlow', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(240,240,240,0.4);
+    margin-bottom: 20px;
+  }
+  footer a { display: block; font-size: 13px; color: rgba(240,240,240,0.45); text-decoration: none; margin-bottom: 10px; font-weight: 300; }
+  footer a:hover { color: #f0f0f0; }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.07);
+    padding: 20px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-bottom span { font-size: 12px; color: rgba(240,240,240,0.25); letter-spacing: 0.05em; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Dave's <span>Plumbing</span></div>
+  <div class="nav-links">
+    <a href="#">Services</a>
+    <a href="#">About</a>
+    <a href="#">Reviews</a>
+    <a href="#">Areas</a>
+    <a href="#">Contact</a>
+  </div>
+  <a href="#" class="nav-cta">Emergency Call ↗</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-gradient"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <div class="eyebrow-dot"></div>
+      <span class="eyebrow-text">Gas Safe Registered · London</span>
+    </div>
+    <h1 class="hero-title">
+      WHEN IT<br>
+      <span class="outline">MATTERS.</span>
+    </h1>
+    <p class="hero-sub">
+      London's trusted plumbing and heating engineers. Available 24/7 — emergency response within the hour.
+    </p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">Book Emergency Call ↗</a>
+      <a href="#" class="btn-secondary">View All Services</a>
+    </div>
+  </div>
+  <div class="hero-right-panel">
+    <div class="emergency-card">
+      <div class="emergency-label">24/7 Emergency Line</div>
+      <div class="emergency-phone">0800 123 4567</div>
+      <div class="emergency-note">Response within 60 minutes · No call-out fee</div>
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <div class="stat-value">25<span>+</span></div>
+    <div class="stat-label">Years Experience</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value">2K<span>+</span></div>
+    <div class="stat-label">Five-Star Reviews</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value">60<span>min</span></div>
+    <div class="stat-label">Emergency Response</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value">24<span>/7</span></div>
+    <div class="stat-label">Available Always</div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<div class="services-section">
+  <div class="section-eyebrow">What We Do</div>
+  <div class="section-heading">EXPERT SERVICES<br><span class="outline">FOR EVERY JOB.</span></div>
+  <div class="services-grid">
+    <div class="service-item">
+      <div class="service-num">01</div>
+      <div class="service-icon-line"></div>
+      <div class="service-name">Emergency Plumbing</div>
+      <p class="service-desc">Burst pipes, floods, leaks. We're with you within 60 minutes, every time.</p>
+      <div class="service-arrow">↗</div>
+    </div>
+    <div class="service-item">
+      <div class="service-num">02</div>
+      <div class="service-icon-line"></div>
+      <div class="service-name">Boiler Repair</div>
+      <p class="service-desc">All makes and models. Gas Safe engineers on every callout, guaranteed.</p>
+      <div class="service-arrow">↗</div>
+    </div>
+    <div class="service-item">
+      <div class="service-num">03</div>
+      <div class="service-icon-line"></div>
+      <div class="service-name">Bathroom Fitting</div>
+      <p class="service-desc">Full design and installation. Supply &amp; fit or fit-only. Free quotations.</p>
+      <div class="service-arrow">↗</div>
+    </div>
+    <div class="service-item">
+      <div class="service-num">04</div>
+      <div class="service-icon-line"></div>
+      <div class="service-name">Central Heating</div>
+      <p class="service-desc">New systems, upgrades, power flushing, and radiator installation.</p>
+      <div class="service-arrow">↗</div>
+    </div>
+  </div>
+</div>
+
+<!-- WHY US -->
+<div class="why-section">
+  <div class="why-left">
+    <div class="section-eyebrow">Why Choose Us</div>
+    <div class="section-heading">BUILT ON<br><span class="outline">TRUST.</span></div>
+    <p>Over 25 years serving London homeowners and landlords. We show up on time, do the job right, and leave your home cleaner than we found it.</p>
+    <a href="#" class="btn-primary" style="width: fit-content;">Read Our Reviews ↗</a>
+  </div>
+  <div class="why-grid">
+    <div class="why-item">
+      <div class="why-item-num">01</div>
+      <h4>60-Minute Response</h4>
+      <p>Emergency? We aim to be on-site within the hour, any time of day or night.</p>
+    </div>
+    <div class="why-item">
+      <div class="why-item-num">02</div>
+      <h4>No Hidden Costs</h4>
+      <p>The price quoted is the price you pay. No surprise extras, ever.</p>
+    </div>
+    <div class="why-item">
+      <div class="why-item-num">03</div>
+      <h4>Gas Safe Registered</h4>
+      <p>All engineers fully qualified, insured to £5m, and Gas Safe certified.</p>
+    </div>
+    <div class="why-item">
+      <div class="why-item-num">04</div>
+      <h4>12-Month Guarantee</h4>
+      <p>All parts and labour guaranteed for a full year. Zero exceptions.</p>
+    </div>
+  </div>
+</div>
+
+<!-- REVIEWS -->
+<div class="reviews-section">
+  <div class="section-eyebrow">Customer Reviews</div>
+  <div class="section-heading" style="font-size:44px; margin-bottom:0;">2,000+ FIVE-STAR<br><span class="outline">REVIEWS.</span></div>
+  <div class="reviews-grid">
+    <div class="review-card">
+      <div class="review-stars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
+      <p class="review-text">"Dave came out at 11pm on a Sunday when our boiler packed up. Had it fixed within the hour. Absolutely brilliant service."</p>
+      <div class="review-divider"></div>
+      <div class="review-author">Sarah T. — Islington</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
+      <p class="review-text">"Used twice now — emergency leak and a full bathroom refit. Both times excellent. Very professional and clean."</p>
+      <div class="review-divider"></div>
+      <div class="review-author">Mike R. — Hackney</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
+      <p class="review-text">"Fixed my boiler same day when three other plumbers couldn't come for a week. Professional and on time. Highly recommended."</p>
+      <div class="review-divider"></div>
+      <div class="review-author">Janet W. — Barnet</div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-brand-name">Dave's <span>Plumbing</span></div>
+    <p>Gas Safe registered plumbing and heating engineers serving Greater London since 1998.</p>
+    <p style="margin-top:16px;">📍 Unit 4, Industrial Estate, London N1 5AB<br>Gas Safe No: 123456</p>
+  </div>
+  <div>
+    <div class="footer-heading">Services</div>
+    <a href="#">Emergency Plumbing</a>
+    <a href="#">Boiler Repair</a>
+    <a href="#">Bathroom Fitting</a>
+    <a href="#">Central Heating</a>
+    <a href="#">Drain Unblocking</a>
+  </div>
+  <div>
+    <div class="footer-heading">Company</div>
+    <a href="#">About</a>
+    <a href="#">Reviews</a>
+    <a href="#">Areas Covered</a>
+    <a href="#">Landlord Services</a>
+    <a href="#">Contact</a>
+  </div>
+  <div>
+    <div class="footer-heading">Contact</div>
+    <a href="#">0800 123 4567</a>
+    <a href="#">07700 900 123</a>
+    <a href="#">dave@davesplumbing.co.uk</a>
+    <div style="margin-top:20px; padding:16px; border:1px solid rgba(249,115,22,0.25); background:rgba(249,115,22,0.06);">
+      <div style="font-family:'Barlow',sans-serif; font-size:10px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#f97316; margin-bottom:6px;">Emergency 24/7</div>
+      <div style="font-family:'Barlow',sans-serif; font-weight:900; font-size:20px; color:#f0f0f0;">0800 123 4567</div>
+    </div>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <span>© 2026 Dave's Plumbing Services Ltd.</span>
+  <span>Site by <strong style="color:rgba(240,240,240,0.5)">Falcon Designs</strong></span>
+</div>
+
+</body>
+</html>
