@@ -391,16 +391,30 @@ export default function VideographerTemplate() {
 
         {/* HERO */}
         <section id="hero" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: "0 48px 80px", position: "relative", overflow: "hidden" }}>
+
+          {/* ── Video background ── */}
+          <video
+            autoPlay muted loop playsInline
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", zIndex: 0 }}
+          >
+            <source src="/vg-hero.mp4" type="video/mp4" />
+          </video>
+          {/* Dark overlay — keeps text legible over the video */}
+          <div style={{ position: "absolute", inset: 0, background: "var(--overlay)", zIndex: 1 }} />
+
+          {/* Vertical column lines */}
           {[20, 50, 80].map((p) => (
-            <div key={p} aria-hidden style={{ position: "absolute", top: 0, bottom: 0, left: `${p}%`, width: 1, background: "var(--border)", pointerEvents: "none" }} />
+            <div key={p} aria-hidden style={{ position: "absolute", top: 0, bottom: 0, left: `${p}%`, width: 1, background: "var(--border)", pointerEvents: "none", zIndex: 2 }} />
           ))}
 
-          <div style={{ position: "absolute", top: 96, right: 48, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
+          {/* Location tag */}
+          <div style={{ position: "absolute", top: 96, right: 48, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6, zIndex: 2 }}>
             <span style={{ ...label, fontSize: 10 }}>London — Based</span>
             <span style={{ ...label, fontSize: 10 }}>Available 2026</span>
           </div>
 
-          <div className="vg-hero-clip">
+          {/* Headline */}
+          <div className="vg-hero-clip" style={{ position: "relative", zIndex: 2 }}>
             <h1 ref={heroTitleRef}
               style={{ ...serif, fontSize: "clamp(4rem, 12vw, 11rem)", fontWeight: 400, lineHeight: 0.9, letterSpacing: "-0.02em", color: "var(--fg)" }}>
               MOTION<br />
@@ -408,7 +422,8 @@ export default function VideographerTemplate() {
             </h1>
           </div>
 
-          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginTop: 40, paddingTop: 32, borderTop: "1px solid var(--border)" }}>
+          {/* Bottom bar */}
+          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginTop: 40, paddingTop: 32, borderTop: "1px solid var(--border)", position: "relative", zIndex: 2 }}>
             <p style={{ ...mono, fontSize: 12, letterSpacing: "0.18em", color: "var(--dim)", textTransform: "uppercase", maxWidth: 320, lineHeight: 1.9 }}>
               Award-winning cinematographer<br />based in London, UK
             </p>
@@ -422,7 +437,8 @@ export default function VideographerTemplate() {
             </button>
           </div>
 
-          <div style={{ position: "absolute", bottom: 80, left: "50%", transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
+          {/* Scroll indicator */}
+          <div style={{ position: "absolute", bottom: 80, left: "50%", transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", gap: 12, zIndex: 2 }}>
             <span style={{ ...label, fontSize: 9 }}>Scroll</span>
             <div style={{ width: 1, height: 40, background: "linear-gradient(to bottom, var(--gold), transparent)" }} />
           </div>
