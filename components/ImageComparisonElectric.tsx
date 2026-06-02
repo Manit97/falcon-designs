@@ -303,16 +303,6 @@ export function ImageComparisonElectric({
         </div>
       </motion.div>
 
-      {/* Labels */}
-      <div className="absolute top-5 left-5 z-40 pointer-events-none">
-        <span className="font-display font-bold text-sm tracking-widest uppercase px-4 py-2"
-          style={{ background: '#000000', color: '#f97316' }}>Before</span>
-      </div>
-      <div className="absolute top-5 right-5 z-40 pointer-events-none">
-        <span className="font-display font-bold text-sm tracking-widest uppercase px-4 py-2"
-          style={{ background: '#ffffff', color: '#f97316' }}>After</span>
-      </div>
-
       {/* Hover hint */}
       <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-40 pointer-events-none">
         <span className="font-display text-[10px] tracking-widest uppercase px-3 py-1.5"
