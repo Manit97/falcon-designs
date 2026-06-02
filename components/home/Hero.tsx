@@ -1,17 +1,12 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import ParallaxLayer from "@/components/ParallaxLayer";
 
-// Load the WebGL canvas client-side only (no SSR — browser API)
-const HeroCube = dynamic(() => import("./HeroCube"), { ssr: false });
-
 const WORDS = ["BOLD.", "FAST.", "BUILT", "TO WIN."];
 const TAGLINE = "Web Design & AI Solutions for Ambitious Brands";
 
-// Easing
 const EXPO = [0.16, 1, 0.3, 1] as const;
 
 function WordReveal({ text, delay, outline }: { text: string; delay: number; outline?: boolean }) {
@@ -32,136 +27,183 @@ function WordReveal({ text, delay, outline }: { text: string; delay: number; out
 }
 
 export default function Hero() {
-  const [mounted, setMounted] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const orbRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted]   = useState(false);
+  const wrapperRef  = useRef<HTMLDivElement>(null);
+  const sectionRef  = useRef<HTMLElement>(null);
+  const orbRef      = useRef<HTMLDivElement>(null);
+  const videoRef    = useRef<HTMLVideoElement>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
 
+    /* ── Mouse-tracked glow orb ── */
     const handleMouse = (e: MouseEvent) => {
-      if (!orbRef.current || !containerRef.current) return;
-      const rect = containerRef.current.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width - 0.5) * 60;
-      const y = ((e.clientY - rect.top) / rect.height - 0.5) * 40;
+      if (!orbRef.current || !sectionRef.current) return;
+      const rect = sectionRef.current.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width  - 0.5) * 60;
+      const y = ((e.clientY - rect.top)  / rect.height - 0.5) * 40;
       orbRef.current.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
     };
-
     window.addEventListener("mousemove", handleMouse);
-    return () => window.removeEventListener("mousemove", handleMouse);
+
+    /* ── Scroll-scrub video ── */
+    const onScroll = () => {
+      const wrapper  = wrapperRef.current;
+      const video    = videoRef.current;
+      const bar      = progressRef.current;
+      if (!wrapper || !video || !bar) return;
+
+      const rect       = wrapper.getBoundingClientRect();
+      const scrollable = wrapper.offsetHeight - window.innerHeight;
+      if (scrollable <= 0) return;
+
+      const scrolled = Math.max(0, -rect.top);
+      const p        = Math.min(1, scrolled / scrollable);
+
+      if (video.readyState >= 2 && video.duration) {
+        video.currentTime = p * video.duration;
+      }
+      bar.style.width = `${p * 100}%`;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouse);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
 
   return (
-    <section
-      ref={containerRef}
-      className="relative min-h-screen flex flex-col justify-center overflow-hidden bg-fd-black px-6 md:px-10 pt-24"
-    >
-      {/* Radial orange glow — mouse tracked */}
-      <div
-        ref={orbRef}
-        className="absolute top-1/2 left-1/2 pointer-events-none"
-        style={{
-          transform: "translate(-50%, -50%)",
-          width: "80vw",
-          height: "80vw",
-          maxWidth: 900,
-          maxHeight: 900,
-          background:
-            "radial-gradient(circle, rgba(249,115,22,0.12) 0%, rgba(249,115,22,0.03) 45%, transparent 70%)",
-          transition: "transform 0.8s cubic-bezier(0.16,1,0.3,1)",
-          zIndex: 0,
-        }}
-      />
+    /* 300 vh wrapper — gives scroll room for the video to play */
+    <div ref={wrapperRef} style={{ height: "300vh" }}>
+      <section
+        ref={sectionRef}
+        style={{ position: "sticky", top: 0, height: "100vh", overflow: "hidden" }}
+        className="relative flex flex-col justify-center bg-fd-black"
+      >
+        {/* ── Video background ── */}
+        <video
+          ref={videoRef}
+          src="/hero-video.mp4"
+          muted
+          playsInline
+          preload="auto"
+          style={{
+            position: "absolute", inset: 0,
+            width: "100%", height: "100%",
+            objectFit: "cover",
+            objectPosition: "center",
+          }}
+        />
 
-      {/* Grid lines decoration — parallax: drifts at a slower rate than page scroll */}
-      <ParallaxLayer
-        className="absolute inset-0 pointer-events-none opacity-[0.03]"
-        offset={60}
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",
-          backgroundSize: "80px 80px",
-        }}
-      />
+        {/* Dark tint */}
+        <div
+          className="absolute inset-0"
+          style={{ background: "rgba(8,8,8,0.58)" }}
+        />
 
-      {/* ── Main content — two columns on large screens ── */}
-      <div className="relative z-10 max-w-7xl mx-auto w-full">
-        <div className="grid lg:grid-cols-[58%_1fr] lg:items-center lg:gap-8">
+        {/* Grid lines overlay */}
+        <ParallaxLayer
+          className="absolute inset-0 pointer-events-none opacity-[0.025]"
+          offset={60}
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",
+            backgroundSize: "80px 80px",
+          }}
+        />
 
-          {/* ── LEFT: text content ── */}
-          <div>
-            {/* Label */}
+        {/* Bottom gradient — blends into the next section */}
+        <div
+          className="absolute bottom-0 left-0 right-0 pointer-events-none"
+          style={{ height: "28%", background: "linear-gradient(to bottom, transparent, #080808)" }}
+        />
+
+        {/* Mouse-tracked orange glow orb */}
+        <div
+          ref={orbRef}
+          className="absolute top-1/2 left-1/2 pointer-events-none"
+          style={{
+            transform: "translate(-50%, -50%)",
+            width: "80vw", height: "80vw",
+            maxWidth: 900, maxHeight: 900,
+            background:
+              "radial-gradient(circle, rgba(249,115,22,0.10) 0%, rgba(249,115,22,0.03) 45%, transparent 70%)",
+            transition: "transform 0.8s cubic-bezier(0.16,1,0.3,1)",
+            zIndex: 1,
+          }}
+        />
+
+        {/* Scroll progress bar */}
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-fd-border z-20">
+          <div
+            ref={progressRef}
+            style={{ height: "100%", width: "0%", background: "#f97316", transition: "width 0.05s linear" }}
+          />
+        </div>
+
+        {/* ── Main content ── */}
+        <div className="relative z-10 max-w-7xl mx-auto w-full px-6 md:px-10 pt-24">
+
+          {/* Available label */}
+          {mounted && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: EXPO }}
+              className="flex items-center gap-3 mb-10"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-fd-orange animate-pulse" />
+              <span className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-orange">
+                Available for projects
+              </span>
+            </motion.div>
+          )}
+
+          {/* Headline */}
+          <div className="mb-8">
             {mounted && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, ease: EXPO }}
-                className="flex items-center gap-3 mb-10"
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-fd-orange animate-pulse" />
-                <span className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-orange">
-                  Available for projects
-                </span>
-              </motion.div>
-            )}
-
-            {/* Main headline */}
-            <div className="mb-8">
-              {mounted && (
-                <>
-                  <WordReveal text="BOLD."   delay={0.1} />
-                  <WordReveal text="FAST."   delay={0.18} outline />
-                  <WordReveal text="BUILT"   delay={0.26} />
-                  <WordReveal text="TO WIN." delay={0.34} outline />
-                </>
-              )}
-            </div>
-
-            {/* Tagline + CTA row */}
-            {mounted && (
-              <motion.div
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.7, ease: EXPO }}
-                className="flex flex-col md:flex-row md:items-end justify-between gap-8"
-              >
-                <p className="font-body text-base md:text-lg text-fd-dim max-w-sm leading-relaxed">
-                  {TAGLINE}
-                </p>
-
-                <div className="flex items-center gap-5">
-                  <motion.div whileHover={{ scale: 1.07 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.25, ease: EXPO }}>
-                    <Link
-                      href="/showcase"
-                      className="group font-display font-bold text-xs tracking-widest uppercase bg-fd-orange text-fd-black px-7 py-4 hover:bg-fd-white transition-colors duration-300 flex items-center gap-3"
-                    >
-                      View Our Work
-                      <span className="group-hover:translate-x-1 transition-transform duration-300">↗</span>
-                    </Link>
-                  </motion.div>
-                  <motion.div whileHover={{ scale: 1.07 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.25, ease: EXPO }}>
-                    <Link
-                      href="/contact"
-                      className="font-display font-semibold text-xs tracking-widest uppercase text-fd-dim border border-fd-border px-7 py-4 hover:border-fd-white hover:text-fd-white transition-all duration-300 block"
-                    >
-                      Get a Quote
-                    </Link>
-                  </motion.div>
-                </div>
-              </motion.div>
+              <>
+                <WordReveal text="BOLD."   delay={0.10} />
+                <WordReveal text="FAST."   delay={0.18} outline />
+                <WordReveal text="BUILT"   delay={0.26} />
+                <WordReveal text="TO WIN." delay={0.34} outline />
+              </>
             )}
           </div>
 
-          {/* ── RIGHT: 3D cube — desktop only ── */}
+          {/* Tagline + CTAs */}
           {mounted && (
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1.2, delay: 0.5, ease: EXPO }}
-              className="hidden lg:block"
-              style={{ height: "clamp(340px, 45vw, 560px)" }}
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.7, ease: EXPO }}
+              className="flex flex-col md:flex-row md:items-end justify-between gap-8 max-w-4xl"
             >
-              <HeroCube />
+              <p className="font-body text-base md:text-lg text-fd-dim max-w-sm leading-relaxed">
+                {TAGLINE}
+              </p>
+
+              <div className="flex items-center gap-5">
+                <motion.div whileHover={{ scale: 1.07 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.25, ease: EXPO }}>
+                  <Link
+                    href="/showcase"
+                    className="group font-display font-bold text-xs tracking-widest uppercase bg-fd-orange text-fd-black px-7 py-4 hover:bg-fd-white transition-colors duration-300 flex items-center gap-3"
+                  >
+                    View Our Work
+                    <span className="group-hover:translate-x-1 transition-transform duration-300">↗</span>
+                  </Link>
+                </motion.div>
+                <motion.div whileHover={{ scale: 1.07 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.25, ease: EXPO }}>
+                  <Link
+                    href="/contact"
+                    className="font-display font-semibold text-xs tracking-widest uppercase text-fd-dim border border-fd-border px-7 py-4 hover:border-fd-white hover:text-fd-white transition-all duration-300 block"
+                  >
+                    Get a Quote
+                  </Link>
+                </motion.div>
+              </div>
             </motion.div>
           )}
         </div>
@@ -172,7 +214,7 @@ export default function Hero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.2, duration: 0.8 }}
-            className="absolute bottom-10 right-6 md:right-10 flex flex-col items-center gap-2"
+            className="absolute bottom-8 right-6 md:right-10 flex flex-col items-center gap-2 z-10"
           >
             <div className="w-px h-16 bg-gradient-to-b from-transparent via-fd-orange to-transparent animate-pulse" />
             <span className="font-display text-[9px] tracking-widest3 uppercase text-fd-muted rotate-90 origin-center translate-y-4">
@@ -180,7 +222,8 @@ export default function Hero() {
             </span>
           </motion.div>
         )}
-      </div>
-    </section>
+
+      </section>
+    </div>
   );
 }

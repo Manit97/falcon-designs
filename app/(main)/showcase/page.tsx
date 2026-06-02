@@ -1,7 +1,11 @@
 "use client";
+import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import ParallaxLayer from "@/components/ParallaxLayer";
+
+const HeroCube = dynamic(() => import("@/components/home/HeroCube"), { ssr: false });
 
 const EXPO = [0.16, 1, 0.3, 1] as const;
 const VP   = { once: true, margin: "0px 0px -80px 0px" } as const;
@@ -64,11 +68,14 @@ const UPCOMING = [
 ];
 
 export default function ShowcasePage() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   return (
     <div className="min-h-screen bg-fd-black pt-20">
 
       {/* ── Page header ── */}
-      <section className="py-28 px-6 md:px-10 border-b border-fd-border relative overflow-hidden">
+      <section className="py-20 md:py-28 px-6 md:px-10 border-b border-fd-border relative overflow-hidden">
         <ParallaxLayer
           className="absolute w-[600px] h-[600px] pointer-events-none"
           offset={150}
@@ -78,36 +85,54 @@ export default function ShowcasePage() {
             background: "radial-gradient(circle, rgba(249,115,22,0.08) 0%, transparent 70%)",
           }}
         />
-        <ParallaxLayer offset={45} className="max-w-7xl mx-auto relative z-10">
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, ease: EXPO }}
-            className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-orange mb-5"
-          >
-            Our Showcase
-          </motion.p>
-          <motion.h1
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.9, delay: 0.1, ease: EXPO }}
-            className="font-display font-extrabold leading-none tracking-tightest text-fd-white"
-            style={{ fontSize: "clamp(3rem, 8vw, 7rem)" }}
-          >
-            WORK THAT<br /><span className="text-stroke">SPEAKS.</span>
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.25, ease: EXPO }}
-            className="font-body text-fd-dim text-lg mt-8 max-w-xl leading-relaxed"
-          >
-            Every template is a fully working website — live on the web, production-ready, and available to be customised for your brand.
-          </motion.p>
-        </ParallaxLayer>
+
+        <div className="max-w-7xl mx-auto relative z-10 grid lg:grid-cols-[58%_1fr] lg:items-center lg:gap-8">
+
+          {/* Left: text */}
+          <ParallaxLayer offset={45}>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: EXPO }}
+              className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-orange mb-5"
+            >
+              Our Showcase
+            </motion.p>
+            <motion.h1
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.9, delay: 0.1, ease: EXPO }}
+              className="font-display font-extrabold leading-none tracking-tightest text-fd-white"
+              style={{ fontSize: "clamp(3rem, 8vw, 7rem)" }}
+            >
+              WORK THAT<br /><span className="text-stroke">SPEAKS.</span>
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.25, ease: EXPO }}
+              className="font-body text-fd-dim text-lg mt-8 max-w-xl leading-relaxed"
+            >
+              Every template is a fully working website — live on the web, production-ready, and available to be customised for your brand.
+            </motion.p>
+          </ParallaxLayer>
+
+          {/* Right: 3D cube — desktop only */}
+          {mounted && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1.2, delay: 0.4, ease: EXPO }}
+              className="hidden lg:block"
+              style={{ height: "clamp(300px, 40vw, 500px)" }}
+            >
+              <HeroCube />
+            </motion.div>
+          )}
+        </div>
       </section>
 
       {/* ── Live deployed templates ── */}

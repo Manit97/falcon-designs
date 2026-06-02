@@ -1,5 +1,4 @@
 "use client";
-import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import ParallaxLayer from "@/components/ParallaxLayer";
@@ -146,47 +145,9 @@ const FAQ = [
    PAGE
 ───────────────────────────────────────────── */
 export default function PricingPage() {
-  const wrapperRef    = useRef<HTMLDivElement>(null);
-  const videoRef      = useRef<HTMLVideoElement>(null);
-  const progressRef   = useRef<HTMLDivElement>(null);
-  const overlayRef    = useRef<HTMLDivElement>(null);
-
-  /* ── Scroll-scrub video ──────────────────────────────── */
-  useEffect(() => {
-    const wrapper  = wrapperRef.current;
-    const video    = videoRef.current;
-    const progress = progressRef.current;
-    const overlay  = overlayRef.current;
-    if (!wrapper || !video || !progress || !overlay) return;
-
-    const onScroll = () => {
-      const rect       = wrapper.getBoundingClientRect();
-      const scrollable = wrapper.offsetHeight - window.innerHeight;
-      if (scrollable <= 0) return;
-
-      const scrolled = Math.max(0, -rect.top);
-      const p        = Math.min(1, scrolled / scrollable);
-
-      /* drive video frame */
-      if (video.readyState >= 2 && video.duration) {
-        video.currentTime = p * video.duration;
-      }
-
-      /* progress bar */
-      progress.style.width = `${p * 100}%`;
-
-      /* fade overlay text out as video advances */
-      overlay.style.opacity = String(Math.max(0, 1 - p * 3.5));
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   return (
-    <div className="bg-fd-black">
+    <div className="min-h-screen bg-fd-black pt-20">
       <style>{`
-        /* ── Pricing card check marks ── */
         .plan-feature::before {
           content: "";
           display: inline-block;
@@ -197,139 +158,59 @@ export default function PricingPage() {
           flex-shrink: 0;
           margin-top: 7px;
         }
-        /* ── Subtle grid lines on hero overlay ── */
-        .hero-grid {
-          background-image:
-            linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-          background-size: 80px 80px;
-        }
-        /* ── Scroll hint bounce ── */
-        @keyframes scrollBounce {
-          0%, 100% { transform: translateY(0); opacity: 0.6; }
-          50%       { transform: translateY(8px); opacity: 1; }
-        }
-        .scroll-hint { animation: scrollBounce 2s ease-in-out infinite; }
-        /* ── Plan card glow on hover ── */
         .plan-card-pro { box-shadow: 0 0 0 1px rgba(249,115,22,0.4); }
         .plan-card-pro:hover { box-shadow: 0 0 60px rgba(249,115,22,0.12), 0 0 0 1px rgba(249,115,22,0.7); }
         .plan-card:hover { box-shadow: 0 0 40px rgba(255,255,255,0.03), 0 0 0 1px rgba(255,255,255,0.1); }
-        /* ── FAQ row ── */
         .faq-row:hover .faq-q { color: #f97316; }
       `}</style>
 
       {/* ══════════════════════════════════════════════════
-          HERO — scroll-scrubbed full-screen video
+          HEADER
       ══════════════════════════════════════════════════ */}
-      <div ref={wrapperRef} style={{ height: "300vh" }}>
-        <section style={{ position: "sticky", top: 0, height: "100vh", overflow: "hidden" }}>
-
-          {/* Video */}
-          <video
-            ref={videoRef}
-            src="/hero-video.mp4"
-            muted
-            playsInline
-            preload="auto"
-            style={{
-              position: "absolute", inset: 0,
-              width: "100%", height: "100%",
-              objectFit: "cover",
-              objectPosition: "center",
-            }}
-          />
-
-          {/* Tinted overlay + grid */}
-          <div
-            className="hero-grid absolute inset-0"
-            style={{ background: "rgba(8,8,8,0.55)" }}
-          />
-
-          {/* Bottom gradient — blends into page bg */}
-          <div
-            className="absolute bottom-0 left-0 right-0"
-            style={{
-              height: "35%",
-              background: "linear-gradient(to bottom, transparent, #080808)",
-              pointerEvents: "none",
-            }}
-          />
-
-          {/* Top gradient — blends nav */}
-          <div
-            className="absolute top-0 left-0 right-0"
-            style={{
-              height: "20%",
-              background: "linear-gradient(to top, transparent, rgba(8,8,8,0.6))",
-              pointerEvents: "none",
-            }}
-          />
-
-          {/* Progress bar */}
-          <div className="absolute bottom-0 left-0 right-0 h-px bg-fd-border z-20">
-            <div
-              ref={progressRef}
-              style={{
-                height: "100%",
-                width: "0%",
-                background: "#f97316",
-                transition: "width 0.05s linear",
-              }}
-            />
-          </div>
-
-          {/* Hero text overlay */}
-          <div
-            ref={overlayRef}
-            className="absolute inset-0 flex flex-col justify-center px-6 md:px-10 z-10 pt-20"
-            style={{ transition: "opacity 0.1s linear" }}
+      <section className="py-28 px-6 md:px-10 border-b border-fd-border overflow-hidden relative">
+        <ParallaxLayer
+          className="absolute w-[600px] h-[600px] pointer-events-none"
+          offset={150}
+          style={{
+            top: "calc(50% - 300px)",
+            left: "calc(50% - 300px)",
+            background: "radial-gradient(circle, rgba(249,115,22,0.07) 0%, transparent 70%)",
+          }}
+        />
+        <ParallaxLayer offset={45} className="max-w-7xl mx-auto relative z-10">
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: EXPO }}
+            className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-orange mb-5"
           >
-            <div className="max-w-7xl mx-auto w-full">
-              <motion.p
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, ease: EXPO }}
-                className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-orange mb-6"
-              >
-                Pricing
-              </motion.p>
-
-              <motion.h1
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, delay: 0.1, ease: EXPO }}
-                className="font-display font-extrabold leading-none tracking-tightest text-fd-white"
-                style={{ fontSize: "clamp(3.5rem, 9vw, 8rem)" }}
-              >
-                CLEAR PRICING.
-                <br />
-                <span className="text-stroke">NO SURPRISES.</span>
-              </motion.h1>
-
-              <motion.p
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.9, delay: 0.3, ease: EXPO }}
-                className="font-body text-fd-dim mt-6 max-w-xl leading-relaxed text-lg"
-              >
-                Every project starts with a real conversation — not a quote form.
-                These are our starting points.
-              </motion.p>
-
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1, delay: 0.6 }}
-                className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-              >
-                <span className="font-display text-[9px] tracking-widest3 uppercase text-fd-muted">Scroll</span>
-                <div className="scroll-hint text-fd-muted" style={{ lineHeight: 1 }}>↓</div>
-              </motion.div>
-            </div>
-          </div>
-
-        </section>
-      </div>
+            Pricing
+          </motion.p>
+          <motion.h1
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.9, delay: 0.1, ease: EXPO }}
+            className="font-display font-extrabold leading-none tracking-tightest text-fd-white"
+            style={{ fontSize: "clamp(3rem, 8vw, 7rem)" }}
+          >
+            CLEAR PRICING.
+            <br />
+            <span className="text-stroke">NO SURPRISES.</span>
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.25, ease: EXPO }}
+            className="font-body text-fd-dim text-lg mt-8 max-w-xl leading-relaxed"
+          >
+            Every project starts with a real conversation — not a quote form.
+            These are our starting points.
+          </motion.p>
+        </ParallaxLayer>
+      </section>
 
       {/* ══════════════════════════════════════════════════
           PLANS
