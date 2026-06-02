@@ -53,14 +53,20 @@ export function ImageComparison({
     >
       {/* Before label */}
       <div className="absolute top-5 left-5 z-20">
-        <span className="font-display font-bold text-sm tracking-widest uppercase bg-black px-4 py-2 text-fd-orange">
+        <span
+          className="font-display font-bold text-sm tracking-widest uppercase px-4 py-2"
+          style={{ background: "#000000", color: "#f97316" }}
+        >
           Before
         </span>
       </div>
 
       {/* After label */}
       <div className="absolute top-5 right-5 z-20">
-        <span className="font-display font-bold text-sm tracking-widest uppercase bg-white px-4 py-2 text-fd-orange">
+        <span
+          className="font-display font-bold text-sm tracking-widest uppercase px-4 py-2"
+          style={{ background: "#ffffff", color: "#f97316" }}
+        >
           After
         </span>
       </div>
