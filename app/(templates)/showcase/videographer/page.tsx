@@ -389,70 +389,87 @@ export default function VideographerTemplate() {
           </div>
         </nav>
 
-        {/* HERO */}
-        <section id="hero" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: "0 48px 80px", position: "relative", overflow: "hidden" }}>
+        {/* ══════════════════════════════════════════════════════
+            STICKY SCROLL ZONE  —  300vh total
+            ┌ Video stays pinned for all 200vh of scroll travel ┐
+            │  Phase 1 (0→100vh):  hero content scrolls off     │
+            │  Phase 2 (100→200vh): philosophy sits on video    │
+            └ Stats + rest of site continue normally below      ┘
+        ══════════════════════════════════════════════════════ */}
+        <div style={{ height: "300vh", position: "relative" }}>
 
-          {/* ── Video background ── */}
-          <video
-            autoPlay muted loop playsInline
-            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", zIndex: 0 }}
-          >
-            <source src="/vg-hero.mp4" type="video/mp4" />
-          </video>
-          {/* Dark overlay — keeps text legible over the video */}
-          <div style={{ position: "absolute", inset: 0, background: "var(--overlay)", zIndex: 1 }} />
-
-          {/* Vertical column lines */}
-          {[20, 50, 80].map((p) => (
-            <div key={p} aria-hidden style={{ position: "absolute", top: 0, bottom: 0, left: `${p}%`, width: 1, background: "var(--border)", pointerEvents: "none", zIndex: 2 }} />
-          ))}
-
-          {/* Location tag */}
-          <div style={{ position: "absolute", top: 96, right: 48, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6, zIndex: 2 }}>
-            <span style={{ ...label, fontSize: 10 }}>London — Based</span>
-            <span style={{ ...label, fontSize: 10 }}>Available 2026</span>
+          {/* ── Pinned video — sticky for 200vh of scroll ── */}
+          <div style={{ position: "sticky", top: 0, height: "100vh", overflow: "hidden", zIndex: 0 }}>
+            <video
+              autoPlay muted loop playsInline
+              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }}
+            >
+              <source src="/vg-hero.mp4" type="video/mp4" />
+            </video>
+            {/* Overlay */}
+            <div style={{ position: "absolute", inset: 0, background: "var(--overlay)" }} />
           </div>
 
-          {/* Headline */}
-          <div className="vg-hero-clip" style={{ position: "relative", zIndex: 2 }}>
-            <h1 ref={heroTitleRef}
-              style={{ ...serif, fontSize: "clamp(4rem, 12vw, 11rem)", fontWeight: 400, lineHeight: 0.9, letterSpacing: "-0.02em", color: "var(--fg)" }}>
-              MOTION<br />
-              <em style={{ fontStyle: "italic", color: "var(--gold)" }}>&amp; LIGHT</em>
-            </h1>
+          {/* ── Phase 1: Hero content — absolute at top:0, scrolls naturally upward ── */}
+          <section id="hero" style={{
+            position: "absolute", top: 0, left: 0, right: 0, height: "100vh",
+            display: "flex", flexDirection: "column", justifyContent: "flex-end",
+            padding: "0 48px 80px", zIndex: 1,
+          }}>
+            {/* Column lines */}
+            {[20, 50, 80].map((p) => (
+              <div key={p} aria-hidden style={{ position: "absolute", top: 0, bottom: 0, left: `${p}%`, width: 1, background: "var(--border)", pointerEvents: "none" }} />
+            ))}
+            {/* Location */}
+            <div style={{ position: "absolute", top: 96, right: 48, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
+              <span style={{ ...label, fontSize: 10 }}>London — Based</span>
+              <span style={{ ...label, fontSize: 10 }}>Available 2026</span>
+            </div>
+            {/* Headline */}
+            <div className="vg-hero-clip">
+              <h1 ref={heroTitleRef}
+                style={{ ...serif, fontSize: "clamp(4rem, 12vw, 11rem)", fontWeight: 400, lineHeight: 0.9, letterSpacing: "-0.02em", color: "var(--fg)" }}>
+                MOTION<br />
+                <em style={{ fontStyle: "italic", color: "var(--gold)" }}>&amp; LIGHT</em>
+              </h1>
+            </div>
+            {/* Bottom bar */}
+            <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginTop: 40, paddingTop: 32, borderTop: "1px solid var(--border)" }}>
+              <p style={{ ...mono, fontSize: 12, letterSpacing: "0.18em", color: "var(--dim)", textTransform: "uppercase", maxWidth: 320, lineHeight: 1.9 }}>
+                Award-winning cinematographer<br />based in London, UK
+              </p>
+              <button onClick={() => setReelOpen(true)}
+                onMouseEnter={() => cEnter("PLAY")} onMouseLeave={cLeave}
+                onMouseOver={(e)  => { const b = e.currentTarget as HTMLButtonElement; b.style.borderColor = "var(--gold)"; b.style.color = "var(--gold)"; }}
+                onMouseOut={(e)   => { const b = e.currentTarget as HTMLButtonElement; b.style.borderColor = "var(--border)"; b.style.color = "var(--fg)"; }}
+                style={{ display: "flex", alignItems: "center", gap: 14, background: "transparent", border: "1px solid var(--border)", color: "var(--fg)", padding: "16px 28px", ...mono, fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", transition: "border-color 0.25s, color 0.25s" }}>
+                <span style={{ width: 0, height: 0, borderStyle: "solid", borderWidth: "5px 0 5px 9px", borderColor: "transparent transparent transparent var(--gold)" }} />
+                Watch Showreel
+              </button>
+            </div>
+            {/* Scroll indicator */}
+            <div style={{ position: "absolute", bottom: 80, left: "50%", transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
+              <span style={{ ...label, fontSize: 9 }}>Scroll</span>
+              <div style={{ width: 1, height: 40, background: "linear-gradient(to bottom, var(--gold), transparent)" }} />
+            </div>
+          </section>
+
+          {/* ── Phase 2: Philosophy — absolute at top:100vh, sits on pinned video ── */}
+          <div style={{
+            position: "absolute", top: "100vh", left: 0, right: 0, height: "100vh",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            padding: "0 48px", zIndex: 1,
+          }}>
+            <div style={{ maxWidth: 840, textAlign: "center" }}>
+              <p style={{ ...label, fontSize: 10, color: "var(--gold)", marginBottom: 32, letterSpacing: "0.3em" }}>Philosophy</p>
+              <blockquote style={{ ...serif, fontSize: "clamp(1.7rem, 3.2vw, 2.8rem)", fontWeight: 400, fontStyle: "italic", lineHeight: 1.4, color: "var(--fg)" }}>
+                &ldquo;Every frame is a decision. Every cut, a breath. I make films for people who believe that how something looks is inseparable from what it means.&rdquo;
+              </blockquote>
+            </div>
           </div>
 
-          {/* Bottom bar */}
-          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginTop: 40, paddingTop: 32, borderTop: "1px solid var(--border)", position: "relative", zIndex: 2 }}>
-            <p style={{ ...mono, fontSize: 12, letterSpacing: "0.18em", color: "var(--dim)", textTransform: "uppercase", maxWidth: 320, lineHeight: 1.9 }}>
-              Award-winning cinematographer<br />based in London, UK
-            </p>
-            <button onClick={() => setReelOpen(true)}
-              onMouseEnter={() => cEnter("PLAY")} onMouseLeave={cLeave}
-              onMouseOver={(e)  => { const b = e.currentTarget as HTMLButtonElement; b.style.borderColor = "var(--gold)"; b.style.color = "var(--gold)"; }}
-              onMouseOut={(e)   => { const b = e.currentTarget as HTMLButtonElement; b.style.borderColor = "var(--border)"; b.style.color = "var(--fg)"; }}
-              style={{ display: "flex", alignItems: "center", gap: 14, background: "transparent", border: "1px solid var(--border)", color: "var(--fg)", padding: "16px 28px", ...mono, fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", transition: "border-color 0.25s, color 0.25s" }}>
-              <span style={{ width: 0, height: 0, borderStyle: "solid", borderWidth: "5px 0 5px 9px", borderColor: "transparent transparent transparent var(--gold)" }} />
-              Watch Showreel
-            </button>
-          </div>
-
-          {/* Scroll indicator */}
-          <div style={{ position: "absolute", bottom: 80, left: "50%", transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", gap: 12, zIndex: 2 }}>
-            <span style={{ ...label, fontSize: 9 }}>Scroll</span>
-            <div style={{ width: 1, height: 40, background: "linear-gradient(to bottom, var(--gold), transparent)" }} />
-          </div>
-        </section>
-
-        {/* STATEMENT */}
-        <section style={{ padding: "160px 48px", borderTop: "1px solid var(--border)", overflow: "hidden" }}>
-          <div className="gsap-reveal" style={{ maxWidth: 880, margin: "0 auto", textAlign: "center" }}>
-            <p style={{ ...label, fontSize: 10, color: "var(--gold)", marginBottom: 32 }}>Philosophy</p>
-            <blockquote style={{ ...serif, fontSize: "clamp(1.7rem, 3.5vw, 3rem)", fontWeight: 400, fontStyle: "italic", lineHeight: 1.3, color: "var(--fg)" }}>
-              &ldquo;Every frame is a decision. Every cut, a breath. I make films for people who believe that how something looks is inseparable from what it means.&rdquo;
-            </blockquote>
-          </div>
-        </section>
+        </div>
+        {/* End sticky zone — stats + rest of site continue normally ↓ */}
 
         {/* STATS */}
         <section style={{ borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)" }}>
