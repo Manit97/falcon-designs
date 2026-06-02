@@ -185,10 +185,27 @@ export default function VideographerTemplate() {
   const [reelOpen, setReelOpen] = useState(false);
   const [light,    setLight]    = useState(false);
 
-  const navRef       = useRef<HTMLElement>(null);
-  const heroTitleRef = useRef<HTMLHeadingElement>(null);
-  const projectsRef  = useRef<HTMLDivElement>(null);
-  const trackRef     = useRef<HTMLDivElement>(null);
+  const navRef        = useRef<HTMLElement>(null);
+  const heroTitleRef  = useRef<HTMLHeadingElement>(null);
+  const projectsRef   = useRef<HTMLDivElement>(null);
+  const trackRef      = useRef<HTMLDivElement>(null);
+  const videoFixedRef = useRef<HTMLDivElement>(null);
+  const stickyZoneRef = useRef<HTMLDivElement>(null);
+
+  /* ── Fixed video visibility — scroll-driven (avoids overflow-x:hidden sticky bug) ── */
+  useEffect(() => {
+    const zone = stickyZoneRef.current;
+    const vid  = videoFixedRef.current;
+    if (!zone || !vid) return;
+    const onScroll = () => {
+      const rect   = zone.getBoundingClientRect();
+      const active = rect.top <= 0 && rect.bottom > 0;
+      vid.style.visibility = active ? "visible" : "hidden";
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   /* ── Loader ── */
   useEffect(() => {
@@ -389,32 +406,29 @@ export default function VideographerTemplate() {
           </div>
         </nav>
 
-        {/* ══════════════════════════════════════════════════════
-            STICKY SCROLL ZONE  —  300vh total
-            ┌ Video stays pinned for all 200vh of scroll travel ┐
-            │  Phase 1 (0→100vh):  hero content scrolls off     │
-            │  Phase 2 (100→200vh): philosophy sits on video    │
-            └ Stats + rest of site continue normally below      ┘
-        ══════════════════════════════════════════════════════ */}
-        <div style={{ height: "300vh", position: "relative" }}>
+        {/* ══ Fixed video — hidden until 200vh zone scrolls into view ══ */}
+        <div
+          ref={videoFixedRef}
+          style={{ position: "fixed", inset: 0, zIndex: 1, visibility: "hidden", pointerEvents: "none" }}
+        >
+          <video autoPlay muted loop playsInline
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }}>
+            <source src="/vg-hero.mp4" type="video/mp4" />
+          </video>
+          <div style={{ position: "absolute", inset: 0, background: "var(--overlay)" }} />
+        </div>
 
-          {/* ── Pinned video — sticky for 200vh of scroll ── */}
-          <div style={{ position: "sticky", top: 0, height: "100vh", overflow: "hidden", zIndex: 0 }}>
-            <video
-              autoPlay muted loop playsInline
-              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }}
-            >
-              <source src="/vg-hero.mp4" type="video/mp4" />
-            </video>
-            {/* Overlay */}
-            <div style={{ position: "absolute", inset: 0, background: "var(--overlay)" }} />
-          </div>
+        {/* ══ 200vh normal-flow zone — video appears fixed behind it ══
+            Phase 1 (first 100vh):  hero content visible, then scrolls off
+            Phase 2 (next  100vh):  philosophy quote centred on video
+            Once bottom of zone exits viewport the fixed video hides itself  */}
+        <div ref={stickyZoneRef} style={{ height: "200vh", position: "relative" }}>
 
-          {/* ── Phase 1: Hero content — absolute at top:0, scrolls naturally upward ── */}
+          {/* Phase 1 — Hero */}
           <section id="hero" style={{
-            position: "absolute", top: 0, left: 0, right: 0, height: "100vh",
+            height: "100vh", position: "relative", zIndex: 2,
             display: "flex", flexDirection: "column", justifyContent: "flex-end",
-            padding: "0 48px 80px", zIndex: 1,
+            padding: "0 48px 80px",
           }}>
             {/* Column lines */}
             {[20, 50, 80].map((p) => (
@@ -454,11 +468,11 @@ export default function VideographerTemplate() {
             </div>
           </section>
 
-          {/* ── Phase 2: Philosophy — absolute at top:100vh, sits on pinned video ── */}
+          {/* Phase 2 — Philosophy */}
           <div style={{
-            position: "absolute", top: "100vh", left: 0, right: 0, height: "100vh",
+            height: "100vh", position: "relative", zIndex: 2,
             display: "flex", alignItems: "center", justifyContent: "center",
-            padding: "0 48px", zIndex: 1,
+            padding: "0 48px",
           }}>
             <div style={{ maxWidth: 840, textAlign: "center" }}>
               <p style={{ ...label, fontSize: 10, color: "var(--gold)", marginBottom: 32, letterSpacing: "0.3em" }}>Philosophy</p>
@@ -469,7 +483,7 @@ export default function VideographerTemplate() {
           </div>
 
         </div>
-        {/* End sticky zone — stats + rest of site continue normally ↓ */}
+        {/* End 200vh zone — stats + rest of site follow naturally below ↓ */}
 
         {/* STATS */}
         <section style={{ borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)" }}>
