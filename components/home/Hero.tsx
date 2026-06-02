@@ -18,7 +18,6 @@ export default function Hero() {
   const sectionRef  = useRef<HTMLElement>(null);
   const orbRef      = useRef<HTMLDivElement>(null);
   const videoRef    = useRef<HTMLVideoElement>(null);
-  const progressRef = useRef<HTMLDivElement>(null);
   const overlayRef  = useRef<HTMLDivElement>(null);
   const labelRef    = useRef<HTMLDivElement>(null);
   const ctaRef      = useRef<HTMLDivElement>(null);
@@ -39,8 +38,7 @@ export default function Hero() {
     const onScroll = () => {
       const wrapper = wrapperRef.current;
       const video   = videoRef.current;
-      const bar     = progressRef.current;
-      if (!wrapper || !video || !bar) return;
+      if (!wrapper || !video) return;
 
       const rect       = wrapper.getBoundingClientRect();
       const scrollable = wrapper.offsetHeight - window.innerHeight;
@@ -52,9 +50,6 @@ export default function Hero() {
       if (video.readyState >= 2 && video.duration) {
         video.currentTime = p * video.duration;
       }
-
-      /* progress bar */
-      bar.style.width = `${p * 100}%`;
 
       /* overlay fade-out: 75% → 100% */
       const overlay = overlayRef.current;
@@ -154,13 +149,6 @@ export default function Hero() {
           }}
         />
 
-        {/* Scroll progress bar */}
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-fd-border z-20">
-          <div
-            ref={progressRef}
-            style={{ height: "100%", width: "0%", background: "#f97316", transition: "width 0.05s linear" }}
-          />
-        </div>
 
         {/* ── Content — entire block fades out near end ── */}
         <div
