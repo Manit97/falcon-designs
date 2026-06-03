@@ -36,10 +36,6 @@ export function ZoomParallax() {
 
   const scales = [scale4, scale5, scale6, scale5, scale6, scale8];
 
-  // Fade out the label overlay in the first 25% of scroll
-  const labelOpacity = useTransform(scrollYProgress, [0, 0.25], [1, 0]);
-  const labelY       = useTransform(scrollYProgress, [0, 0.25], [0, -40]);
-
   return (
     <div ref={container} className="relative h-[300vh]">
       <div className="sticky top-0 h-screen overflow-hidden" style={{ background: '#080808' }}>
@@ -86,43 +82,6 @@ export function ZoomParallax() {
             </div>
           </motion.div>
         ))}
-
-        {/* Centre label — fades out on first scroll */}
-        <motion.div
-          style={{ opacity: labelOpacity, y: labelY }}
-          className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center z-10"
-        >
-          <p
-            className="font-display font-semibold text-xs tracking-widest3 uppercase mb-5 flex items-center gap-3"
-            style={{ color: '#f97316' }}
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-[#f97316]" />
-            Live on Vercel
-          </p>
-          <h2
-            className="font-display font-extrabold leading-none tracking-tightest text-center"
-            style={{ fontSize: 'clamp(3rem,8vw,7rem)', color: '#f0f0f0' }}
-          >
-            EVERY SITE,{' '}
-            <span style={{ WebkitTextStroke: '1.5px rgba(240,240,240,0.3)', color: 'transparent' }}>
-              BUILT TO WIN.
-            </span>
-          </h2>
-        </motion.div>
-
-        {/* Scroll cue — bottom centre */}
-        <motion.div
-          style={{ opacity: labelOpacity }}
-          className="pointer-events-none absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10"
-        >
-          <div className="w-px h-12 bg-gradient-to-b from-transparent via-[#f97316] to-transparent animate-pulse" />
-          <span
-            className="font-display text-[9px] tracking-widest3 uppercase rotate-90 origin-center translate-y-4"
-            style={{ color: 'rgba(240,240,240,0.3)' }}
-          >
-            Scroll
-          </span>
-        </motion.div>
 
       </div>
     </div>

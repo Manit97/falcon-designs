@@ -69,10 +69,16 @@ export default function ShowcasePage() {
   useEffect(() => setMounted(true), []);
 
   return (
-    <div className="min-h-screen bg-fd-black pt-20">
+    <div className="min-h-screen bg-fd-black">
 
-      {/* ── Page header ── */}
-      <section className="py-20 md:py-28 px-6 md:px-10 border-b border-fd-border relative overflow-hidden">
+      {/* ── Zoom parallax — full-screen hero ── */}
+      <ZoomParallax />
+
+      {/*
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      SAVED ORIGINAL HERO — restore by uncommenting this block
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      <section className="py-20 md:py-28 px-6 md:px-10 border-b border-fd-border relative overflow-hidden pt-20">
         <ParallaxLayer
           className="absolute w-[600px] h-[600px] pointer-events-none"
           offset={150}
@@ -82,58 +88,77 @@ export default function ShowcasePage() {
             background: "radial-gradient(circle, rgba(249,115,22,0.08) 0%, transparent 70%)",
           }}
         />
-
         <div className="max-w-7xl mx-auto relative z-10 grid lg:grid-cols-[58%_1fr] lg:items-center lg:gap-8">
-
-          {/* Left: text */}
           <ParallaxLayer offset={45}>
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, ease: EXPO }}
+              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }} transition={{ duration: 0.6, ease: EXPO }}
               className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-orange mb-5"
-            >
-              Our Showcase
-            </motion.p>
+            >Our Showcase</motion.p>
             <motion.h1
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.9, delay: 0.1, ease: EXPO }}
+              initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }} transition={{ duration: 0.9, delay: 0.1, ease: EXPO }}
               className="font-display font-extrabold leading-none tracking-tightest text-fd-white"
               style={{ fontSize: "clamp(3rem, 8vw, 7rem)" }}
-            >
-              WORK THAT<br /><span className="text-stroke">SPEAKS.</span>
-            </motion.h1>
+            >WORK THAT<br /><span className="text-stroke">SPEAKS.</span></motion.h1>
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.25, ease: EXPO }}
+              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.25, ease: EXPO }}
               className="font-body text-fd-dim text-lg mt-8 max-w-xl leading-relaxed"
-            >
-              Every template is a fully working website — live on the web, production-ready, and available to be customised for your brand.
-            </motion.p>
+            >Every template is a fully working website — live on the web, production-ready, and available to be customised for your brand.</motion.p>
           </ParallaxLayer>
-
-          {/* Right: 3D cube — desktop only */}
           {mounted && (
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }}
               transition={{ duration: 1.2, delay: 0.4, ease: EXPO }}
-              className="hidden lg:block"
-              style={{ height: "clamp(300px, 40vw, 500px)" }}
-            >
-              <HeroCube />
-            </motion.div>
+              className="hidden lg:block" style={{ height: "clamp(300px, 40vw, 500px)" }}
+            ><HeroCube /></motion.div>
           )}
         </div>
       </section>
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
 
-      {/* ── Zoom parallax template showcase ── */}
-      <ZoomParallax />
+      {/* ── Post-parallax title reveal ── */}
+      <section className="py-28 px-6 md:px-10 border-b border-fd-border relative overflow-hidden">
+        {/* Orange glow */}
+        <div
+          aria-hidden
+          className="absolute pointer-events-none"
+          style={{
+            top: "calc(50% - 300px)", left: "calc(33% - 300px)",
+            width: 600, height: 600,
+            background: "radial-gradient(circle, rgba(249,115,22,0.07) 0%, transparent 70%)",
+          }}
+        />
+        <ParallaxLayer offset={55} className="max-w-7xl mx-auto relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 60, scale: 0.97, filter: "blur(8px)" }}
+            whileInView={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+            viewport={{ once: true, margin: "0px 0px -120px 0px" }}
+            transition={{ duration: 1.1, ease: EXPO }}
+          >
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.15, ease: EXPO }}
+              className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-orange mb-6 flex items-center gap-3"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-fd-orange animate-pulse" />
+              Our Showcase
+            </motion.p>
+            <h1
+              className="font-display font-extrabold leading-none tracking-tightest text-fd-white mb-8"
+              style={{ fontSize: "clamp(3rem, 8vw, 7rem)" }}
+            >
+              WORK THAT<br /><span className="text-stroke">SPEAKS.</span>
+            </h1>
+            <p className="font-body text-fd-dim text-lg max-w-xl leading-relaxed">
+              Every template is a fully working website — live on the web, production-ready, and available to be customised for your brand.
+            </p>
+          </motion.div>
+        </ParallaxLayer>
+      </section>
 
       {/* ── Live deployed templates ── */}
       <section className="py-24 px-6 md:px-10 border-b border-fd-border overflow-hidden">
