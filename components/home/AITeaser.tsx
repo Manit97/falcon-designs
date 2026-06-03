@@ -1,17 +1,44 @@
 "use client";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import Link from "next/link";
 import ParallaxLayer from "@/components/ParallaxLayer";
+import { BotIcon, ClockIcon, MessageIcon, SparklesIcon } from "@/components/icons/AnimatedIcons";
+import type { ComponentType } from "react";
 
 const EXPO = [0.16, 1, 0.3, 1] as const;
 
 const FEATURES = [
-  { icon: "🤖", title: "Available 24/7", desc: "Never miss a lead. Your AI handles enquiries at 3am just as well as 3pm." },
-  { icon: "💬", title: "Instant Responses", desc: "No hold music. No contact forms that go nowhere. Answers in seconds." },
-  { icon: "📅", title: "Books Appointments", desc: "Captures details, checks availability, confirms bookings — all automatically." },
-  { icon: "🎯", title: "Trained On Your Business", desc: "Knows your services, prices, and FAQs. Sounds like you, not like a bot." },
+  { Icon: ClockIcon,    title: "Available 24/7",          desc: "Never miss a lead. Your AI handles enquiries at 3am just as well as 3pm." },
+  { Icon: MessageIcon,  title: "Instant Responses",        desc: "No hold music. No contact forms that go nowhere. Answers in seconds." },
+  { Icon: BotIcon,      title: "Books Appointments",       desc: "Captures details, checks availability, confirms bookings — all automatically." },
+  { Icon: SparklesIcon, title: "Trained On Your Business", desc: "Knows your services, prices, and FAQs. Sounds like you, not like a bot." },
 ];
+
+type IconComponent = ComponentType<{ animate: boolean; size?: number }>;
+
+function FeatureCard({
+  Icon, title, desc, motionProps,
+}: {
+  Icon: IconComponent; title: string; desc: string;
+  motionProps: React.ComponentProps<typeof motion.div>;
+}) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <motion.div
+      {...motionProps}
+      className="bg-fd-card border border-fd-border p-4 hover:border-fd-orange/30 transition-colors duration-300"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <span className="block mb-2 text-fd-orange">
+        <Icon animate={hovered} size={20} />
+      </span>
+      <p className="font-display font-bold text-xs text-fd-white mb-1">{title}</p>
+      <p className="font-body text-[11px] text-fd-muted leading-relaxed">{desc}</p>
+    </motion.div>
+  );
+}
 
 export default function AITeaser() {
   const ref = useRef(null);
@@ -122,18 +149,18 @@ export default function AITeaser() {
 
             {/* Feature chips */}
             <div className="grid grid-cols-2 gap-3">
-              {FEATURES.map((f, i) => (
-                <motion.div
-                  key={f.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={inView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.6, delay: 0.4 + i * 0.08, ease: EXPO }}
-                  className="bg-fd-card border border-fd-border p-4 hover:border-fd-orange/30 transition-colors duration-300"
-                >
-                  <span className="text-lg block mb-2">{f.icon}</span>
-                  <p className="font-display font-bold text-xs text-fd-white mb-1">{f.title}</p>
-                  <p className="font-body text-[11px] text-fd-muted leading-relaxed">{f.desc}</p>
-                </motion.div>
+              {FEATURES.map(({ Icon, title, desc }, i) => (
+                <FeatureCard
+                  key={title}
+                  Icon={Icon}
+                  title={title}
+                  desc={desc}
+                  motionProps={{
+                    initial: { opacity: 0, y: 20 },
+                    animate: inView ? { opacity: 1, y: 0 } : {},
+                    transition: { duration: 0.6, delay: 0.4 + i * 0.08, ease: EXPO },
+                  }}
+                />
               ))}
             </div>
           </motion.div>
