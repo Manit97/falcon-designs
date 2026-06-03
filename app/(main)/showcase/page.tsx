@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import ParallaxLayer from "@/components/ParallaxLayer";
 import { ImageComparisonElectric } from "@/components/ImageComparisonElectric";
+import { ZoomParallax } from "@/components/ZoomParallax";
 
 const HeroCube = dynamic(() => import("@/components/home/HeroCube"), { ssr: false });
 
@@ -130,6 +131,9 @@ export default function ShowcasePage() {
           )}
         </div>
       </section>
+
+      {/* ── Zoom parallax template showcase ── */}
+      <ZoomParallax />
 
       {/* ── Live deployed templates ── */}
       <section className="py-24 px-6 md:px-10 border-b border-fd-border overflow-hidden">
