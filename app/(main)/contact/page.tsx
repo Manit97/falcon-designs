@@ -37,6 +37,29 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-fd-black pt-20">
 
+      {/* ── Quick CTA ── */}
+      <section className="py-8 px-6 md:px-10 bg-fd-surface/50 border-b border-fd-border">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+          >
+            <div>
+              <p className="font-body text-xs text-fd-dim mb-1">Want to see what we can build?</p>
+              <p className="font-display font-semibold text-sm text-fd-white">Take an interactive demo tour first</p>
+            </div>
+            <a
+              href="/ai-widget"
+              className="font-display font-bold text-xs tracking-widest uppercase bg-fd-orange text-fd-black px-6 py-2.5 hover:bg-fd-white transition-colors duration-200 flex-shrink-0"
+            >
+              See Demo →
+            </a>
+          </motion.div>
+        </div>
+      </section>
+
       {/* ── Header ── */}
       <section className="py-28 px-6 md:px-10 border-b border-fd-border overflow-hidden relative">
         <ParallaxLayer

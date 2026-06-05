@@ -2,6 +2,7 @@ import Hero from "@/components/home/Hero";
 import Services from "@/components/home/Services";
 import WorkTeaser from "@/components/home/WorkTeaser";
 import Stats from "@/components/home/Stats";
+import Testimonials from "@/components/home/Testimonials";
 import AITeaser from "@/components/home/AITeaser";
 import ContactCTA from "@/components/home/ContactCTA";
 import Marquee from "@/components/Marquee";
@@ -24,6 +25,7 @@ export default function HomePage() {
       <Services />
       <WorkTeaser />
       <Stats />
+      <Testimonials />
       <Marquee items={MARQUEE_ITEMS} variant="border" speed="slow" reverse />
       <AITeaser />
       <ContactCTA />

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Syne, Inter } from "next/font/google";
 import Cursor from "@/components/Cursor";
 import BurgerMenu from "@/components/BurgerMenu";
+import CookieBanner from "@/components/CookieBanner";
 import "./globals.css";
 
 const syne = Syne({
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Cursor />
         <BurgerMenu />
         {children}
+        <CookieBanner />
       </body>
     </html>
   );
