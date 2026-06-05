@@ -54,7 +54,6 @@ export default function Hero() {
           autoPlay
           playsInline
           preload="auto"
-          loop
           style={{
             position: "absolute", inset: 0,
             width: "100%", height: "100%",
