@@ -1,27 +1,22 @@
 "use client";
 import { useEffect, useRef } from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import ParallaxLayer from "@/components/ParallaxLayer";
 
 const TAGLINE = "Web Design & AI Solutions for Ambitious Brands";
 
-// Each word + whether it uses the outline style + [scrollStart, scrollEnd] as fraction of 300vh
 const WORDS = [
-  { text: "BOLD.",   outline: false, range: [0.00, 0.09] as [number, number] },
-  { text: "FAST.",   outline: true,  range: [0.06, 0.15] as [number, number] },
-  { text: "BUILT",   outline: false, range: [0.12, 0.21] as [number, number] },
-  { text: "TO WIN.", outline: true,  range: [0.18, 0.27] as [number, number] },
+  { text: "BOLD.",   outline: false },
+  { text: "FAST.",   outline: true },
+  { text: "BUILT",   outline: false },
+  { text: "TO WIN.", outline: true },
 ];
 
 export default function Hero() {
-  const wrapperRef  = useRef<HTMLDivElement>(null);
-  const sectionRef  = useRef<HTMLElement>(null);
-  const orbRef      = useRef<HTMLDivElement>(null);
-  const videoRef    = useRef<HTMLVideoElement>(null);
-  const overlayRef  = useRef<HTMLDivElement>(null);
-  const labelRef    = useRef<HTMLDivElement>(null);
-  const ctaRef      = useRef<HTMLDivElement>(null);
-  const wordRefs    = useRef<(HTMLSpanElement | null)[]>([]);
+  const sectionRef = useRef<HTMLElement>(null);
+  const orbRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     /* ── Mouse-tracked glow orb ── */
@@ -34,71 +29,16 @@ export default function Hero() {
     };
     window.addEventListener("mousemove", handleMouse);
 
-    /* ── Scroll driver ── */
-    const onScroll = () => {
-      const wrapper = wrapperRef.current;
-      const video   = videoRef.current;
-      if (!wrapper || !video) return;
-
-      const rect       = wrapper.getBoundingClientRect();
-      const scrollable = wrapper.offsetHeight - window.innerHeight;
-      if (scrollable <= 0) return;
-
-      const p = Math.min(1, Math.max(0, -rect.top / scrollable));
-
-      /* video scrub */
-      if (video.readyState >= 2 && video.duration) {
-        video.currentTime = p * video.duration;
-      }
-
-      /* overlay fade-out: 75% → 100% */
-      const overlay = overlayRef.current;
-      if (overlay) {
-        const fadeOut = p > 0.75 ? Math.max(0, 1 - (p - 0.75) / 0.25) : 1;
-        overlay.style.opacity = String(fadeOut);
-      }
-
-      /* label: fade in 2% → 10% */
-      const labelEl = labelRef.current;
-      if (labelEl) {
-        const lp = Math.min(1, Math.max(0, (p - 0.02) / 0.08));
-        labelEl.style.opacity   = String(lp);
-        labelEl.style.transform = `translateY(${(1 - lp) * 20}px)`;
-      }
-
-      /* word clip-reveals — each word slides up from its overflow mask */
-      WORDS.forEach((word, i) => {
-        const el = wordRefs.current[i];
-        if (!el) return;
-        const [start, end] = word.range;
-        const wp = Math.min(1, Math.max(0, (p - start) / (end - start)));
-        el.style.transform = `translateY(${(1 - wp) * 110}%)`;
-      });
-
-      /* tagline + CTAs: fade in 28% → 38% */
-      const ctaEl = ctaRef.current;
-      if (ctaEl) {
-        const cp = Math.min(1, Math.max(0, (p - 0.28) / 0.10));
-        ctaEl.style.opacity   = String(cp);
-        ctaEl.style.transform = `translateY(${(1 - cp) * 20}px)`;
-      }
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-
     return () => {
       window.removeEventListener("mousemove", handleMouse);
-      window.removeEventListener("scroll", onScroll);
     };
   }, []);
 
   return (
-    <div ref={wrapperRef} style={{ height: "300vh" }}>
-      <section
-        ref={sectionRef}
-        style={{ position: "sticky", top: 0, height: "100vh", overflow: "hidden" }}
-        className="relative flex flex-col justify-center bg-fd-black"
-      >
+    <section
+      ref={sectionRef}
+      className="relative flex flex-col justify-center bg-fd-black min-h-screen overflow-hidden"
+    >
         {/* Video */}
         <video
           ref={videoRef}
@@ -150,48 +90,52 @@ export default function Hero() {
         />
 
 
-        {/* ── Content — entire block fades out near end ── */}
-        <div
-          ref={overlayRef}
-          className="relative z-10 max-w-7xl mx-auto w-full px-6 md:px-10 pt-24"
-        >
+        {/* ── Content ── */}
+        <div className="relative z-10 max-w-7xl mx-auto w-full px-6 md:px-10 pt-24">
           {/* Label — fades in first */}
-          <div
-            ref={labelRef}
-            style={{ opacity: 0, transform: "translateY(20px)" }}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
             className="flex items-center gap-3 mb-10"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-fd-orange animate-pulse" />
             <span className="font-display font-semibold text-xs tracking-widest3 uppercase text-fd-orange">
               Available for projects
             </span>
-          </div>
+          </motion.div>
 
-          {/* Headline — each word clip-reveals individually */}
+          {/* Headline — each word slides up individually */}
           <div className="mb-8">
             {WORDS.map((word, i) => (
               <div key={word.text} className="overflow-hidden">
-                <span
-                  ref={(el) => { wordRefs.current[i] = el; }}
+                <motion.span
+                  initial={{ y: "110%" }}
+                  animate={{ y: "0%" }}
+                  transition={{
+                    duration: 1,
+                    ease: [0.16, 1, 0.3, 1],
+                    delay: 0.3 + i * 0.15,
+                  }}
                   className={`block font-display font-extrabold leading-none tracking-tightest select-none ${
                     word.outline ? "text-stroke" : "text-fd-white"
                   }`}
                   style={{
                     fontSize: "clamp(3.5rem, 11vw, 9.5rem)",
-                    transform: "translateY(110%)",
                     display: "block",
                   }}
                 >
                   {word.text}
-                </span>
+                </motion.span>
               </div>
             ))}
           </div>
 
           {/* Tagline + CTAs — fade in last */}
-          <div
-            ref={ctaRef}
-            style={{ opacity: 0, transform: "translateY(20px)" }}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.9 }}
             className="flex flex-col md:flex-row md:items-end justify-between gap-8 max-w-4xl"
           >
             <p className="font-body text-base md:text-lg text-fd-dim max-w-sm leading-relaxed">
@@ -212,18 +156,10 @@ export default function Hero() {
                 Get a Quote
               </Link>
             </div>
-          </div>
-        </div>
-
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 right-6 md:right-10 flex flex-col items-center gap-2 z-10">
-          <div className="w-px h-16 bg-gradient-to-b from-transparent via-fd-orange to-transparent animate-pulse" />
-          <span className="font-display text-[9px] tracking-widest3 uppercase text-fd-muted rotate-90 origin-center translate-y-4">
-            Scroll
-          </span>
+          </motion.div>
         </div>
 
       </section>
-    </div>
+    </section>
   );
 }
