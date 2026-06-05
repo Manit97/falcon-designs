@@ -19,6 +19,13 @@ export default function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
+    /* ── Auto-play video ── */
+    if (videoRef.current) {
+      videoRef.current.play().catch((err) => {
+        console.log("[hero] Video autoplay failed (expected on some browsers):", err);
+      });
+    }
+
     /* ── Mouse-tracked glow orb ── */
     const handleMouse = (e: MouseEvent) => {
       if (!orbRef.current || !sectionRef.current) return;
@@ -44,8 +51,10 @@ export default function Hero() {
           ref={videoRef}
           src="/hero-video.mp4"
           muted
+          autoPlay
           playsInline
           preload="auto"
+          loop
           style={{
             position: "absolute", inset: 0,
             width: "100%", height: "100%",
@@ -96,7 +105,7 @@ export default function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.6 }}
             className="flex items-center gap-3 mb-10"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-fd-orange animate-pulse" />
@@ -115,7 +124,7 @@ export default function Hero() {
                   transition={{
                     duration: 1,
                     ease: [0.16, 1, 0.3, 1],
-                    delay: 0.3 + i * 0.15,
+                    delay: 0.7 + i * 0.15,
                   }}
                   className={`block font-display font-extrabold leading-none tracking-tightest select-none ${
                     word.outline ? "text-stroke" : "text-fd-white"
@@ -135,7 +144,7 @@ export default function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.9 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 1.3 }}
             className="flex flex-col md:flex-row md:items-end justify-between gap-8 max-w-4xl"
           >
             <p className="font-body text-base md:text-lg text-fd-dim max-w-sm leading-relaxed">
