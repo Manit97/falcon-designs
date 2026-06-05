@@ -154,7 +154,7 @@ export default function ShowcasePage() {
               WORK THAT<br /><span className="text-stroke">SPEAKS.</span>
             </h1>
             <p className="font-body text-fd-dim text-lg max-w-xl leading-relaxed">
-              Every template is a fully working website — live on the web, production-ready, and available to be customised for your brand.
+              These are working examples of our design and development work, live across the web. They showcase what we can do — whether you want something similar, customised to fit your brand, or something entirely new. Tell us your vision, and we'll bring it to life.
             </p>
           </motion.div>
         </ParallaxLayer>
