@@ -20,10 +20,28 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Falcon Designs — World-Class Web Design & AI Solutions",
   description: "We build beautiful, high-performing websites and AI tools for ambitious brands. Based in London.",
+  keywords: "web design, next.js, AI solutions, web development, London",
+  metadataBase: new URL("https://falcondesigns.co.uk"),
   openGraph: {
     title: "Falcon Designs — World-Class Web Design & AI Solutions",
     description: "Beautiful websites and AI tools that convert.",
     type: "website",
+    url: "https://falcondesigns.co.uk",
+    siteName: "Falcon Designs",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Falcon Designs — Web Design & AI Solutions",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Falcon Designs — World-Class Web Design & AI Solutions",
+    description: "Beautiful websites and AI tools that convert.",
+    images: ["/og-image.png"],
   },
 };
 
