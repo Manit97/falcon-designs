@@ -574,112 +574,134 @@ export default function SwiftTradesPage() {
     <div style={{ background: T.bg, color: T.white, minHeight: "100vh" }} className="font-body">
       <SiteHeader />
 
-      {/* ── HERO — Phone number as hero centrepiece ──────────────────────────
-          Taste Skill: VARIANCE 8. The phone number IS the value proposition.
-          Make the single most important action the biggest thing on the page.
+      {/* ── HERO — Split: brand name left / sky blue angled panel right ────────
+          Taste Skill: VARIANCE 8 / MOTION 4. Brand name as anchor. No grid,
+          no decorative patterns — the angled colour block is the visual.
+          Emil: overflow+clip text reveal (entrance only, seen once). No infinite
+          animations. Buttons have scale(0.97) active.
       ─────────────────────────────────────────────────────────────────────── */}
-      <section className="relative min-h-screen flex flex-col justify-center overflow-hidden">
+      <section className="relative min-h-screen flex items-center overflow-hidden">
 
-        {/* Ambient glow — centred on the phone number */}
-        <div className="absolute inset-0 pointer-events-none" style={{
-          background: "radial-gradient(ellipse 90% 60% at 50% 50%, rgba(14,165,233,0.08) 0%, transparent 70%)",
-        }} />
-        {/* Subtle grid */}
-        <div className="absolute inset-0 pointer-events-none opacity-[0.025]" style={{
-          backgroundImage: "linear-gradient(to right,#fff 1px,transparent 1px),linear-gradient(to bottom,#fff 1px,transparent 1px)",
-          backgroundSize: "48px 48px",
-        }} />
-        {/* Diagonal accent line — top-right decorative element */}
-        <div className="absolute top-0 right-0 w-px h-64 opacity-20 pointer-events-none" style={{
-          background: `linear-gradient(to bottom, ${T.blue}, transparent)`,
-          transform: "rotate(30deg) translateX(40px)",
-        }} />
-
-        <div className="relative z-10 max-w-7xl mx-auto px-5 md:px-10 pt-24 pb-16 w-full">
-
-          {/* Live badge */}
+        {/* Sky blue right panel — solid colour, angled left edge, bleeds to edge */}
+        <div className="hidden md:block absolute top-0 right-0 h-full" style={{
+          width: "44%",
+          background: T.blue,
+          clipPath: "polygon(14% 0, 100% 0, 100% 100%, 0% 100%)",
+        }}>
+          {/* "24/7" watermark — large, barely visible, purely decorative */}
+          <div className="absolute inset-0 flex items-center justify-center select-none pointer-events-none overflow-hidden">
+            <p className="font-display font-extrabold leading-none"
+              style={{ fontSize: "clamp(8rem, 20vw, 22rem)", color: "rgba(0,0,0,0.08)", letterSpacing: "-0.05em" }}>
+              24/7
+            </p>
+          </div>
+          {/* Trust panel — bottom of the blue section */}
           <motion.div
-            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: EASE_OUT }}
-            className="inline-flex items-center gap-2.5 mb-12 px-4 py-2"
+            initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7, delay: 0.9, ease: EASE_OUT }}
+            className="absolute bottom-16 left-16 right-8 space-y-5"
+          >
+            {[
+              { value: "97%",       label: "First-fix rate" },
+              { value: "Gas Safe",  label: "Registered engineers" },
+              { value: "12 months", label: "Parts & labour guarantee" },
+            ].map(({ value, label }) => (
+              <div key={label} className="flex items-baseline gap-3">
+                <span className="font-display font-extrabold text-xl" style={{ color: "rgba(0,0,0,0.8)" }}>{value}</span>
+                <span className="font-body text-sm" style={{ color: "rgba(0,0,0,0.45)" }}>{label}</span>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* Left content — 58% width on desktop, full width on mobile */}
+        <div className="relative z-10 w-full md:w-[58%] px-5 md:pl-10 lg:pl-20 pt-28 pb-16">
+
+          {/* Emergency badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: EASE_OUT }}
+            className="inline-flex items-center gap-2.5 mb-10 px-4 py-2"
             style={{ border: `1px solid rgba(239,68,68,0.4)`, background: "rgba(239,68,68,0.07)" }}
           >
             <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: T.red }} />
             <span className="font-display font-semibold text-[10px] tracking-widest uppercase" style={{ color: T.red }}>
-              Emergency Line Open — Engineers On Standby
+              Emergency Engineers On Standby
             </span>
           </motion.div>
 
-          {/* Eyebrow */}
-          <motion.p
-            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1, ease: EASE_OUT }}
-            className="font-display font-semibold text-[10px] tracking-widest uppercase mb-4"
-            style={{ color: T.blue }}
-          >
-            London&apos;s Emergency Plumbers — Available Now
-          </motion.p>
+          {/* Brand name — text reveal via overflow:hidden clip (Emil technique) */}
+          <div className="overflow-hidden mb-1">
+            <motion.p
+              initial={{ y: "110%" }} animate={{ y: 0 }}
+              transition={{ duration: 0.8, delay: 0.08, ease: EASE_OUT }}
+              className="font-display font-extrabold leading-none"
+              style={{ fontSize: "clamp(4rem, 11vw, 10rem)", letterSpacing: "-0.04em", color: T.white }}
+            >SWIFT</motion.p>
+          </div>
+          <div className="overflow-hidden mb-8">
+            <motion.p
+              initial={{ y: "110%" }} animate={{ y: 0 }}
+              transition={{ duration: 0.8, delay: 0.18, ease: EASE_OUT }}
+              className="font-display font-extrabold leading-none"
+              style={{ fontSize: "clamp(4rem, 11vw, 10rem)", letterSpacing: "-0.04em", color: T.blue }}
+            >TRADES</motion.p>
+          </div>
 
-          {/* Thin rule */}
-          <motion.div
+          {/* Rule — slides in from left */}
+          <motion.div className="h-px mb-8"
             initial={{ scaleX: 0, originX: 0 }} animate={{ scaleX: 1 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: EASE_OUT }}
-            className="h-px w-full mb-8"
+            transition={{ duration: 0.9, delay: 0.35, ease: EASE_OUT }}
             style={{ background: `linear-gradient(to right, ${T.blue}, transparent)` }}
           />
 
-          {/* PHONE NUMBER — the hero */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.25, ease: EASE_OUT }}
+          {/* Tagline */}
+          <motion.p
+            initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5, ease: EASE_OUT }}
+            className="font-body text-lg leading-relaxed mb-4 max-w-md"
+            style={{ color: T.dim }}
           >
-            <a href="tel:08001234567" className="block group" style={{ textDecoration: "none" }}>
-              <p className="font-display font-extrabold leading-none tracking-tighter"
-                style={{
-                  fontSize: "clamp(3.5rem, 12vw, 11rem)",
-                  color: T.white,
-                  letterSpacing: "-0.04em",
-                  transition: "color 200ms ease-out",
-                }}
-                onMouseEnter={e => (e.currentTarget.style.color = T.blue)}
-                onMouseLeave={e => (e.currentTarget.style.color = T.white)}
-              >
-                0800 123 4567
-              </p>
-            </a>
+            London&apos;s Gas Safe registered emergency plumbers. Plumbing, boilers, gas, and drainage — fixed fast.
+          </motion.p>
+
+          {/* Phone number — prominent but supporting, not the headline */}
+          <motion.div
+            initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.58, ease: EASE_OUT }}
+            className="flex items-center gap-3 mb-8"
+          >
+            <span style={{ color: T.blue }}><Icons.Phone /></span>
+            <a href="tel:08001234567"
+              className="font-display font-bold"
+              style={{ fontSize: "clamp(1.3rem, 2.5vw, 1.8rem)", color: T.blue, letterSpacing: "-0.02em", transition: "color 180ms ease-out" }}
+              onMouseEnter={e => (e.currentTarget.style.color = T.white)}
+              onMouseLeave={e => (e.currentTarget.style.color = T.blue)}
+            >0800 123 4567</a>
+            <span className="font-display text-[9px] tracking-widest uppercase px-2 py-1"
+              style={{ background: "rgba(239,68,68,0.12)", color: T.red, border: `1px solid rgba(239,68,68,0.3)` }}>
+              No charge before 10pm
+            </span>
           </motion.div>
 
-          {/* Thin rule below number */}
+          {/* CTAs */}
           <motion.div
-            initial={{ scaleX: 0, originX: 0 }} animate={{ scaleX: 1 }}
-            transition={{ duration: 0.8, delay: 0.5, ease: EASE_OUT }}
-            className="h-px w-full mt-8 mb-10"
-            style={{ background: T.border }}
-          />
-
-          {/* Descriptor row */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.55, ease: EASE_OUT }}
-            className="flex flex-col md:flex-row md:items-center justify-between gap-8"
+            initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.65, ease: EASE_OUT }}
+            className="flex flex-col sm:flex-row gap-4 mb-14"
           >
-            <p className="font-body text-lg leading-relaxed max-w-xl" style={{ color: T.dim }}>
-              Plumbing, boilers, gas, and drainage fixed fast by Gas Safe engineers who turn up when they say they will. No call-out charge before 10pm.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
-              <Btn href="tel:08001234567" primary><Icons.Phone /> Call Now</Btn>
-              <Btn href="#contact">Book Online <Icons.ArrowRight /></Btn>
-            </div>
+            <Btn href="tel:08001234567" primary><Icons.Phone /> Call Now</Btn>
+            <Btn href="#contact">Book Online <Icons.ArrowRight /></Btn>
           </motion.div>
 
           {/* Stats bar */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.7, ease: EASE_OUT }}
-            className="grid grid-cols-2 md:grid-cols-4 mt-14 border"
+            initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.75, ease: EASE_OUT }}
+            className="grid grid-cols-2 md:grid-cols-4 border"
             style={{ borderColor: T.border }}
           >
-            {STATS.map(({ value, suffix, label }, i) => (
+            {STATS.map(({ value, suffix, label }) => (
               <div key={label} className="px-6 py-5 border-r last:border-r-0" style={{ borderColor: T.border }}>
                 <p className="font-display font-extrabold text-2xl" style={{ color: T.blue }}>
                   <CountUp target={value} suffix={suffix} />
@@ -690,10 +712,10 @@ export default function SwiftTradesPage() {
           </motion.div>
         </div>
 
-        {/* Scroll line */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.4, duration: 0.8 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2">
-          <div className="w-px h-12 animate-pulse" style={{ background: `linear-gradient(to bottom, transparent, ${T.blue})` }} />
+        {/* Scroll indicator */}
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.3, duration: 0.8 }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:block">
+          <div className="w-px h-12" style={{ background: `linear-gradient(to bottom, transparent, ${T.blue})` }} />
         </motion.div>
       </section>
 
