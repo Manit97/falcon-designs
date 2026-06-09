@@ -226,6 +226,9 @@ const TESTIMONIALS: TItem[] = [
   { tempId: 3, testimonial: "Been on the monthly plan 8 months. Had one call-out — engineer arrived in 25 minutes at 7am on a Sunday. Extraordinary service, worth every penny.", by: "Michael R., Wandsworth", imgSrc: "https://i.pravatar.cc/150?img=4" },
   { tempId: 4, testimonial: "New boiler installed start to finish in one day. Left everything spotless. The 0% finance option made it completely manageable.", by: "Lucy H., Barnet", imgSrc: "https://i.pravatar.cc/150?img=5" },
   { tempId: 5, testimonial: "Found a carbon monoxide issue during the annual service that I had no idea about. Could have been serious. Cannot recommend highly enough.", by: "David O., Southwark", imgSrc: "https://i.pravatar.cc/150?img=6" },
+  { tempId: 6, testimonial: "Leaking radiator called in at 8am, engineer arrived by 10, fixed and gone by 11. No fuss, no mess. Exactly the kind of service you hope for.", by: "Emma W., Haringey", imgSrc: "https://i.pravatar.cc/150?img=7" },
+  { tempId: 7, testimonial: "Gas safety certificate done quickly and professionally. Got the digital copy within minutes. Landlord inspections have never been this painless.", by: "Tom B., Lewisham", imgSrc: "https://i.pravatar.cc/150?img=8" },
+  { tempId: 8, testimonial: "Had them fit a full new bathroom suite over two days. Excellent quality finish, tidy workers, and genuinely great value. Already recommended to three neighbours.", by: "Rachel K., Ealing", imgSrc: "https://i.pravatar.cc/150?img=9" },
 ];
 
 function TestimonialCard({ position, item, onMove, cardSize }: {
