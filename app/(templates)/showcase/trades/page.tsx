@@ -216,6 +216,112 @@ const REVIEWS = [
   { name: "David O.",   area: "Southwark",  stars: 5, source: "Which?",     avatar: "DO", text: "Annual boiler service and they found a carbon monoxide issue I had no idea about. Could have been serious. Cannot recommend highly enough." },
 ];
 
+/* Testimonial carousel data — adapted from REVIEWS with real quote photos */
+const SQRT_5000 = Math.sqrt(5000);
+interface TItem { tempId: number; testimonial: string; by: string; imgSrc: string; }
+const TESTIMONIALS: TItem[] = [
+  { tempId: 0, testimonial: "Boiler packed in at 9pm on a Friday. Engineer arrived by 10:30 and fixed it within the hour. Genuinely impressed — and the price was completely fair.", by: "Sarah M., Hackney", imgSrc: "https://i.pravatar.cc/150?img=1" },
+  { tempId: 1, testimonial: "Full bathroom plumbing refit. Tidy, professional, finished on time and half the price I was quoted elsewhere. Already booked them for the kitchen.", by: "James T., Islington", imgSrc: "https://i.pravatar.cc/150?img=2" },
+  { tempId: 2, testimonial: "Blocked drain sorted in under 20 minutes. Text confirmation, arrived early, cleaned up after themselves. Exactly what you want from a trades company.", by: "Priya K., Camden", imgSrc: "https://i.pravatar.cc/150?img=3" },
+  { tempId: 3, testimonial: "Been on the monthly plan 8 months. Had one call-out — engineer arrived in 25 minutes at 7am on a Sunday. Extraordinary service, worth every penny.", by: "Michael R., Wandsworth", imgSrc: "https://i.pravatar.cc/150?img=4" },
+  { tempId: 4, testimonial: "New boiler installed start to finish in one day. Left everything spotless. The 0% finance option made it completely manageable.", by: "Lucy H., Barnet", imgSrc: "https://i.pravatar.cc/150?img=5" },
+  { tempId: 5, testimonial: "Found a carbon monoxide issue during the annual service that I had no idea about. Could have been serious. Cannot recommend highly enough.", by: "David O., Southwark", imgSrc: "https://i.pravatar.cc/150?img=6" },
+];
+
+function TestimonialCard({ position, item, onMove, cardSize }: {
+  position: number; item: TItem; onMove: (n: number) => void; cardSize: number;
+}) {
+  const isCenter = position === 0;
+  return (
+    <div
+      onClick={() => onMove(position)}
+      className="absolute left-1/2 top-1/2 cursor-pointer"
+      style={{
+        width: cardSize, height: cardSize,
+        padding: 28,
+        background: isCenter ? T.blue : T.card,
+        border: `2px solid ${isCenter ? T.blue : T.border}`,
+        clipPath: "polygon(44px 0%,calc(100% - 44px) 0%,100% 44px,100% 100%,calc(100% - 44px) 100%,44px 100%,0 100%,0 0)",
+        transform: `translate(-50%,-50%) translateX(${(cardSize / 1.5) * position}px) translateY(${isCenter ? -65 : position % 2 ? 15 : -15}px) rotate(${isCenter ? 0 : position % 2 ? 2.5 : -2.5}deg)`,
+        boxShadow: isCenter ? `0 8px 0 4px ${T.surface}` : "none",
+        zIndex: isCenter ? 10 : 0,
+        transition: "transform 500ms cubic-bezier(0.32,0.72,0,1), background 300ms ease, border-color 300ms ease, box-shadow 300ms ease",
+      }}
+    >
+      {/* Cut-corner diagonal line */}
+      <span className="absolute block origin-top-right rotate-45" style={{
+        right: -2, top: 44,
+        width: SQRT_5000, height: 2,
+        background: isCenter ? "rgba(0,0,0,0.15)" : T.border,
+      }} />
+      <img
+        src={item.imgSrc} alt={item.by.split(",")[0]} loading="lazy"
+        className="mb-4 object-cover object-top"
+        style={{ width: 48, height: 56, background: T.surface, boxShadow: `3px 3px 0 ${isCenter ? T.blueDk : T.bg}` }}
+      />
+      <p className="font-body text-sm sm:text-base leading-relaxed font-medium" style={{ color: isCenter ? "#000" : T.white }}>
+        &ldquo;{item.testimonial}&rdquo;
+      </p>
+      <p className="absolute font-body text-xs italic" style={{ bottom: 28, left: 28, right: 28, color: isCenter ? "rgba(0,0,0,0.55)" : T.dim }}>
+        — {item.by}
+      </p>
+    </div>
+  );
+}
+
+function StaggerTestimonials() {
+  const [cardSize, setCardSize] = useState(365);
+  const [list, setList] = useState(TESTIMONIALS);
+
+  const handleMove = useCallback((steps: number) => {
+    setList(prev => {
+      const next = [...prev];
+      if (steps > 0) {
+        for (let i = 0; i < steps; i++) {
+          const item = next.shift(); if (!item) break;
+          next.push({ ...item, tempId: Math.random() });
+        }
+      } else {
+        for (let i = 0; i > steps; i--) {
+          const item = next.pop(); if (!item) break;
+          next.unshift({ ...item, tempId: Math.random() });
+        }
+      }
+      return next;
+    });
+  }, []);
+
+  useEffect(() => {
+    const update = () => setCardSize(window.matchMedia("(min-width: 640px)").matches ? 365 : 290);
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  return (
+    <div className="relative w-full overflow-hidden" style={{ height: 620, background: T.surface, borderTop: `1px solid ${T.border}` }}>
+      {list.map((item, index) => {
+        const mid = list.length % 2 ? (list.length + 1) / 2 : list.length / 2;
+        const position = index - mid;
+        return <TestimonialCard key={item.tempId} item={item} onMove={handleMove} position={position} cardSize={cardSize} />;
+      })}
+      {/* Navigation — Emil: scale(0.97) active, 160ms custom cubic-bezier */}
+      <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 gap-2">
+        {([[-1, "Previous", Icons.ChevronLeft], [1, "Next", Icons.ChevronRight]] as const).map(([step, label, Icon]) => (
+          <button key={label} onClick={() => handleMove(step)} aria-label={`${label} testimonial`}
+            className="flex items-center justify-center"
+            style={{ width: 56, height: 56, background: T.card, border: `2px solid ${T.border}`, color: T.white, transition: "background 160ms cubic-bezier(0.23,1,0.32,1), color 160ms ease-out, transform 160ms cubic-bezier(0.23,1,0.32,1)" }}
+            onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background = T.blue; el.style.color = "#000"; el.style.borderColor = T.blue; }}
+            onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background = T.card; el.style.color = T.white; el.style.borderColor = T.border; }}
+            onMouseDown={e => { (e.currentTarget as HTMLElement).style.transform = "scale(0.97)"; }}
+            onMouseUp={e => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; }}
+          ><Icon /></button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 const BEFORE_AFTER = [
   {
     title: "Burst Pipe Repair",
@@ -789,55 +895,37 @@ export default function SwiftTradesPage() {
         </div>
       </section>
 
-      {/* ── REVIEWS ────────────────────────────────────────────────────────── */}
-      <section id="reviews" ref={reviewsRef} className="py-28 px-5 md:px-10">
-        <div className="max-w-7xl mx-auto">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={reviewsView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6, ease: EASE_OUT }} className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div>
-              <p className="font-display font-semibold text-[10px] tracking-widest uppercase mb-3" style={{ color: T.blue }}>Customer Reviews</p>
-              <h2 className="font-display font-extrabold leading-none" style={{ fontSize: "clamp(2.2rem, 5vw, 4.5rem)", letterSpacing: "-0.03em", color: T.white }}>WHAT THEY SAY.</h2>
-            </div>
-            <div className="flex items-center gap-4 flex-shrink-0">
+      {/* ── REVIEWS — Stagger carousel ─────────────────────────────────────── */}
+      <section id="reviews" ref={reviewsRef}>
+        {/* Header row — padded */}
+        <div className="py-16 px-5 md:px-10" style={{ background: T.bg }}>
+          <div className="max-w-7xl mx-auto">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={reviewsView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6, ease: EASE_OUT }} className="flex flex-col md:flex-row md:items-end justify-between gap-6">
               <div>
-                <p className="font-display font-extrabold text-4xl" style={{ color: T.white }}>4.9</p>
-                <Stars n={5} />
-                <p className="font-body text-xs mt-1" style={{ color: T.muted }}>from 1,400+ reviews</p>
+                <p className="font-display font-semibold text-[10px] tracking-widest uppercase mb-3" style={{ color: T.blue }}>Customer Reviews</p>
+                <h2 className="font-display font-extrabold leading-none" style={{ fontSize: "clamp(2.2rem, 5vw, 4.5rem)", letterSpacing: "-0.03em", color: T.white }}>WHAT THEY SAY.</h2>
               </div>
-              <div className="w-px h-16" style={{ background: T.border }} />
-              <div className="space-y-1">
-                {[["Google","★ 4.9"],["Trustpilot","★ 4.8"],["Which?","★ 4.9"]].map(([src, score]) => (
-                  <div key={src} className="flex items-center gap-2">
-                    <span className="font-display font-bold text-[10px] tracking-widest uppercase" style={{ color: T.muted }}>{src}</span>
-                    <span className="font-display font-bold text-xs" style={{ color: T.blue }}>{score}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {REVIEWS.map((r, i) => (
-              <motion.div key={r.name}
-                initial={{ opacity: 0, y: 30 }} animate={reviewsView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: i * 0.08, ease: EASE_OUT }}
-                className="p-7 flex flex-col gap-5"
-                style={{ background: T.card, border: `1px solid ${T.border}` }}
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 font-display font-bold text-sm" style={{ background: T.blueLt, color: T.blue }}>{r.avatar}</div>
-                    <div>
-                      <p className="font-display font-bold text-sm" style={{ color: T.white }}>{r.name}</p>
-                      <p className="font-display text-[9px] tracking-widest uppercase mt-0.5" style={{ color: T.muted }}>{r.area}, London</p>
-                    </div>
-                  </div>
-                  <span className="font-display font-semibold text-[9px] tracking-widest uppercase px-2 py-1 flex-shrink-0" style={{ border: `1px solid ${T.border}`, color: T.muted }}>{r.source}</span>
+              <div className="flex items-center gap-4 flex-shrink-0">
+                <div>
+                  <p className="font-display font-extrabold text-4xl" style={{ color: T.white }}>4.9</p>
+                  <Stars n={5} />
+                  <p className="font-body text-xs mt-1" style={{ color: T.muted }}>from 1,400+ reviews</p>
                 </div>
-                <Stars n={r.stars} />
-                <p className="font-body text-sm leading-relaxed flex-1" style={{ color: T.dim }}>&ldquo;{r.text}&rdquo;</p>
-              </motion.div>
-            ))}
+                <div className="w-px h-16" style={{ background: T.border }} />
+                <div className="space-y-1">
+                  {[["Google","★ 4.9"],["Trustpilot","★ 4.8"],["Which?","★ 4.9"]].map(([src, score]) => (
+                    <div key={src} className="flex items-center gap-2">
+                      <span className="font-display font-bold text-[10px] tracking-widest uppercase" style={{ color: T.muted }}>{src}</span>
+                      <span className="font-display font-bold text-xs" style={{ color: T.blue }}>{score}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
           </div>
         </div>
+        {/* Full-width stagger carousel — no horizontal padding */}
+        <StaggerTestimonials />
       </section>
 
       {/* ── STATS FULL-BLEED ───────────────────────────────────────────────── */}
