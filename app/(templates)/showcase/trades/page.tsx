@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState, useCallback } from "react";
-import { motion, useInView, useMotionValue, useTransform, animate as fmAnimate } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 
 /* ─────────────────────────────────────────────────────────────────────────────
    DESIGN SYSTEM — Swift Trades v3
@@ -257,28 +257,48 @@ function Stars({ n }: { n: number }) {
 }
 
 function CountUp({ target, suffix, duration = 1.8 }: { target: number; suffix: string; duration?: number }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-40px" });
-  const count = useMotionValue(0);
+  const containerRef = useRef<HTMLSpanElement>(null);
+  const displayRef   = useRef<HTMLSpanElement>(null);
+  const inView = useInView(containerRef, { once: true, margin: "-40px" });
+  const rafId  = useRef(0);
   const isDecimal = target % 1 !== 0;
-
-  /* useTransform reads count and formats it — zero React re-renders */
-  const display = useTransform(count, (v) => {
-    const r = isDecimal ? Math.round(v * 10) / 10 : Math.round(v);
-    return `${r}${suffix}`;
-  });
+  const finalStr  = `${target}${suffix}`;
 
   useEffect(() => {
-    if (!inView) return;
-    const controls = fmAnimate(count, target, {
-      duration,
-      ease: [0.23, 1, 0.32, 1],
-    });
-    return controls.stop;
-  }, [inView, count, target, duration]);
+    const el = displayRef.current;
+    if (!inView || !el) return;
+    cancelAnimationFrame(rafId.current);
+    const startTime = performance.now();
 
-  /* motion.span reads display directly — no state, no layout reflow */
-  return <motion.span ref={ref}>{display}</motion.span>;
+    const tick = (now: number) => {
+      /* Linear easing — no expo slowdown that looks like freezing */
+      const t   = Math.min((now - startTime) / (duration * 1000), 1);
+      const val = target * t;
+      const rounded = isDecimal ? Math.round(val * 10) / 10 : Math.round(val);
+      el.textContent = t >= 1 ? finalStr : `${rounded}${suffix}`;
+      if (t < 1) rafId.current = requestAnimationFrame(tick);
+    };
+
+    rafId.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafId.current);
+  }, [inView, target, suffix, duration, isDecimal, finalStr]);
+
+  /*
+   * CSS grid overlay trick — both spans sit in the same grid cell (1/1).
+   * The ghost span (visibility:hidden) always shows the FINAL value, so the
+   * container is always wide enough for the longest string. The animated span
+   * overlays it. Width never changes → zero layout reflow on every tick.
+   */
+  return (
+    <span ref={containerRef} style={{ display: "inline-grid" }}>
+      <span style={{ gridArea: "1/1", visibility: "hidden", pointerEvents: "none" }} aria-hidden="true">
+        {finalStr}
+      </span>
+      <span ref={displayRef} style={{ gridArea: "1/1", textAlign: "center" }}>
+        0{suffix}
+      </span>
+    </span>
+  );
 }
 
 /* Before/After Slider — Emil: clip-path + pointer capture */
