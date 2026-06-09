@@ -261,18 +261,25 @@ function CountUp({ target, suffix, duration = 1.8 }: { target: number; suffix: s
   const inView = useInView(ref, { once: true, margin: "-40px" });
   const [displayed, setDisplayed] = useState(0);
   const isDecimal = target % 1 !== 0;
+  const rafId = useRef<number>(0);
 
   useEffect(() => {
     if (!inView) return;
+    if (rafId.current) cancelAnimationFrame(rafId.current);
     const start = performance.now();
-    const raf = (now: number) => {
+    const animate = (now: number) => {
       const progress = Math.min((now - start) / (duration * 1000), 1);
       const ease = 1 - Math.pow(1 - progress, 3);
       const val = target * ease;
       setDisplayed(isDecimal ? Math.round(val * 10) / 10 : Math.round(val));
-      if (progress < 1) requestAnimationFrame(raf);
+      if (progress < 1) {
+        rafId.current = requestAnimationFrame(animate);
+      } else {
+        setDisplayed(target); // guarantee exact final value — no end-frame snap
+      }
     };
-    requestAnimationFrame(raf);
+    rafId.current = requestAnimationFrame(animate);
+    return () => { if (rafId.current) cancelAnimationFrame(rafId.current); };
   }, [inView, target, duration, isDecimal]);
 
   return <span ref={ref}>{displayed}{suffix}</span>;
