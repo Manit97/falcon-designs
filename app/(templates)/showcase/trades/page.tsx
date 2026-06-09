@@ -229,6 +229,10 @@ const TESTIMONIALS: TItem[] = [
   { tempId: 6, testimonial: "Leaking radiator called in at 8am, engineer arrived by 10, fixed and gone by 11. No fuss, no mess. Exactly the kind of service you hope for.", by: "Emma W., Haringey", imgSrc: "https://i.pravatar.cc/150?img=7" },
   { tempId: 7, testimonial: "Gas safety certificate done quickly and professionally. Got the digital copy within minutes. Landlord inspections have never been this painless.", by: "Tom B., Lewisham", imgSrc: "https://i.pravatar.cc/150?img=8" },
   { tempId: 8, testimonial: "Had them fit a full new bathroom suite over two days. Excellent quality finish, tidy workers, and genuinely great value. Already recommended to three neighbours.", by: "Rachel K., Ealing", imgSrc: "https://i.pravatar.cc/150?img=9" },
+  { tempId: 9,  testimonial: "Dripping tap turned out to be a faulty pressure valve. Diagnosed and fixed in under an hour. Saved me from what could have been a serious flood.", by: "Mark P., Enfield", imgSrc: "https://i.pravatar.cc/150?img=10" },
+  { tempId: 10, testimonial: "Power flush on the central heating has made a huge difference. Three radiators that never got warm are finally working. Worth every penny.", by: "Claire S., Brent", imgSrc: "https://i.pravatar.cc/150?img=11" },
+  { tempId: 11, testimonial: "Yearly boiler service done properly for once. Engineer checked the flue thoroughly, explained every reading. First time I've actually felt confident in the result.", by: "Ben A., Tower Hamlets", imgSrc: "https://i.pravatar.cc/150?img=12" },
+  { tempId: 12, testimonial: "Emergency drainage call at 11pm. Out-of-hours but no surcharge before 10pm so it was actually affordable. Professional, fast, and sorted first visit.", by: "Fatima N., Newham", imgSrc: "https://i.pravatar.cc/150?img=13" },
 ];
 
 function TestimonialCard({ position, item, onMove, cardSize }: {
@@ -304,7 +308,11 @@ function StaggerTestimonials() {
   return (
     <div className="relative w-full overflow-hidden" style={{ height: 620, background: T.surface, borderTop: `1px solid ${T.border}` }}>
       {list.map((item, index) => {
-        const mid = list.length % 2 ? (list.length + 1) / 2 : list.length / 2;
+        /* Math.floor(n/2) gives true symmetric centre for any n.
+           With 13 items → mid=6, positions -6…+6.
+           (cardSize/1.5)*6 ≈ 1460px from centre — fully off-screen.
+           Recycled card always appears off-screen → no visible pop. */
+        const mid = Math.floor(list.length / 2);
         const position = index - mid;
         return <TestimonialCard key={item.tempId} item={item} onMove={handleMove} position={position} cardSize={cardSize} />;
       })}
