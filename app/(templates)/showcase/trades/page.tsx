@@ -710,24 +710,24 @@ export default function SwiftTradesPage() {
       </div>
 
       {/* ── SERVICES ───────────────────────────────────────────────────────── */}
-      <section id="services" ref={servicesRef} className="py-28 px-5 md:px-10">
+      <section id="services" ref={servicesRef} className="py-28 px-5 md:px-10" style={{ background: "#f8fafc" }}>
         <div className="max-w-7xl mx-auto">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={servicesView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6, ease: EASE_OUT }} className="mb-16">
-            <p className="font-display font-semibold text-[10px] tracking-widest uppercase mb-3" style={{ color: T.blue }}>What We Fix</p>
-            <h2 className="font-display font-extrabold leading-none" style={{ fontSize: "clamp(2.2rem, 5vw, 4.5rem)", letterSpacing: "-0.03em", color: T.white }}>OUR SERVICES.</h2>
+            <p className="font-display font-semibold text-[10px] tracking-widest uppercase mb-3" style={{ color: "#0284c7" }}>What We Fix</p>
+            <h2 className="font-display font-extrabold leading-none" style={{ fontSize: "clamp(2.2rem, 5vw, 4.5rem)", letterSpacing: "-0.03em", color: "#0f172a" }}>OUR SERVICES.</h2>
           </motion.div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 border" style={{ borderColor: T.border }}>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 border" style={{ borderColor: "rgba(14,165,233,0.15)" }}>
             {SERVICES.map((s, i) => (
               <motion.div key={s.title}
                 initial={{ opacity: 0, y: 30 }} animate={servicesView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.6, delay: i * 0.07, ease: EASE_OUT }}
                 className="p-8 border-r border-b relative overflow-hidden"
-                style={{ borderColor: T.border, transition: "background 200ms cubic-bezier(0.23,1,0.32,1)" }}
-                onMouseEnter={e => (e.currentTarget.style.background = T.cardHov)}
-                onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                style={{ borderColor: "rgba(14,165,233,0.15)", background: "#fff", transition: "background 200ms cubic-bezier(0.23,1,0.32,1)" }}
+                onMouseEnter={e => (e.currentTarget.style.background = "#e0f2fe")}
+                onMouseLeave={e => (e.currentTarget.style.background = "#fff")}
               >
                 {/* Clip-path left border reveal on hover — Emil technique */}
-                <div className="absolute left-0 top-0 bottom-0 w-0.5" style={{ background: T.blue, clipPath: "inset(100% 0 0 0)", transition: "clip-path 220ms cubic-bezier(0.23,1,0.32,1)" }}
+                <div className="absolute left-0 top-0 bottom-0 w-0.5" style={{ background: "#0ea5e9", clipPath: "inset(100% 0 0 0)", transition: "clip-path 220ms cubic-bezier(0.23,1,0.32,1)" }}
                   ref={el => {
                     if (!el) return;
                     const p = el.parentElement;
@@ -736,9 +736,9 @@ export default function SwiftTradesPage() {
                     p.addEventListener("mouseleave", () => { el.style.clipPath = "inset(100% 0 0 0)"; });
                   }}
                 />
-                <div className="mb-5" style={{ color: T.blue }}><s.Icon /></div>
-                <h3 className="font-display font-bold text-base mb-3" style={{ color: T.white }}>{s.title}</h3>
-                <p className="font-body text-sm leading-relaxed" style={{ color: T.dim }}>{s.desc}</p>
+                <div className="mb-5" style={{ color: "#0ea5e9" }}><s.Icon /></div>
+                <h3 className="font-display font-bold text-base mb-3" style={{ color: "#0f172a" }}>{s.title}</h3>
+                <p className="font-body text-sm leading-relaxed" style={{ color: "#475569" }}>{s.desc}</p>
               </motion.div>
             ))}
           </div>
