@@ -714,7 +714,7 @@ export default function SwiftTradesPage() {
         <div className="max-w-7xl mx-auto">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={servicesView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6, ease: EASE_OUT }} className="mb-16">
             <p className="font-display font-semibold text-[10px] tracking-widest uppercase mb-3" style={{ color: "#0284c7" }}>What We Fix</p>
-            <h2 className="font-display font-extrabold leading-none" style={{ fontSize: "clamp(2.2rem, 5vw, 4.5rem)", letterSpacing: "-0.03em", color: "#0f172a" }}>OUR SERVICES.</h2>
+            <h2 className="font-display font-extrabold leading-none" style={{ fontSize: "clamp(2.2rem, 5vw, 4.5rem)", letterSpacing: "-0.03em", color: "#0f172a" }}>OUR <span style={{ color: "#0ea5e9" }}>SERVICES.</span></h2>
           </motion.div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 border" style={{ borderColor: "rgba(14,165,233,0.15)" }}>
             {SERVICES.map((s, i) => (
