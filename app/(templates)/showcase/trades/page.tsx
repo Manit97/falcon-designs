@@ -258,45 +258,51 @@ function Stars({ n }: { n: number }) {
 
 function CountUp({ target, suffix, duration = 1.8 }: { target: number; suffix: string; duration?: number }) {
   const containerRef = useRef<HTMLSpanElement>(null);
-  const displayRef   = useRef<HTMLSpanElement>(null);
+  const numRef       = useRef<HTMLSpanElement>(null);
   const inView = useInView(containerRef, { once: true, margin: "-40px" });
   const rafId  = useRef(0);
   const isDecimal = target % 1 !== 0;
-  const finalStr  = `${target}${suffix}`;
+  const finalNum  = String(target);
 
   useEffect(() => {
-    const el = displayRef.current;
+    const el = numRef.current;
     if (!inView || !el) return;
     cancelAnimationFrame(rafId.current);
     const startTime = performance.now();
 
     const tick = (now: number) => {
-      /* Linear easing — no expo slowdown that looks like freezing */
-      const t   = Math.min((now - startTime) / (duration * 1000), 1);
-      const val = target * t;
+      const t       = Math.min((now - startTime) / (duration * 1000), 1);
+      const val     = target * t;
       const rounded = isDecimal ? Math.round(val * 10) / 10 : Math.round(val);
-      el.textContent = t >= 1 ? finalStr : `${rounded}${suffix}`;
+      /* Only write the NUMBER — suffix is a separate static span, never moves */
+      el.textContent = t >= 1 ? finalNum : String(rounded);
       if (t < 1) rafId.current = requestAnimationFrame(tick);
     };
 
     rafId.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafId.current);
-  }, [inView, target, suffix, duration, isDecimal, finalStr]);
+  }, [inView, target, duration, isDecimal, finalNum]);
 
   /*
-   * CSS grid overlay trick — both spans sit in the same grid cell (1/1).
-   * The ghost span (visibility:hidden) always shows the FINAL value, so the
-   * container is always wide enough for the longest string. The animated span
-   * overlays it. Width never changes → zero layout reflow on every tick.
+   * Number and suffix split into separate spans.
+   * — suffix never changes → never shifts
+   * — number uses inline-grid ghost trick → container width fixed at final value
+   * — tabular-nums on both spans → every digit identical width → no per-frame shift
    */
   return (
-    <span ref={containerRef} style={{ display: "inline-grid" }}>
-      <span style={{ gridArea: "1/1", visibility: "hidden", pointerEvents: "none" }} aria-hidden="true">
-        {finalStr}
+    <span ref={containerRef} style={{ display: "inline-flex", alignItems: "baseline" }}>
+      <span style={{ display: "inline-grid" }}>
+        {/* Ghost reserves exact width of final number permanently */}
+        <span style={{ gridArea: "1/1", visibility: "hidden", pointerEvents: "none", fontVariantNumeric: "tabular-nums" }} aria-hidden="true">
+          {finalNum}
+        </span>
+        {/* Animated number — tabular-nums keeps digit widths identical every frame */}
+        <span ref={numRef} style={{ gridArea: "1/1", textAlign: "right", fontVariantNumeric: "tabular-nums" }}>
+          0
+        </span>
       </span>
-      <span ref={displayRef} style={{ gridArea: "1/1", textAlign: "center" }}>
-        0{suffix}
-      </span>
+      {/* Suffix is static — completely outside the animated span, never moves */}
+      <span>{suffix}</span>
     </span>
   );
 }
