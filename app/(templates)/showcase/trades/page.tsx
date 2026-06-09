@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState, useCallback } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useMotionValue, useTransform, animate as fmAnimate } from "framer-motion";
 
 /* ─────────────────────────────────────────────────────────────────────────────
    DESIGN SYSTEM — Swift Trades v3
@@ -259,33 +259,26 @@ function Stars({ n }: { n: number }) {
 function CountUp({ target, suffix, duration = 1.8 }: { target: number; suffix: string; duration?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "-40px" });
-  const rafId = useRef<number>(0);
+  const count = useMotionValue(0);
   const isDecimal = target % 1 !== 0;
 
-  useEffect(() => {
-    const el = ref.current;
-    if (!inView || !el) return;
-    cancelAnimationFrame(rafId.current);
-    const start = performance.now();
-    const animate = (now: number) => {
-      const progress = Math.min((now - start) / (duration * 1000), 1);
-      const ease = 1 - Math.pow(1 - progress, 3);
-      const val = target * ease;
-      const rounded = isDecimal ? Math.round(val * 10) / 10 : Math.round(val);
-      /* Write directly to DOM — bypasses React state entirely.
-         setDisplayed causes 60 re-renders/sec which is what glitches. */
-      el.textContent = `${rounded}${suffix}`;
-      if (progress < 1) {
-        rafId.current = requestAnimationFrame(animate);
-      } else {
-        el.textContent = `${target}${suffix}`;
-      }
-    };
-    rafId.current = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(rafId.current);
-  }, [inView, target, suffix, duration, isDecimal]);
+  /* useTransform reads count and formats it — zero React re-renders */
+  const display = useTransform(count, (v) => {
+    const r = isDecimal ? Math.round(v * 10) / 10 : Math.round(v);
+    return `${r}${suffix}`;
+  });
 
-  return <span ref={ref}>0{suffix}</span>;
+  useEffect(() => {
+    if (!inView) return;
+    const controls = fmAnimate(count, target, {
+      duration,
+      ease: [0.23, 1, 0.32, 1],
+    });
+    return controls.stop;
+  }, [inView, count, target, duration]);
+
+  /* motion.span reads display directly — no state, no layout reflow */
+  return <motion.span ref={ref}>{display}</motion.span>;
 }
 
 /* Before/After Slider — Emil: clip-path + pointer capture */
@@ -828,7 +821,7 @@ export default function SwiftTradesPage() {
             {STATS.map(({ value, suffix, label }) => (
               <div key={label} className="text-center px-8">
                 <p className="font-display font-extrabold leading-none mb-2" style={{ fontSize: "clamp(3rem, 5vw, 5rem)", color: "#000" }}>
-                  {statsView ? <CountUp target={value} suffix={suffix} duration={2} /> : "0"}
+                  <CountUp target={value} suffix={suffix} duration={2} />
                 </p>
                 <p className="font-display font-semibold text-[10px] tracking-widest uppercase" style={{ color: "rgba(0,0,0,0.5)" }}>{label}</p>
               </div>
