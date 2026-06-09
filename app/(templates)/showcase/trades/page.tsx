@@ -259,30 +259,33 @@ function Stars({ n }: { n: number }) {
 function CountUp({ target, suffix, duration = 1.8 }: { target: number; suffix: string; duration?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "-40px" });
-  const [displayed, setDisplayed] = useState(0);
-  const isDecimal = target % 1 !== 0;
   const rafId = useRef<number>(0);
+  const isDecimal = target % 1 !== 0;
 
   useEffect(() => {
-    if (!inView) return;
-    if (rafId.current) cancelAnimationFrame(rafId.current);
+    const el = ref.current;
+    if (!inView || !el) return;
+    cancelAnimationFrame(rafId.current);
     const start = performance.now();
     const animate = (now: number) => {
       const progress = Math.min((now - start) / (duration * 1000), 1);
       const ease = 1 - Math.pow(1 - progress, 3);
       const val = target * ease;
-      setDisplayed(isDecimal ? Math.round(val * 10) / 10 : Math.round(val));
+      const rounded = isDecimal ? Math.round(val * 10) / 10 : Math.round(val);
+      /* Write directly to DOM — bypasses React state entirely.
+         setDisplayed causes 60 re-renders/sec which is what glitches. */
+      el.textContent = `${rounded}${suffix}`;
       if (progress < 1) {
         rafId.current = requestAnimationFrame(animate);
       } else {
-        setDisplayed(target); // guarantee exact final value — no end-frame snap
+        el.textContent = `${target}${suffix}`;
       }
     };
     rafId.current = requestAnimationFrame(animate);
-    return () => { if (rafId.current) cancelAnimationFrame(rafId.current); };
-  }, [inView, target, duration, isDecimal]);
+    return () => cancelAnimationFrame(rafId.current);
+  }, [inView, target, suffix, duration, isDecimal]);
 
-  return <span ref={ref}>{displayed}{suffix}</span>;
+  return <span ref={ref}>0{suffix}</span>;
 }
 
 /* Before/After Slider — Emil: clip-path + pointer capture */
