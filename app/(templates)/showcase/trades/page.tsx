@@ -909,25 +909,25 @@ export default function SwiftTradesPage() {
       {/* ── REVIEWS — Stagger carousel ─────────────────────────────────────── */}
       <section id="reviews" ref={reviewsRef}>
         {/* Header row — padded */}
-        <div className="py-16 px-5 md:px-10" style={{ background: "#f8fafc" }}>
+        <div className="py-16 px-5 md:px-10" style={{ background: T.bg }}>
           <div className="max-w-7xl mx-auto">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={reviewsView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6, ease: EASE_OUT }} className="flex flex-col md:flex-row md:items-end justify-between gap-6">
               <div>
-                <p className="font-display font-semibold text-[10px] tracking-widest uppercase mb-3" style={{ color: "#0284c7" }}>Customer Reviews</p>
-                <h2 className="font-display font-extrabold leading-none" style={{ fontSize: "clamp(2.2rem, 5vw, 4.5rem)", letterSpacing: "-0.03em", color: "#0f172a" }}>WHAT THEY SAY.</h2>
+                <p className="font-display font-semibold text-[10px] tracking-widest uppercase mb-3" style={{ color: T.blue }}>Customer Reviews</p>
+                <h2 className="font-display font-extrabold leading-none" style={{ fontSize: "clamp(2.2rem, 5vw, 4.5rem)", letterSpacing: "-0.03em", color: T.white }}>WHAT THEY SAY.</h2>
               </div>
               <div className="flex items-center gap-4 flex-shrink-0">
                 <div>
-                  <p className="font-display font-extrabold text-4xl" style={{ color: "#0f172a" }}>4.9</p>
+                  <p className="font-display font-extrabold text-4xl" style={{ color: T.white }}>4.9</p>
                   <Stars n={5} />
-                  <p className="font-body text-xs mt-1" style={{ color: "#64748b" }}>from 1,400+ reviews</p>
+                  <p className="font-body text-xs mt-1" style={{ color: T.muted }}>from 1,400+ reviews</p>
                 </div>
-                <div className="w-px h-16" style={{ background: "rgba(14,165,233,0.2)" }} />
+                <div className="w-px h-16" style={{ background: T.border }} />
                 <div className="space-y-1">
                   {[["Google","★ 4.9"],["Trustpilot","★ 4.8"],["Which?","★ 4.9"]].map(([src, score]) => (
                     <div key={src} className="flex items-center gap-2">
-                      <span className="font-display font-bold text-[10px] tracking-widest uppercase" style={{ color: "#64748b" }}>{src}</span>
-                      <span className="font-display font-bold text-xs" style={{ color: "#0284c7" }}>{score}</span>
+                      <span className="font-display font-bold text-[10px] tracking-widest uppercase" style={{ color: T.muted }}>{src}</span>
+                      <span className="font-display font-bold text-xs" style={{ color: T.blue }}>{score}</span>
                     </div>
                   ))}
                 </div>
