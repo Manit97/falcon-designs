@@ -15,28 +15,28 @@ const SERVICES = [
     title: "Web Design & Development",
     desc: "Pixel-perfect, high-performance Next.js websites. We obsess over every detail — from scroll animations to load times.",
     tags: ["Next.js", "TypeScript", "Tailwind", "Framer Motion"],
-    image: "https://images.unsplash.com/photo-1547658719-da2b51169166?q=80&w=1400&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?q=80&w=1400&auto=format&fit=crop",
   },
   {
     id: "02",
     title: "AI Agents & Chatbots",
     desc: "Custom-trained AI assistants that handle bookings, answer questions, and capture leads 24/7. Built on Claude.",
     tags: ["Claude API", "Booking AI", "Lead Capture", "Custom Training"],
-    image: "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?q=80&w=1400&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1400&auto=format&fit=crop",
   },
   {
     id: "03",
     title: "Template Customisation",
     desc: "Start from one of our battle-tested templates and have it transformed into your brand in a single sprint.",
     tags: ["Fast Turnaround", "Branded", "Full Stack", "Deployed"],
-    image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?q=80&w=1400&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1558655146-9f40138edfeb?q=80&w=1400&auto=format&fit=crop",
   },
   {
     id: "04",
     title: "Dashboard & CRM Systems",
     desc: "Internal tools that actually work. Client management, agent oversight, analytics — all in one place.",
     tags: ["Supabase", "Real-time", "Custom", "Scalable"],
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1400&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?q=80&w=1400&auto=format&fit=crop",
   },
 ];
 
@@ -253,10 +253,20 @@ export default function Services() {
                     alt={SERVICES[active].title}
                     className="w-full h-full object-cover block"
                     style={{
-                      transition: "transform 700ms cubic-bezier(0.23,1,0.32,1)",
+                      /* Desaturate + darken so any image sits on the fd-black canvas */
+                      filter: "grayscale(35%) brightness(0.55) contrast(1.05)",
+                      transition: "transform 700ms cubic-bezier(0.23,1,0.32,1), filter 700ms ease",
                     }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "scale(1.04)"; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; }}
+                    onMouseEnter={e => {
+                      const el = e.currentTarget as HTMLElement;
+                      el.style.transform = "scale(1.04)";
+                      el.style.filter = "grayscale(20%) brightness(0.65) contrast(1.05)";
+                    }}
+                    onMouseLeave={e => {
+                      const el = e.currentTarget as HTMLElement;
+                      el.style.transform = "scale(1)";
+                      el.style.filter = "grayscale(35%) brightness(0.55) contrast(1.05)";
+                    }}
                   />
                   {/* Bottom gradient */}
                   <div
