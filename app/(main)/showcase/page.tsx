@@ -61,6 +61,18 @@ const LIVE_PROJECTS = [
     colour: "#c8b887",
     bgColour: "#070707",
   },
+  {
+    id: "dental",
+    title: "Private Dental Practice",
+    category: "Healthcare · Premium",
+    year: "2026",
+    desc: "Light-first premium dentistry template. Before/after drag sliders, animated stat count-up, bento gallery with lightbox, sticky filter pills, and a full booking form — all in a warm sage and ivory palette.",
+    tech: ["Next.js 15", "Framer Motion", "Tailwind CSS", "TypeScript"],
+    href: "/showcase/dental",
+    status: "live",
+    colour: "#5C7A62",
+    bgColour: "#F2EDE6",
+  },
 ];
 
 
