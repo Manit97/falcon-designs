@@ -54,8 +54,14 @@ export default function DentalLayout({ children }: { children: React.ReactNode }
     href.startsWith("#") ? false : pathname === href || pathname === href + "/";
 
   return (
-    <div style={{ background: T.bg, fontFamily: SANS, minHeight: "100dvh" }}>
+    <div id="ivory-dental-root" style={{ background: T.bg, fontFamily: SANS, minHeight: "100dvh" }}>
       <FontLoader />
+      <style>{`
+        #ivory-dental-root a { cursor: pointer !important; }
+        #ivory-dental-root a * { cursor: pointer !important; }
+        #ivory-dental-root button { cursor: pointer !important; }
+        #ivory-dental-root button * { cursor: pointer !important; }
+      `}</style>
 
       {/* ── NAVBAR ── */}
       <header style={{
