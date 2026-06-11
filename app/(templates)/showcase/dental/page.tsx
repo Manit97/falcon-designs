@@ -88,6 +88,7 @@ function BeforeAfterSlider({ before, after, label }: { before: string; after: st
 
 // ── Navbar ────────────────────────────────────────────────────────────────────
 const NAV_LINKS = [
+  { label: "Services",   id: "section-services" },
   { label: "Treatments", id: "section-treatments" },
   { label: "Our Team",   id: "section-team" },
   { label: "Gallery",    id: "section-gallery" },
@@ -329,6 +330,132 @@ export default function DentalShowcase() {
               <div style={{ fontSize: "0.7rem", fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: T.textLt }}>{s.label}</div>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* ── SERVICES ─────────────────────────────────────────────────────── */}
+      <section id="section-services" style={{ background: T.surface, padding: "6rem 2rem", borderTop: `1px solid ${T.border}` }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+
+          {/* Header */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4rem", alignItems: "end", marginBottom: "4rem" }}>
+            <div>
+              <p style={{ fontFamily: SANS, fontSize: "0.68rem", fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", color: T.sage, marginBottom: "0.75rem" }}>How we care for you</p>
+              <h2 style={{ fontFamily: SERIF, fontSize: "clamp(2rem,4vw,3rem)", fontWeight: 500, color: T.text, lineHeight: 1.1 }}>
+                Every aspect of your<br /><em style={{ color: T.sage }}>dental health, covered.</em>
+              </h2>
+            </div>
+            <p style={{ fontSize: "0.9rem", color: T.textMd, lineHeight: "1.8", alignSelf: "end" }}>
+              From your very first visit to ongoing preventive care and complex smile transformations, Ivory Dental offers a complete suite of services designed around you — not a one-size-fits-all approach.
+            </p>
+          </div>
+
+          {/* Main services grid — 3 featured + 5 supporting */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 2, background: T.border, marginBottom: 2 }}>
+            {[
+              {
+                label: "New Patient Journey",
+                icon: (
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={T.sage} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                  </svg>
+                ),
+                desc: "A dedicated 60-minute welcome consultation. We review your dental history, take digital X-rays, assess your gums and bite, and build a completely personalised care plan — no rushing, no pressure.",
+                tag: "Complimentary assessment",
+              },
+              {
+                label: "Dental Care Plans",
+                icon: (
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={T.sage} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  </svg>
+                ),
+                desc: "Our monthly membership plan covers two check-ups, two hygiene visits, all X-rays and a 10% discount on all treatments. From £18/month — better value than pay-as-you-go, with no insurance complexity.",
+                tag: "From £18 / month",
+              },
+              {
+                label: "Sedation Dentistry",
+                icon: (
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={T.sage} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                  </svg>
+                ),
+                desc: "Conscious IV sedation and oral sedation options for anxious patients, complex procedures or those who simply prefer to be fully relaxed. You remain safe and responsive — but calm, comfortable and virtually unaware of the treatment.",
+                tag: "Anxiety-free",
+              },
+            ].map(s => (
+              <motion.div key={s.label}
+                whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 20 }} viewport={{ once: true }} transition={{ duration: 0.5, ease: EASE }}
+                style={{ background: T.white, padding: "2.5rem", display: "flex", flexDirection: "column", gap: "1.25rem" }}
+              >
+                <div style={{ width: 52, height: 52, background: T.sageLt, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  {s.icon}
+                </div>
+                <div>
+                  <p style={{ fontFamily: SANS, fontSize: "0.65rem", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: T.sage, marginBottom: "0.5rem" }}>{s.tag}</p>
+                  <h3 style={{ fontFamily: SERIF, fontSize: "1.25rem", fontWeight: 500, color: T.text, marginBottom: "0.75rem" }}>{s.label}</h3>
+                  <p style={{ fontSize: "0.84rem", color: T.textMd, lineHeight: "1.75" }}>{s.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Supporting services — horizontal list */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 2, background: T.border }}>
+            {[
+              {
+                label: "Family Dentistry",
+                icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={T.sage} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
+                desc: "Appointments for the whole family from age 3 upward. NHS-aligned fees for under-18s.",
+              },
+              {
+                label: "Corporate Dental",
+                icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={T.sage} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>,
+                desc: "Group care plans, lunchtime appointments and on-site health days for businesses across Central London.",
+              },
+              {
+                label: "Digital Smile Design",
+                icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={T.sage} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
+                desc: "Preview your new smile digitally before any treatment begins. Software-mapped to your face and bone structure.",
+              },
+              {
+                label: "Dental Finance",
+                icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={T.sage} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>,
+                desc: "0% interest finance on treatments over £500. Spread the cost over 12 months with no hidden fees.",
+              },
+              {
+                label: "Oral Cancer Screening",
+                icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={T.sage} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>,
+                desc: "VELscope screening included at every check-up. Early detection saves lives — it takes under 2 minutes.",
+              },
+            ].map((s, i) => (
+              <motion.div key={s.label}
+                whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 16 }} viewport={{ once: true }} transition={{ duration: 0.45, delay: i * 0.07, ease: EASE }}
+                style={{ background: T.bg, padding: "2rem 1.75rem", cursor: "default", transition: "background 250ms" }}
+                onMouseEnter={e => (e.currentTarget.style.background = T.white)}
+                onMouseLeave={e => (e.currentTarget.style.background = T.bg)}
+              >
+                <div style={{ color: T.sage, marginBottom: "1rem" }}>{s.icon}</div>
+                <h4 style={{ fontFamily: SERIF, fontSize: "1rem", fontWeight: 500, color: T.text, marginBottom: "0.5rem" }}>{s.label}</h4>
+                <p style={{ fontSize: "0.8rem", color: T.textLt, lineHeight: "1.7" }}>{s.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Bottom CTA strip */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1.5rem", marginTop: "3rem", padding: "2rem 2.5rem", background: T.sage }}>
+            <div>
+              <p style={{ fontFamily: SERIF, fontSize: "1.2rem", fontWeight: 500, color: "#fff", marginBottom: "0.25rem" }}>Not sure where to start?</p>
+              <p style={{ fontSize: "0.83rem", color: "rgba(255,255,255,0.75)", fontFamily: SANS }}>Book a complimentary consultation and we'll guide you through every option.</p>
+            </div>
+            <button
+              onClick={() => scrollTo("section-contact")}
+              style={{ padding: "0.875rem 2.25rem", background: T.white, color: T.sage, fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", border: "none", cursor: "pointer", flexShrink: 0, transition: "background 200ms, color 200ms" }}
+              onMouseEnter={e => { e.currentTarget.style.background = T.sageLt; }}
+              onMouseLeave={e => { e.currentTarget.style.background = T.white; }}
+            >Book a free consultation</button>
+          </div>
+
         </div>
       </section>
 
