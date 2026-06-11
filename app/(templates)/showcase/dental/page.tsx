@@ -124,7 +124,7 @@ export default function DentalHome() {
             From routine check-ups to full smile transformations, every treatment is delivered with the precision, artistry and personal attention you deserve.
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
-            <Link href={`${BASE}#section-contact`} style={{ padding: "0.875rem 2rem", background: T.sage, color: "#fff", fontSize: "0.72rem", fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", textDecoration: "none", transition: "background 220ms" }}
+            <Link href={`${BASE}/book`} style={{ padding: "0.875rem 2rem", background: T.sage, color: "#fff", fontSize: "0.72rem", fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", textDecoration: "none", transition: "background 220ms" }}
               onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = T.sageDk}
               onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = T.sage}>
               Book a consultation
@@ -306,13 +306,13 @@ export default function DentalHome() {
             Book a consultation today and let us show you exactly what's possible. Complimentary smile assessment included.
           </p>
           <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
-            <div style={{ padding: "0.875rem 2rem", background: T.sage, color: "#fff", fontSize: "0.72rem", fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", cursor: "pointer", transition: "background 220ms" }}
-              onMouseEnter={e => (e.currentTarget.style.background = T.sageDk)} onMouseLeave={e => (e.currentTarget.style.background = T.sage)}>
+            <Link href={`${BASE}/book`} style={{ padding: "0.875rem 2rem", background: T.sage, color: "#fff", fontSize: "0.72rem", fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", textDecoration: "none", transition: "background 220ms" }}
+              onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = T.sageDk} onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = T.sage}>
               Book your consultation
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", color: "#fff", fontSize: "0.72rem", fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", border: "1.5px solid rgba(255,255,255,0.4)", padding: "0.875rem 2rem", cursor: "pointer" }}>
-              020 1234 5678
-            </div>
+            </Link>
+            <Link href={`${BASE}/contact`} style={{ display: "flex", alignItems: "center", gap: "0.5rem", color: "#fff", fontSize: "0.72rem", fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", border: "1.5px solid rgba(255,255,255,0.4)", padding: "0.875rem 2rem", textDecoration: "none" }}>
+              Contact Us
+            </Link>
           </div>
         </div>
       </section>

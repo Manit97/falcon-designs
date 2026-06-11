@@ -200,7 +200,7 @@ export default function ServicesPage() {
           Not sure which service is right for you? Come in and we'll guide you through every option — no charge, no pressure.
         </p>
         <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
-          <Link href={`${BASE}#section-contact`}
+          <Link href={`${BASE}/book`}
             style={{ padding: "0.875rem 2.25rem", background: T.white, color: T.sage, fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", textDecoration: "none", transition: "background 200ms" }}
             onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = T.sageLt}
             onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = T.white}>

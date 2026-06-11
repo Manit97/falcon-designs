@@ -22,7 +22,7 @@ const NAV_LINKS = [
   { label: "Treatments", href: `${BASE}#section-treatments` },
   { label: "About Us",   href: `${BASE}/about` },
   { label: "Gallery",    href: `${BASE}#section-gallery` },
-  { label: "Contact",    href: `${BASE}#section-contact` },
+  { label: "Contact",    href: `${BASE}/contact` },
 ];
 
 function FontLoader() {
@@ -99,7 +99,7 @@ export default function DentalLayout({ children }: { children: React.ReactNode }
                 onMouseLeave={e => { if (!isActive(l.href)) (e.currentTarget as HTMLElement).style.color = T.textMd; }}
               >{l.label}</Link>
             ))}
-            <Link href={`${BASE}#section-contact`}
+            <Link href={`${BASE}/book`}
               style={{ padding: "0.65rem 1.4rem", background: T.sage, color: "#fff", fontSize: "0.72rem", fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", textDecoration: "none", cursor: "pointer", userSelect: "none", transition: "background 200ms" }}
               onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = T.sageDk}
               onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = T.sage}
@@ -131,6 +131,8 @@ export default function DentalLayout({ children }: { children: React.ReactNode }
               { label: "Treatments", href: `${BASE}#section-treatments` },
               { label: "About Us",   href: `${BASE}/about` },
               { label: "Gallery",    href: `${BASE}#section-gallery` },
+              { label: "Contact",    href: `${BASE}/contact` },
+              { label: "Book",       href: `${BASE}/book` },
             ].map(l => (
               <Link key={l.label} href={l.href} style={{ display: "block", fontSize: "0.82rem", color: "rgba(255,255,255,0.55)", textDecoration: "none", cursor: "pointer", userSelect: "none", marginBottom: "0.55rem", transition: "color 180ms" }}
                 onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "#fff"}

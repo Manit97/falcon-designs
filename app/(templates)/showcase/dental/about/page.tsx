@@ -232,7 +232,7 @@ export default function AboutPage() {
         <h2 style={{ fontFamily: SERIF, fontSize: "clamp(1.8rem,3.5vw,2.8rem)", fontWeight: 500, color: T.text, marginBottom: "1.25rem" }}>Book your first appointment</h2>
         <p style={{ fontSize: "0.9rem", color: T.textLt, maxWidth: 440, margin: "0 auto 2rem", lineHeight: "1.75" }}>New patients receive a complimentary smile assessment — a full examination with no obligation to proceed.</p>
         <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
-          <Link href={`${BASE}#section-contact`}
+          <Link href={`${BASE}/book`}
             style={{ padding: "0.875rem 2.25rem", background: T.sage, color: "#fff", fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", textDecoration: "none", transition: "background 220ms" }}
             onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = T.sageDk}
             onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = T.sage}>
