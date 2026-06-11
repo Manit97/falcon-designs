@@ -68,7 +68,7 @@ export default function DentalLayout({ children }: { children: React.ReactNode }
         <nav style={{ maxWidth: 1280, margin: "0 auto", padding: "0 2rem", height: 68, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
 
           {/* Logo */}
-          <Link href={BASE} style={{ display: "flex", alignItems: "center", gap: "0.6rem", textDecoration: "none" }}>
+          <Link href={BASE} style={{ display: "flex", alignItems: "center", gap: "0.6rem", textDecoration: "none", cursor: "pointer" }}>
             <svg width="26" height="26" viewBox="0 0 28 28" fill="none">
               <path d="M14 3C10 3 7 6 7 9c0 2 .5 3.5 1 5l2 8c.3 1.2 1 2 2 2s1.5-.8 2-2l1-4 1 4c.5 1.2 1.2 2 2 2s1.7-.8 2-2l2-8c.5-1.5 1-3 1-5 0-3-3-6-7-6z" fill={T.sage} />
             </svg>
@@ -83,6 +83,8 @@ export default function DentalLayout({ children }: { children: React.ReactNode }
                   fontSize: "0.78rem", fontWeight: 500, letterSpacing: "0.05em",
                   color: isActive(l.href) ? T.sage : T.textMd,
                   textDecoration: "none",
+                  cursor: "pointer",
+                  userSelect: "none",
                   borderBottom: isActive(l.href) ? `1.5px solid ${T.sage}` : "1.5px solid transparent",
                   paddingBottom: "2px",
                   transition: "color 180ms, border-color 180ms",
@@ -92,7 +94,7 @@ export default function DentalLayout({ children }: { children: React.ReactNode }
               >{l.label}</Link>
             ))}
             <Link href={`${BASE}#section-contact`}
-              style={{ padding: "0.65rem 1.4rem", background: T.sage, color: "#fff", fontSize: "0.72rem", fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", textDecoration: "none", transition: "background 200ms" }}
+              style={{ padding: "0.65rem 1.4rem", background: T.sage, color: "#fff", fontSize: "0.72rem", fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", textDecoration: "none", cursor: "pointer", userSelect: "none", transition: "background 200ms" }}
               onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = T.sageDk}
               onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = T.sage}
             >Book Now</Link>
@@ -124,7 +126,7 @@ export default function DentalLayout({ children }: { children: React.ReactNode }
               { label: "About Us",   href: `${BASE}/about` },
               { label: "Gallery",    href: `${BASE}#section-gallery` },
             ].map(l => (
-              <Link key={l.label} href={l.href} style={{ display: "block", fontSize: "0.82rem", color: "rgba(255,255,255,0.55)", textDecoration: "none", marginBottom: "0.55rem", transition: "color 180ms" }}
+              <Link key={l.label} href={l.href} style={{ display: "block", fontSize: "0.82rem", color: "rgba(255,255,255,0.55)", textDecoration: "none", cursor: "pointer", userSelect: "none", marginBottom: "0.55rem", transition: "color 180ms" }}
                 onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "#fff"}
                 onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.55)"}
               >{l.label}</Link>
