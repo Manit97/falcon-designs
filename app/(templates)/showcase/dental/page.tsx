@@ -87,11 +87,22 @@ function BeforeAfterSlider({ before, after, label }: { before: string; after: st
 }
 
 // ── Navbar ────────────────────────────────────────────────────────────────────
-const NAV_LINKS = ["Treatments", "Our Team", "Gallery", "Contact"];
+const NAV_LINKS = [
+  { label: "Treatments", id: "section-treatments" },
+  { label: "Our Team",   id: "section-team" },
+  { label: "Gallery",    id: "section-gallery" },
+  { label: "Contact",    id: "section-contact" },
+];
+
+function scrollTo(id: string) {
+  const shell = document.getElementById("dental-shell");
+  const el    = document.getElementById(id);
+  if (!shell || !el) return;
+  shell.scrollTo({ top: el.offsetTop - 68, behavior: "smooth" });
+}
 
 function DentalNav() {
   const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen]         = useState(false);
   useEffect(() => {
     const el = document.getElementById("dental-shell");
     if (!el) return;
@@ -100,25 +111,28 @@ function DentalNav() {
     return () => el.removeEventListener("scroll", onScroll);
   }, []);
   return (
-    <>
-      <header style={{ position: "sticky", top: 0, zIndex: 200, background: scrolled ? "rgba(250,250,248,0.96)" : "transparent", backdropFilter: scrolled ? "blur(12px)" : "none", borderBottom: `1px solid ${scrolled ? T.border : "transparent"}`, transition: "all 300ms", fontFamily: SANS }}>
-        <nav style={{ maxWidth: 1280, margin: "0 auto", padding: "0 2rem", height: 68, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
-            <svg width="26" height="26" viewBox="0 0 28 28" fill="none"><path d="M14 3C10 3 7 6 7 9c0 2 .5 3.5 1 5l2 8c.3 1.2 1 2 2 2s1.5-.8 2-2l1-4 1 4c.5 1.2 1.2 2 2 2s1.7-.8 2-2l2-8c.5-1.5 1-3 1-5 0-3-3-6-7-6z" fill={T.sage} /></svg>
-            <span style={{ fontFamily: SERIF, fontSize: "1.1rem", fontWeight: 600, color: T.text }}>Ivory Dental</span>
-          </div>
-          <div style={{ display: "flex", gap: "2.25rem", alignItems: "center" }}>
-            {NAV_LINKS.map(l => (
-              <span key={l} style={{ fontSize: "0.78rem", fontWeight: 500, letterSpacing: "0.05em", color: T.textMd, cursor: "default" }}>{l}</span>
-            ))}
-            <div style={{ padding: "0.65rem 1.4rem", background: T.sage, color: "#fff", fontSize: "0.72rem", fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", cursor: "pointer", transition: "background 200ms" }}
-              onMouseEnter={e => (e.currentTarget.style.background = T.sageDk)}
-              onMouseLeave={e => (e.currentTarget.style.background = T.sage)}
-            >Book Now</div>
-          </div>
-        </nav>
-      </header>
-    </>
+    <header style={{ position: "sticky", top: 0, zIndex: 200, background: scrolled ? "rgba(250,250,248,0.96)" : "transparent", backdropFilter: scrolled ? "blur(12px)" : "none", borderBottom: `1px solid ${scrolled ? T.border : "transparent"}`, transition: "all 300ms", fontFamily: SANS }}>
+      <nav style={{ maxWidth: 1280, margin: "0 auto", padding: "0 2rem", height: 68, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <button onClick={() => scrollTo("dental-hero")} style={{ display: "flex", alignItems: "center", gap: "0.6rem", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+          <svg width="26" height="26" viewBox="0 0 28 28" fill="none"><path d="M14 3C10 3 7 6 7 9c0 2 .5 3.5 1 5l2 8c.3 1.2 1 2 2 2s1.5-.8 2-2l1-4 1 4c.5 1.2 1.2 2 2 2s1.7-.8 2-2l2-8c.5-1.5 1-3 1-5 0-3-3-6-7-6z" fill={T.sage} /></svg>
+          <span style={{ fontFamily: SERIF, fontSize: "1.1rem", fontWeight: 600, color: T.text }}>Ivory Dental</span>
+        </button>
+        <div style={{ display: "flex", gap: "2.25rem", alignItems: "center" }}>
+          {NAV_LINKS.map(l => (
+            <button key={l.id} onClick={() => scrollTo(l.id)}
+              style={{ background: "none", border: "none", fontSize: "0.78rem", fontWeight: 500, letterSpacing: "0.05em", color: T.textMd, cursor: "pointer", padding: 0, transition: "color 180ms" }}
+              onMouseEnter={e => (e.currentTarget.style.color = T.sage)}
+              onMouseLeave={e => (e.currentTarget.style.color = T.textMd)}
+            >{l.label}</button>
+          ))}
+          <button onClick={() => scrollTo("section-contact")}
+            style={{ padding: "0.65rem 1.4rem", background: T.sage, color: "#fff", fontSize: "0.72rem", fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", cursor: "pointer", border: "none", transition: "background 200ms" }}
+            onMouseEnter={e => (e.currentTarget.style.background = T.sageDk)}
+            onMouseLeave={e => (e.currentTarget.style.background = T.sage)}
+          >Book Now</button>
+        </div>
+      </nav>
+    </header>
   );
 }
 
@@ -245,7 +259,7 @@ export default function DentalShowcase() {
       <DentalNav />
 
       {/* ── HERO ────────────────────────────────────────────────────────── */}
-      <section style={{ display: "grid", gridTemplateColumns: "52fr 48fr", minHeight: "calc(100dvh - 68px)", overflow: "hidden" }}>
+      <section id="dental-hero" style={{ display: "grid", gridTemplateColumns: "52fr 48fr", minHeight: "calc(100dvh - 68px)", overflow: "hidden" }}>
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", padding: "4rem 3rem 4rem clamp(2rem, 5vw, 5rem)", background: T.bg }}>
           <motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
             style={{ fontFamily: SANS, fontSize: "0.68rem", fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", color: T.sage, marginBottom: "1.25rem" }}
@@ -274,14 +288,6 @@ export default function DentalShowcase() {
             </div>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} style={{ display: "flex", gap: "2rem", marginTop: "3.5rem", flexWrap: "wrap" }}>
-            {[{ v: "4.9★", l: "Google rating" }, { v: "4,800+", l: "Patients treated" }, { v: "14 yrs", l: "In practice" }].map(s => (
-              <div key={s.l}>
-                <div style={{ fontFamily: SERIF, fontSize: "1.3rem", fontWeight: 600, color: T.text }}>{s.v}</div>
-                <div style={{ fontSize: "0.7rem", color: T.textLt, letterSpacing: "0.08em" }}>{s.l}</div>
-              </div>
-            ))}
-          </motion.div>
         </div>
 
         {/* Bleeding hero image */}
@@ -327,7 +333,7 @@ export default function DentalShowcase() {
       </section>
 
       {/* ── TREATMENTS ───────────────────────────────────────────────────── */}
-      <section style={{ padding: "0 2rem 6rem", maxWidth: 1280, margin: "0 auto" }}>
+      <section id="section-treatments" style={{ padding: "0 2rem 6rem", maxWidth: 1280, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: "3.5rem" }}>
           <p style={{ fontFamily: SANS, fontSize: "0.68rem", fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", color: T.sage, marginBottom: "0.75rem" }}>What we offer</p>
           <h2 style={{ fontFamily: SERIF, fontSize: "clamp(2rem,4vw,3rem)", fontWeight: 500, color: T.text, marginBottom: "1rem" }}>Treatments for every smile</h2>
@@ -394,7 +400,7 @@ export default function DentalShowcase() {
       </section>
 
       {/* ── TEAM ─────────────────────────────────────────────────────────── */}
-      <section style={{ padding: "6rem 2rem", background: T.surface }}>
+      <section id="section-team" style={{ padding: "6rem 2rem", background: T.surface }}>
         <div style={{ maxWidth: 1280, margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "3.5rem" }}>
             <p style={{ fontFamily: SANS, fontSize: "0.68rem", fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", color: T.sage, marginBottom: "0.75rem" }}>The team</p>
@@ -412,7 +418,7 @@ export default function DentalShowcase() {
       </section>
 
       {/* ── GALLERY BENTO ────────────────────────────────────────────────── */}
-      <section style={{ padding: "6rem 2rem", maxWidth: 1280, margin: "0 auto" }}>
+      <section id="section-gallery" style={{ padding: "6rem 2rem", maxWidth: 1280, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: "3.5rem" }}>
           <p style={{ fontFamily: SANS, fontSize: "0.68rem", fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", color: T.sage, marginBottom: "0.75rem" }}>Smile gallery</p>
           <h2 style={{ fontFamily: SERIF, fontSize: "clamp(2rem,4vw,3rem)", fontWeight: 500, color: T.text }}>Real patients, real results</h2>
@@ -443,7 +449,7 @@ export default function DentalShowcase() {
       </section>
 
       {/* ── CTA BANNER ───────────────────────────────────────────────────── */}
-      <section style={{ position: "relative", overflow: "hidden", padding: "7rem 2rem", textAlign: "center" }}>
+      <section id="section-contact" style={{ position: "relative", overflow: "hidden", padding: "7rem 2rem", textAlign: "center" }}>
         <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=1600&q=80" alt="" aria-hidden
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", filter: "brightness(0.22) saturate(0.5)" }}
         />
