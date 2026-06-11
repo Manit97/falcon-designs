@@ -81,7 +81,7 @@ export default function Services() {
   }, [active, paused, next]);
 
   return (
-    <section ref={ref} className="py-32 px-6 md:px-10 bg-fd-black border-t border-fd-border overflow-hidden">
+    <section ref={ref} className="py-16 md:py-32 px-6 md:px-10 bg-fd-black border-t border-fd-border overflow-hidden">
       <div className="max-w-7xl mx-auto">
 
         {/* Header — same style as original Services.tsx */}

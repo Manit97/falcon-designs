@@ -44,9 +44,12 @@ export default function Hero() {
   return (
     <section
       ref={sectionRef}
-      className="relative flex flex-col justify-center bg-fd-black min-h-screen overflow-hidden"
+      className="relative flex flex-col justify-center bg-fd-black overflow-hidden"
+      /* 100svh = viewport height WITH browser chrome — safest for iOS Safari.
+         Falls back to 100vh on browsers that don't support svh yet. */
+      style={{ minHeight: "100svh" }}
     >
-        {/* Video */}
+        {/* Video — playsInline + muted required for iOS autoplay */}
         <video
           ref={videoRef}
           src="/hero-video.mp4"
@@ -54,11 +57,14 @@ export default function Hero() {
           autoPlay
           playsInline
           preload="auto"
+          /* Dark poster prevents flash of empty background on iOS when autoplay
+             is blocked or the video is still loading */
+          poster="data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="
           style={{
             position: "absolute", inset: 0,
             width: "100%", height: "100%",
             objectFit: "cover",
-            objectPosition: "center",
+            objectPosition: "center center",
           }}
         />
 
@@ -99,7 +105,7 @@ export default function Hero() {
 
 
         {/* ── Content ── */}
-        <div className="relative z-10 max-w-7xl mx-auto w-full px-6 md:px-10 pt-24">
+        <div className="relative z-10 max-w-7xl mx-auto w-full px-6 md:px-10 pt-20 md:pt-24">
           {/* Label — fades in first */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}

@@ -47,7 +47,7 @@ export default function WorkTeaser() {
   const inView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
-    <section ref={ref} className="py-32 px-6 md:px-10 bg-fd-surface border-t border-fd-border overflow-hidden">
+    <section ref={ref} className="py-16 md:py-32 px-6 md:px-10 bg-fd-surface border-t border-fd-border overflow-hidden">
       <div className="max-w-7xl mx-auto">
 
         {/* Header */}

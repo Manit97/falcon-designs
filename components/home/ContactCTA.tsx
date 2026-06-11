@@ -15,7 +15,7 @@ export default function ContactCTA() {
       ref={ref}
       // No overflow-hidden here — ContactCTA is the last section on the page.
       // Removing it lets the FD parallax extend naturally below without hard clipping.
-      className="relative py-40 px-6 md:px-10 bg-fd-black border-t border-fd-border"
+      className="relative py-20 md:py-40 px-6 md:px-10 bg-fd-black border-t border-fd-border"
     >
       {/* Orange glow */}
       <ParallaxLayer

@@ -167,7 +167,7 @@ export default function PricingPage() {
       {/* ══════════════════════════════════════════════════
           HEADER
       ══════════════════════════════════════════════════ */}
-      <section className="py-28 px-6 md:px-10 border-b border-fd-border overflow-hidden relative">
+      <section className="py-16 md:py-28 px-6 md:px-10 border-b border-fd-border overflow-hidden relative">
         <ParallaxLayer
           className="absolute w-[600px] h-[600px] pointer-events-none"
           offset={150}
@@ -215,7 +215,7 @@ export default function PricingPage() {
       {/* ══════════════════════════════════════════════════
           PLANS
       ══════════════════════════════════════════════════ */}
-      <section className="py-32 px-6 md:px-10 border-b border-fd-border overflow-hidden relative">
+      <section className="py-16 md:py-32 px-6 md:px-10 border-b border-fd-border overflow-hidden relative">
 
         {/* Background glow — deep parallax */}
         <ParallaxLayer
@@ -255,7 +255,7 @@ export default function PricingPage() {
           </ParallaxLayer>
 
           {/* Cards */}
-          <div className="grid md:grid-cols-3 gap-px bg-fd-border border border-fd-border">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-fd-border border border-fd-border">
             {PLANS.map((plan, i) => (
               <ParallaxLayer key={plan.id} offset={[50, 30, 65][i]} spring={{ stiffness: [70, 90, 60][i], damping: 20 }}>
                 <motion.div
@@ -263,7 +263,7 @@ export default function PricingPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={VP}
                   transition={{ duration: 0.7, delay: i * 0.1, ease: EXPO }}
-                  className={`relative flex flex-col h-full bg-fd-black p-10 transition-all duration-500 ${
+                  className={`relative flex flex-col h-full bg-fd-black p-6 md:p-10 transition-all duration-500 ${
                     plan.highlight ? "plan-card-pro" : "plan-card border-t-0"
                   }`}
                   style={plan.highlight ? { background: "#0d0d0d" } : {}}
@@ -428,7 +428,7 @@ export default function PricingPage() {
             </motion.div>
           </ParallaxLayer>
 
-          <ParallaxLayer offset={35} className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-fd-border border border-fd-border">
+          <ParallaxLayer offset={35} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-fd-border border border-fd-border">
             {ADDONS.map((a, i) => (
               <motion.div
                 key={a.name}
@@ -470,7 +470,7 @@ export default function PricingPage() {
               whileInView={{ opacity: 1 }}
               viewport={VP}
               transition={{ duration: 0.8, ease: EXPO }}
-              className="grid md:grid-cols-3 gap-0 border border-fd-border text-center"
+              className="grid grid-cols-1 md:grid-cols-3 gap-0 border border-fd-border text-center"
             >
               {[
                 { label: "48hr",    sub: "First design delivered" },
@@ -498,7 +498,7 @@ export default function PricingPage() {
       {/* ══════════════════════════════════════════════════
           FAQ
       ══════════════════════════════════════════════════ */}
-      <section className="py-28 px-6 md:px-10 border-b border-fd-border overflow-hidden relative">
+      <section className="py-16 md:py-28 px-6 md:px-10 border-b border-fd-border overflow-hidden relative">
 
         <ParallaxLayer
           className="absolute bottom-0 left-0 pointer-events-none"

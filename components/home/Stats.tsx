@@ -42,7 +42,7 @@ export default function Stats() {
   const inView = useInView(ref, { once: true, margin: "-60px" });
 
   return (
-    <section ref={ref} className="py-24 px-6 md:px-10 bg-fd-black border-t border-fd-border overflow-hidden">
+    <section ref={ref} className="py-14 md:py-24 px-6 md:px-10 bg-fd-black border-t border-fd-border overflow-hidden">
       <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4">
         {STATS.map((s, i) => (
           <ParallaxLayer key={s.label} offset={STAT_OFFSETS[i]}>

@@ -43,6 +43,14 @@ export default function Nav() {
             Let&apos;s Talk
           </Link>
         </div>
+
+        {/* Mobile CTA — visible below md, sits left of the BurgerMenu button */}
+        <Link
+          href="/contact"
+          className="md:hidden font-display font-bold text-[10px] tracking-widest uppercase bg-fd-orange text-fd-black px-4 py-2.5 hover:bg-fd-white transition-colors duration-300 mr-14"
+        >
+          Talk →
+        </Link>
       </div>
     </header>
   );

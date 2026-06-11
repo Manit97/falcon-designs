@@ -28,7 +28,7 @@ const VP = { once: true, margin: "0px 0px -60px 0px" } as const;
 
 export default function Testimonials() {
   return (
-    <section className="py-28 px-6 md:px-10 border-b border-fd-border overflow-hidden relative bg-fd-black">
+    <section className="py-16 md:py-28 px-6 md:px-10 border-b border-fd-border overflow-hidden relative bg-fd-black">
       {/* Accent gradient */}
       <ParallaxLayer
         className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] pointer-events-none"
