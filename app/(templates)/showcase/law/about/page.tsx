@@ -4,6 +4,17 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import { motion, useInView } from "framer-motion";
 import { TEAM, ACCREDITATIONS, STATS, BASE, T, SERIF, SANS, EASE } from "../lib/data";
+import { useCountUp } from "../lib/CountUp";
+
+function AboutStat({ value, label }: { value: string; label: string }) {
+  const { ref, display } = useCountUp(value);
+  return (
+    <div ref={ref} style={{ borderLeft: `2px solid ${T.gold}`, paddingLeft: "1rem" }}>
+      <div style={{ fontFamily: SERIF, fontSize: "2rem", fontWeight: 600, color: T.gold, lineHeight: 1 }}>{display}</div>
+      <div style={{ fontSize: "0.7rem", fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: T.textMd, marginTop: "0.25rem" }}>{label}</div>
+    </div>
+  );
+}
 
 const VALUES = [
   { num: "01", title: "Integrity",  body: "We give honest advice, even when it is not what a client hopes to hear. Our reputation rests on our clients trusting our word." },
@@ -115,12 +126,7 @@ export default function AboutPage() {
           <p style={{ fontSize: "0.9rem", color: T.textMd, lineHeight: 1.9, marginBottom: "1rem" }}>Sterling &amp; Co was founded in 1996 by Jonathan Sterling, a former barrister who believed that the best legal advice combined forensic intellectual precision with true commercial understanding. What began as a three-partner firm has grown into one of London's most respected independent practices.</p>
           <p style={{ fontSize: "0.9rem", color: T.textMd, lineHeight: 1.9, marginBottom: "1.5rem" }}>We have never sought to be the largest firm in London. We have sought to be the best at what we do — and to ensure that every client, regardless of the complexity of their matter, feels genuinely heard and expertly served.</p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
-            {STATS.map(s => (
-              <div key={s.label} style={{ borderLeft: `2px solid ${T.gold}`, paddingLeft: "1rem" }}>
-                <div style={{ fontFamily: SERIF, fontSize: "2rem", fontWeight: 600, color: T.gold, lineHeight: 1 }}>{s.value}</div>
-                <div style={{ fontSize: "0.7rem", fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: T.textMd, marginTop: "0.25rem" }}>{s.label}</div>
-              </div>
-            ))}
+            {STATS.map(s => <AboutStat key={s.label} value={s.value} label={s.label} />)}
           </div>
         </div>
         <div style={{ position: "relative" }}>

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import { PRACTICES, TESTIMONIALS, STATS, ACCREDITATIONS, BLOG_POSTS, BASE, T, SERIF, SANS, EASE } from "./lib/data";
+import { CountUp } from "./lib/CountUp";
 
 // ── Scroll reveal hook ────────────────────────────────────────────────────────
 function useReveal(threshold = 0.15) {
@@ -12,18 +13,6 @@ function useReveal(threshold = 0.15) {
   return { ref, inView };
 }
 
-// ── Animated stat counter ─────────────────────────────────────────────────────
-function StatCounter({ value, label, delay }: { value: string; label: string; delay: number }) {
-  const { ref, inView } = useReveal();
-  return (
-    <motion.div ref={ref} initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.7, delay, ease: [0.23, 1, 0.32, 1] }}
-      style={{ textAlign: "center", padding: "2rem 1rem" }}>
-      <div style={{ fontFamily: SERIF, fontSize: "clamp(2.2rem,4vw,3.5rem)", fontWeight: 600, color: T.gold, lineHeight: 1, marginBottom: "0.5rem" }}>{value}</div>
-      <div style={{ fontSize: "0.72rem", fontWeight: 500, letterSpacing: "0.14em", textTransform: "uppercase", color: T.textMd }}>{label}</div>
-    </motion.div>
-  );
-}
 
 // ── Section label ─────────────────────────────────────────────────────────────
 function SectionLabel({ text }: { text: string }) {
@@ -223,7 +212,7 @@ export default function LawHomePage() {
         <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 2.5rem", display: "grid", gridTemplateColumns: "repeat(4,1fr)" }}>
           {STATS.map((s, i) => (
             <div key={s.label} style={{ borderRight: i < 3 ? `1px solid ${T.border}` : "none" }}>
-              <StatCounter value={s.value} label={s.label} delay={i * 0.1} />
+              <CountUp value={s.value} label={s.label} serif={SERIF} sans={SANS} gold={T.gold} textMd={T.textMd} />
             </div>
           ))}
         </div>
