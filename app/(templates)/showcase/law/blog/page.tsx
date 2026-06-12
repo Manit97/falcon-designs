@@ -26,8 +26,8 @@ function BlogCard({ post, index, featured = false }: { post: typeof BLOG_POSTS[0
       <motion.div ref={ref} initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
         onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}>
-        <Link href={`${BASE}/blog`} style={{ textDecoration: "none", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 0, border: `1px solid ${T.border}` }}>
-          <div style={{ overflow: "hidden" }}>
+        <Link href={`${BASE}/blog`} className="sterling-featured-grid" style={{ textDecoration: "none", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 0, border: `1px solid ${T.border}` }}>
+          <div className="sterling-featured-img" style={{ overflow: "hidden" }}>
             <img src={post.img} alt={post.title} style={{ width: "100%", height: "100%", objectFit: "cover", transform: hov ? "scale(1.04)" : "scale(1)", transition: `transform 700ms ${EASE}`, display: "block" }} />
           </div>
           <div style={{ padding: "3rem", background: T.navyMd, display: "flex", flexDirection: "column", justifyContent: "center" }}>
@@ -116,7 +116,7 @@ export default function BlogPage() {
           ))}
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "2rem" }}>
+        <div className="sterling-blog-articles-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "2rem" }}>
           {filtered.slice(filtered[0] === BLOG_POSTS[0] && activeCategory === "All" ? 1 : 0).map((p, i) => (
             <BlogCard key={p.slug} post={p} index={i} />
           ))}
@@ -129,9 +129,9 @@ export default function BlogPage() {
           <SectionLabel text="Stay Informed" />
           <h2 style={{ fontFamily: SERIF, fontSize: "clamp(1.8rem,3.5vw,2.5rem)", fontWeight: 500, color: T.cream, marginBottom: "1rem" }}>Legal updates, straight to your inbox.</h2>
           <p style={{ fontSize: "0.88rem", color: T.textMd, lineHeight: 1.8, marginBottom: "2rem" }}>Receive our monthly round-up of key legal developments, case studies and practical guidance from the Sterling &amp; Co team.</p>
-          <div style={{ display: "flex", gap: "0", maxWidth: 480, margin: "0 auto" }}>
-            <input type="email" placeholder="Your email address" style={{ flex: 1, padding: "0.85rem 1.1rem", background: T.navyLt, border: `1px solid ${T.border}`, borderRight: "none", color: T.cream, fontSize: "0.88rem", outline: "none", fontFamily: SANS }} />
-            <button style={{ padding: "0.85rem 1.5rem", background: T.gold, color: T.navy, border: "none", fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", cursor: "pointer", whiteSpace: "nowrap", transition: `background 200ms` }}
+          <div className="sterling-newsletter-row" style={{ display: "flex", gap: "0", maxWidth: 480, margin: "0 auto" }}>
+            <input type="email" placeholder="Your email address" className="sterling-newsletter-input" style={{ flex: 1, padding: "0.85rem 1.1rem", background: T.navyLt, border: `1px solid ${T.border}`, borderRight: "none", color: T.cream, fontSize: "0.88rem", outline: "none", fontFamily: SANS }} />
+            <button className="sterling-newsletter-btn" style={{ padding: "0.85rem 1.5rem", background: T.gold, color: T.navy, border: "none", fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", cursor: "pointer", whiteSpace: "nowrap", transition: `background 200ms` }}
               onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = T.goldLt}
               onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = T.gold}
             >Subscribe</button>

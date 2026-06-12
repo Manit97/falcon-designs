@@ -29,6 +29,7 @@ function ValueCard({ v, i }: { v: typeof VALUES[0]; i: number }) {
   return (
     <motion.div ref={ref} initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.6, delay: i * 0.1, ease: [0.23, 1, 0.32, 1] }}
+      className={i < 3 ? "sterling-value-border" : ""}
       style={{ padding: "2.5rem 2rem", borderRight: i < 3 ? `1px solid ${T.border}` : "none" }}>
       <div style={{ fontFamily: SERIF, fontSize: "3rem", fontWeight: 600, color: T.gold, opacity: 0.3, lineHeight: 1, marginBottom: "1rem" }}>{v.num}</div>
       <h3 style={{ fontFamily: SERIF, fontSize: "1.3rem", fontWeight: 600, color: T.cream, marginBottom: "0.75rem" }}>{v.title}</h3>
@@ -117,7 +118,7 @@ export default function AboutPage() {
       </div>
 
       {/* ── STORY ── */}
-      <section style={{ maxWidth: 1320, margin: "0 auto", padding: "7rem 2.5rem", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6rem", alignItems: "center" }}>
+      <section className="sterling-story-grid sterling-px" style={{ maxWidth: 1320, margin: "0 auto", padding: "7rem 2.5rem", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6rem", alignItems: "center" }}>
         <div>
           <SectionLabel text="Our Story" />
           <h2 style={{ fontFamily: SERIF, fontSize: "clamp(1.8rem,3.5vw,2.8rem)", fontWeight: 500, color: T.cream, lineHeight: 1.2, marginBottom: "1.5rem" }}>
@@ -143,7 +144,7 @@ export default function AboutPage() {
             <SectionLabel text="What We Stand For" />
             <h2 style={{ fontFamily: SERIF, fontSize: "clamp(1.8rem,3.5vw,2.8rem)", fontWeight: 500, color: T.cream }}>Our Values</h2>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "0" }}>
+          <div className="sterling-values-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "0" }}>
             {VALUES.map((v, i) => <ValueCard key={v.num} v={v} i={i} />)}
           </div>
         </div>
@@ -157,7 +158,7 @@ export default function AboutPage() {
             <h2 style={{ fontFamily: SERIF, fontSize: "clamp(2rem,4vw,3rem)", fontWeight: 500, color: T.cream, marginBottom: "1rem" }}>Meet the Team</h2>
             <p style={{ fontSize: "0.9rem", color: T.textMd, maxWidth: 480, margin: "0 auto" }}>Our solicitors are among the most experienced in their respective fields — recognised for both their legal expertise and their genuine commitment to clients.</p>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "3rem" }}>
+          <div className="sterling-team-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "3rem" }}>
             {TEAM.map((m, i) => <TeamCard key={m.name} member={m} index={i} />)}
           </div>
         </div>
@@ -176,8 +177,8 @@ export default function AboutPage() {
       </section>
 
       {/* ── CONTACT FORM ── */}
-      <section id="contact" style={{ padding: "7rem 2.5rem" }}>
-        <div style={{ maxWidth: 1320, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6rem", alignItems: "start" }}>
+      <section id="contact" className="sterling-px" style={{ padding: "7rem 2.5rem" }}>
+        <div className="sterling-contact-grid" style={{ maxWidth: 1320, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6rem", alignItems: "start" }}>
 
           {/* Info */}
           <div>
@@ -219,7 +220,7 @@ export default function AboutPage() {
             ) : (
               <form onSubmit={handleSubmit} noValidate style={{ display: "flex", flexDirection: "column", gap: "1.1rem" }}>
                 <h3 style={{ fontFamily: SERIF, fontSize: "1.35rem", fontWeight: 600, color: T.cream, marginBottom: "0.25rem" }}>Request a Consultation</h3>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                <div className="sterling-form-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
                   {[
                     { key: "name",  label: "Full Name *",    type: "text",  placeholder: "Jonathan Smith" },
                     { key: "phone", label: "Phone Number",   type: "tel",   placeholder: "+44 7700 900000" },

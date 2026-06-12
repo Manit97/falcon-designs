@@ -76,8 +76,8 @@ export default function PracticeAreaPage({ params }: { params: Promise<{ practic
       </div>
 
       {/* ── INTRO + SUB-GRID ── */}
-      <section style={{ maxWidth: 1320, margin: "0 auto", padding: "6rem 2.5rem" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "5rem", marginBottom: "5rem" }}>
+      <section className="sterling-px" style={{ maxWidth: 1320, margin: "0 auto", padding: "6rem 2.5rem" }}>
+        <div className="sterling-practice-intro-grid" style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "5rem", marginBottom: "5rem" }}>
           <div>
             <SectionLabel text="Overview" />
             <p style={{ fontSize: "0.9rem", color: T.textMd, lineHeight: 1.9 }}>{practice.intro}</p>

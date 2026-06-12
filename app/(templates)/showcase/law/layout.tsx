@@ -111,6 +111,124 @@ export default function LawLayout({ children }: { children: React.ReactNode }) {
         .sterling-stagger-5 { transition-delay: 300ms; }
         .gold-line::after { content:''; display:block; width:48px; height:2px; background:${T.gold}; margin-top:1rem; transform-origin:left; animation: lineGrow 600ms ${EASE} both; animation-delay: 300ms; }
         @media (prefers-reduced-motion: reduce) { .sterling-reveal, .sterling-reveal.visible { transition: none; opacity:1; transform:none; } }
+
+        /* ── Mobile burger / desktop nav ── */
+        .sterling-mobile-burger { display: none !important; }
+        @media (max-width: 860px) {
+          .sterling-desktop-nav { display: none !important; }
+          .sterling-mobile-burger { display: flex !important; }
+          .sterling-nav { padding: 0 1.25rem !important; }
+        }
+
+        /* ── Footer ── */
+        @media (max-width: 860px) {
+          .sterling-footer-grid { grid-template-columns: 1fr 1fr !important; gap: 2rem !important; }
+        }
+        @media (max-width: 480px) {
+          .sterling-footer-grid { grid-template-columns: 1fr !important; }
+        }
+
+        /* ── Homepage stats ── */
+        @media (max-width: 640px) {
+          .sterling-stats-grid { grid-template-columns: 1fr 1fr !important; }
+          .sterling-stat-border { border-right: none !important; border-bottom: 1px solid rgba(201,168,76,0.18) !important; }
+        }
+
+        /* ── Homepage about 2-col ── */
+        @media (max-width: 860px) {
+          .sterling-about-grid { grid-template-columns: 1fr !important; gap: 3.5rem !important; }
+        }
+
+        /* ── Practice areas 5-col ── */
+        @media (max-width: 860px) {
+          .sterling-practices-grid { grid-template-columns: 1fr 1fr !important; gap: 1rem !important; }
+        }
+        @media (max-width: 480px) {
+          .sterling-practices-grid { grid-template-columns: 1fr !important; }
+        }
+
+        /* ── Testimonials ── */
+        @media (max-width: 860px) {
+          .sterling-testimonials-grid { grid-template-columns: 1fr !important; }
+        }
+
+        /* ── Blog preview 3-col ── */
+        @media (max-width: 860px) {
+          .sterling-blog-preview-grid { grid-template-columns: 1fr 1fr !important; }
+        }
+        @media (max-width: 640px) {
+          .sterling-blog-preview-grid { grid-template-columns: 1fr !important; }
+        }
+
+        /* ── Practice page intro grid ── */
+        @media (max-width: 860px) {
+          .sterling-practice-intro-grid { grid-template-columns: 1fr !important; gap: 3rem !important; }
+        }
+
+        /* ── Sub page main grid + sidebar ── */
+        @media (max-width: 860px) {
+          .sterling-sub-content-grid { grid-template-columns: 1fr !important; }
+          .sterling-sub-sidebar { position: static !important; }
+        }
+
+        /* ── Sub page points 2-col ── */
+        @media (max-width: 640px) {
+          .sterling-points-grid { grid-template-columns: 1fr !important; }
+        }
+
+        /* ── About story grid ── */
+        @media (max-width: 860px) {
+          .sterling-story-grid { grid-template-columns: 1fr !important; gap: 3rem !important; }
+        }
+
+        /* ── About values 4-col ── */
+        @media (max-width: 860px) {
+          .sterling-values-grid { grid-template-columns: 1fr 1fr !important; }
+          .sterling-value-border { border-right: none !important; border-bottom: 1px solid rgba(201,168,76,0.18) !important; }
+        }
+        @media (max-width: 480px) {
+          .sterling-values-grid { grid-template-columns: 1fr !important; }
+        }
+
+        /* ── About team 3-col ── */
+        @media (max-width: 860px) {
+          .sterling-team-grid { grid-template-columns: 1fr 1fr !important; gap: 2rem !important; }
+        }
+        @media (max-width: 480px) {
+          .sterling-team-grid { grid-template-columns: 1fr !important; }
+        }
+
+        /* ── About contact grid ── */
+        @media (max-width: 860px) {
+          .sterling-contact-grid { grid-template-columns: 1fr !important; gap: 3rem !important; }
+          .sterling-form-row { grid-template-columns: 1fr !important; }
+        }
+
+        /* ── Blog featured split ── */
+        @media (max-width: 860px) {
+          .sterling-featured-grid { grid-template-columns: 1fr !important; }
+          .sterling-featured-img { min-height: 280px !important; }
+        }
+
+        /* ── Blog articles grid ── */
+        @media (max-width: 860px) {
+          .sterling-blog-articles-grid { grid-template-columns: 1fr 1fr !important; }
+        }
+        @media (max-width: 640px) {
+          .sterling-blog-articles-grid { grid-template-columns: 1fr !important; }
+        }
+
+        /* ── Newsletter subscribe row ── */
+        @media (max-width: 480px) {
+          .sterling-newsletter-row { flex-direction: column !important; }
+          .sterling-newsletter-input { border-right: 1px solid rgba(201,168,76,0.18) !important; }
+          .sterling-newsletter-btn { width: 100% !important; }
+        }
+
+        /* ── Section horizontal padding ── */
+        @media (max-width: 640px) {
+          .sterling-px { padding-left: 1.25rem !important; padding-right: 1.25rem !important; }
+        }
       `}</style>
 
       {/* ── NAVBAR ── */}
@@ -121,7 +239,7 @@ export default function LawLayout({ children }: { children: React.ReactNode }) {
         borderBottom: `1px solid ${scrolled || !isHome ? T.border : "transparent"}`,
         transition: `all 320ms ${EASE}`,
       }}>
-        <nav style={{ maxWidth: 1320, margin: "0 auto", padding: "0 2.5rem", height: 72, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <nav className="sterling-nav" style={{ maxWidth: 1320, margin: "0 auto", padding: "0 2.5rem", height: 72, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
 
           {/* Logo */}
           <Link href={BASE} style={{ display: "flex", flexDirection: "column", textDecoration: "none", gap: "1px" }}>
@@ -130,7 +248,7 @@ export default function LawLayout({ children }: { children: React.ReactNode }) {
           </Link>
 
           {/* Desktop nav */}
-          <div style={{ display: "flex", gap: "0.25rem", alignItems: "center" }}>
+          <div className="sterling-desktop-nav" style={{ display: "flex", gap: "0.25rem", alignItems: "center" }}>
             {/* Practice Areas with dropdown */}
             <div ref={practiceRef} style={{ position: "relative" }}
               onMouseEnter={openDropdown} onMouseLeave={closeDropdown}>
@@ -180,9 +298,9 @@ export default function LawLayout({ children }: { children: React.ReactNode }) {
 
           {/* Mobile burger */}
           <button onClick={() => setMobileOpen(o => !o)} style={{
-            display: "none", background: "none", border: "none", padding: "0.5rem",
+            background: "none", border: "none", padding: "0.5rem",
             flexDirection: "column", gap: "5px",
-          }} aria-label="Menu" id="mobile-menu-btn">
+          }} aria-label="Menu" id="mobile-menu-btn" className="sterling-mobile-burger">
             {[0,1,2].map(i => (
               <span key={i} style={{ display: "block", width: 22, height: 1.5, background: T.cream, transition: `all 250ms ${EASE}` }} />
             ))}
@@ -231,7 +349,7 @@ export default function LawLayout({ children }: { children: React.ReactNode }) {
       {/* ── FOOTER ── */}
       <footer style={{ background: "#060810", borderTop: `1px solid ${T.border}`, padding: "5rem 2.5rem 2rem", fontFamily: SANS }}>
         <div style={{ maxWidth: 1320, margin: "0 auto" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1.5fr repeat(3,1fr)", gap: "3rem", marginBottom: "4rem" }}>
+          <div className="sterling-footer-grid" style={{ display: "grid", gridTemplateColumns: "1.5fr repeat(3,1fr)", gap: "3rem", marginBottom: "4rem" }}>
 
             {/* Brand */}
             <div>

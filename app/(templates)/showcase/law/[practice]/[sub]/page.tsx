@@ -60,8 +60,8 @@ export default function SubCategoryPage({ params }: { params: Promise<{ practice
       </div>
 
       {/* ── MAIN CONTENT ── */}
-      <section style={{ maxWidth: 1320, margin: "0 auto", padding: "6rem 2.5rem" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 380px", gap: "5rem", alignItems: "start" }}>
+      <section className="sterling-px" style={{ maxWidth: 1320, margin: "0 auto", padding: "6rem 2.5rem" }}>
+        <div className="sterling-sub-content-grid" style={{ display: "grid", gridTemplateColumns: "1fr 380px", gap: "5rem", alignItems: "start" }}>
 
           {/* Left — content */}
           <div>
@@ -70,7 +70,7 @@ export default function SubCategoryPage({ params }: { params: Promise<{ practice
 
             {/* How we can help */}
             <h2 style={{ fontFamily: SERIF, fontSize: "clamp(1.5rem,3vw,2.2rem)", fontWeight: 500, color: T.cream, marginBottom: "2rem" }}>How We Can Help</h2>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "3.5rem" }}>
+            <div className="sterling-points-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "3.5rem" }}>
               {sub.points.map((point, i) => (
                 <motion.div key={point} initial={{ opacity: 0, x: -16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: i * 0.08, ease: [0.23, 1, 0.32, 1] }}
@@ -108,7 +108,7 @@ export default function SubCategoryPage({ params }: { params: Promise<{ practice
           </div>
 
           {/* Right — sticky sidebar */}
-          <div style={{ position: "sticky", top: "5.5rem" }}>
+          <div className="sterling-sub-sidebar" style={{ position: "sticky", top: "5.5rem" }}>
             {/* Contact card */}
             <div style={{ border: `1px solid ${T.border}`, padding: "2rem", background: T.navyMd, marginBottom: "1.5rem" }}>
               <h3 style={{ fontFamily: SERIF, fontSize: "1.25rem", fontWeight: 600, color: T.cream, marginBottom: "0.5rem" }}>Free Consultation</h3>

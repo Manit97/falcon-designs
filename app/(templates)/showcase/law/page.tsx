@@ -209,9 +209,9 @@ export default function LawHomePage() {
 
       {/* ── STATS STRIP ── */}
       <section style={{ background: T.navyMd, borderTop: `1px solid ${T.border}`, borderBottom: `1px solid ${T.border}` }}>
-        <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 2.5rem", display: "grid", gridTemplateColumns: "repeat(4,1fr)" }}>
+        <div className="sterling-stats-grid sterling-px" style={{ maxWidth: 1320, margin: "0 auto", padding: "0 2.5rem", display: "grid", gridTemplateColumns: "repeat(4,1fr)" }}>
           {STATS.map((s, i) => (
-            <div key={s.label} style={{ borderRight: i < 3 ? `1px solid ${T.border}` : "none" }}>
+            <div key={s.label} className={i < 3 ? "sterling-stat-border" : ""} style={{ borderRight: i < 3 ? `1px solid ${T.border}` : "none" }}>
               <CountUp value={s.value} label={s.label} serif={SERIF} sans={SANS} gold={T.gold} textMd={T.textMd} />
             </div>
           ))}
@@ -219,8 +219,8 @@ export default function LawHomePage() {
       </section>
 
       {/* ── ABOUT INTRO ── */}
-      <section style={{ padding: "8rem 2.5rem" }}>
-        <div ref={aboutRef} style={{ maxWidth: 1320, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6rem", alignItems: "center" }}>
+      <section className="sterling-px" style={{ padding: "8rem 2.5rem" }}>
+        <div ref={aboutRef} className="sterling-about-grid" style={{ maxWidth: 1320, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6rem", alignItems: "center" }}>
           {/* Text */}
           <motion.div initial={{ opacity: 0, x: -32 }} animate={aboutInView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.9, ease: [0.23, 1, 0.32, 1] }}>
             <SectionLabel text="The Firm" />
@@ -257,14 +257,14 @@ export default function LawHomePage() {
       </section>
 
       {/* ── PRACTICE AREAS ── */}
-      <section style={{ padding: "0 2.5rem 8rem" }}>
+      <section className="sterling-px" style={{ padding: "0 2.5rem 8rem" }}>
         <div style={{ maxWidth: 1320, margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "4rem" }}>
             <SectionLabel text="What We Do" />
             <h2 style={{ fontFamily: SERIF, fontSize: "clamp(2rem,4vw,3rem)", fontWeight: 500, color: T.cream, marginBottom: "1rem" }}>Practice Areas</h2>
             <p style={{ fontSize: "0.9rem", color: T.textMd, maxWidth: 520, margin: "0 auto" }}>Expert legal advice across five core disciplines, each led by specialist solicitors with deep sector knowledge.</p>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: "1.25rem" }}>
+          <div className="sterling-practices-grid" style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: "1.25rem" }}>
             {PRACTICES.map((p, i) => <PracticeCard key={p.slug} p={p} index={i} />)}
           </div>
         </div>
@@ -281,20 +281,20 @@ export default function LawHomePage() {
       </section>
 
       {/* ── TESTIMONIALS ── */}
-      <section style={{ padding: "8rem 2.5rem", background: T.navyMd }}>
+      <section className="sterling-px" style={{ padding: "8rem 2.5rem", background: T.navyMd }}>
         <div style={{ maxWidth: 1320, margin: "0 auto" }}>
           <div style={{ marginBottom: "4rem" }}>
             <SectionLabel text="Client Voices" />
             <h2 style={{ fontFamily: SERIF, fontSize: "clamp(2rem,4vw,3rem)", fontWeight: 500, color: T.cream }}>What Our Clients Say</h2>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "1.5rem" }}>
+          <div className="sterling-testimonials-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "1.5rem" }}>
             {TESTIMONIALS.map((t, i) => <TestimonialCard key={i} t={t} index={i} />)}
           </div>
         </div>
       </section>
 
       {/* ── LATEST INSIGHTS ── */}
-      <section style={{ padding: "8rem 2.5rem" }}>
+      <section className="sterling-px" style={{ padding: "8rem 2.5rem" }}>
         <div style={{ maxWidth: 1320, margin: "0 auto" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "4rem", flexWrap: "wrap", gap: "1rem" }}>
             <div>
@@ -306,7 +306,7 @@ export default function LawHomePage() {
               <svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5h12M8 1l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
             </Link>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "2.5rem" }}>
+          <div className="sterling-blog-preview-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "2.5rem" }}>
             {BLOG_POSTS.slice(0, 3).map((p, i) => <BlogCard key={p.slug} post={p} index={i} />)}
           </div>
         </div>
