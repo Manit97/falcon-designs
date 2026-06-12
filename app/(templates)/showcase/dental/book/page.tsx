@@ -20,12 +20,12 @@ const SANS  = "'Inter', system-ui, sans-serif";
 const BASE  = "/showcase/dental";
 
 const TREATMENTS = [
-  { id: "general",      icon: "🦷", label: "General Dentistry",   desc: "Check-ups, fillings, hygiene" },
-  { id: "cosmetic",     icon: "✨", label: "Cosmetic Dentistry",   desc: "Veneers, bonding, smile design" },
-  { id: "orthodontics", icon: "🔧", label: "Orthodontics",         desc: "Braces, Invisalign, retainers" },
-  { id: "implants",     icon: "🔩", label: "Dental Implants",      desc: "Single, multiple, full arch" },
-  { id: "whitening",    icon: "💎", label: "Teeth Whitening",      desc: "Zoom, home kits, combination" },
-  { id: "emergency",    icon: "🚑", label: "Emergency Dental",     desc: "Same-day urgent care" },
+  { id: "general",      label: "General Dentistry",   desc: "Check-ups, fillings, hygiene" },
+  { id: "cosmetic",     label: "Cosmetic Dentistry",   desc: "Veneers, bonding, smile design" },
+  { id: "orthodontics", label: "Orthodontics",         desc: "Braces, Invisalign, retainers" },
+  { id: "implants",     label: "Dental Implants",      desc: "Single, multiple, full arch" },
+  { id: "whitening",    label: "Teeth Whitening",      desc: "Zoom, home kits, combination" },
+  { id: "emergency",    label: "Emergency Dental",     desc: "Same-day urgent care" },
 ];
 
 const CLINICIANS = [
@@ -152,7 +152,6 @@ export default function BookPage() {
                     background: treatment === t.id ? T.sageLt : "#fff",
                     textAlign: "left", cursor: "pointer", transition: "all 180ms",
                   }}>
-                  <div style={{ fontSize: "1.6rem", marginBottom: "0.75rem" }}>{t.icon}</div>
                   <div style={{ fontSize: "0.9rem", fontWeight: 600, color: T.text, marginBottom: "0.3rem" }}>{t.label}</div>
                   <div style={{ fontSize: "0.78rem", color: T.textLt }}>{t.desc}</div>
                 </button>
