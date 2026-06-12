@@ -248,7 +248,7 @@ export default function AboutPage() {
                 </label>
                 <p style={{ fontSize: "0.72rem", color: T.textLt, lineHeight: 1.6 }}>By submitting this form you agree to our privacy policy. All communications are strictly confidential.</p>
                 <button type="submit" disabled={submitting}
-                  style={{ padding: "0.9rem", background: T.gold, color: T.navy, border: "none", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", cursor: submitting ? "wait" : "pointer", opacity: submitting ? 0.7 : 1, transition: `all 200ms ${EASE}`, transform: "scale(1)", active: "" }}
+                  style={{ padding: "0.9rem", background: T.gold, color: T.navy, border: "none", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", cursor: submitting ? "wait" : "pointer", opacity: submitting ? 0.7 : 1, transition: `all 200ms ${EASE}`, transform: "scale(1)" }}
                   onMouseEnter={e => { if (!submitting) (e.currentTarget as HTMLElement).style.background = T.goldLt; }}
                   onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = T.gold}
                   onMouseDown={e => (e.currentTarget as HTMLElement).style.transform = "scale(0.97)"}
