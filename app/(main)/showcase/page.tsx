@@ -73,6 +73,18 @@ const LIVE_PROJECTS = [
     colour: "#5C7A62",
     bgColour: "#F2EDE6",
   },
+  {
+    id: "law",
+    title: "Law Firm — Sterling & Co",
+    category: "Legal Services · Luxury",
+    year: "2026",
+    desc: "Dark navy and gold luxury law firm template. Mega-menu with 5 practice areas × 4 subcategories, parallax hero, scroll reveals, animated stats, team profiles, blog with category filter, and contact form.",
+    tech: ["Next.js 15", "Framer Motion", "TypeScript"],
+    href: "/showcase/law",
+    status: "live",
+    colour: "#C9A84C",
+    bgColour: "#0A0E1A",
+  },
 ];
 
 
