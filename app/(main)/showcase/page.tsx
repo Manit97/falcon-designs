@@ -85,6 +85,18 @@ const LIVE_PROJECTS = [
     colour: "#C9A84C",
     bgColour: "#0A0E1A",
   },
+  {
+    id: "clinic",
+    title: "Lumière Aesthetic Clinic",
+    category: "Medical Aesthetics · Luxury",
+    year: "2026",
+    desc: "Warm cream and champagne gold med-spa template. Six individual service pages, parallax heroes, bleeding image layouts, frosted glass navbar, 3-step booking flow, team profiles, and scroll-reveal animations throughout.",
+    tech: ["Next.js 15", "Framer Motion", "TypeScript"],
+    href: "/showcase/clinic",
+    status: "live",
+    colour: "#B8956A",
+    bgColour: "#FAF8F5",
+  },
 ];
 
 
