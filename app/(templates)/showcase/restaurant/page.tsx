@@ -146,9 +146,9 @@ function DishRow({ dish, index }: { dish: typeof SIGNATURE[0]; index: number }) 
           {dish.price}
         </div>
 
-        {/* Clip-path reveal */}
+        {/* Clip-path reveal — starts covering the image, retracts to reveal */}
         <motion.div
-          initial={{ clipPath: reverse ? "inset(0 0 0 100%)" : "inset(0 100% 0 0)" }}
+          initial={{ clipPath: reverse ? "inset(0 100% 0 0)" : "inset(0 0 0 100%)" }}
           animate={isInView ? { clipPath: "inset(0 0% 0 0%)" } : {}}
           transition={{ duration: 1.0, ease: [0.23,1,0.32,1], delay: 0.1 }}
           style={{ position: "absolute", inset: 0, background: T.bg, pointerEvents: "none" }}
