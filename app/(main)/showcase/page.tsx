@@ -97,6 +97,18 @@ const LIVE_PROJECTS = [
     colour: "#B8956A",
     bgColour: "#FAF8F5",
   },
+  {
+    id: "restaurant",
+    title: "Ember — Fine Dining Restaurant",
+    category: "Hospitality · Fine Dining",
+    year: "2026",
+    desc: "Dark amber cinematic restaurant template. Parallax hero, signature dish rows with clip-path reveals, asymmetric atmosphere gallery, chef portrait section, private dining parallax, typographic menu, 3-step reservation flow, and story page with milestone timeline.",
+    tech: ["Next.js 15", "Framer Motion", "TypeScript"],
+    href: "/showcase/restaurant",
+    status: "live",
+    colour: "#C4813A",
+    bgColour: "#090705",
+  },
 ];
 
 
