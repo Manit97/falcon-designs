@@ -4,24 +4,18 @@ import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import type { ReactNode, CSSProperties } from "react";
 
 /**
- * Wraps its children in a motion.div that translates vertically as the element
- * scrolls through the viewport — creating a classic parallax depth effect.
- *
- * Two layers of smoothing:
- *   1. Lenis lerp — the page scroll itself decelerates exponentially (no hard stop).
- *   2. useSpring  — each parallax element has its own spring inertia on top of
- *      the scroll, so different layers decelerate at different rates and feel
- *      like they're floating at different depths.
- *
- * offset   — total Y travel in px (element rises this many px across its viewport journey).
- * spring   — Framer Motion spring config. Stiffer = more tightly coupled to scroll.
+ * Parallax depth wrapper. Lenis already smooths the scroll — adding a
+ * useSpring on top creates a double-spring that makes content pages feel
+ * laggy. By default we use the raw linear transform (smooth enough via
+ * Lenis). Pass `spring` only for purely decorative background elements
+ * that should trail visually behind the main scroll.
  */
 export default function ParallaxLayer({
   children,
   offset = 50,
   className,
   style,
-  spring = { stiffness: 80, damping: 20, mass: 0.6 },
+  spring,
 }: {
   children?: ReactNode;
   offset?: number;
@@ -36,13 +30,12 @@ export default function ParallaxLayer({
     offset: ["start end", "end start"],
   });
 
-  // Raw linear transform driven by scroll progress
   const rawY = useTransform(scrollYProgress, [0, 1], [offset, -offset]);
 
-  // Spring gives each layer its own deceleration curve on top of Lenis's scroll.
-  // Background glows (large offset, low stiffness) trail further behind;
-  // section headers (smaller offset, same spring) feel crisper.
-  const y = useSpring(rawY, spring);
+  // Only apply spring when explicitly requested (decorative bg elements only).
+  // Default is the raw linear value — Lenis provides all the smoothing needed.
+  const springY = useSpring(rawY, spring ?? { stiffness: 1000, damping: 100 });
+  const y = spring ? springY : rawY;
 
   return (
     <motion.div ref={ref} className={className} style={{ ...style, y }}>
