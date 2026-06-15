@@ -128,7 +128,7 @@ export default function ServicesPage() {
                 }}>{s.desc}</p>
 
                 {/* Price list */}
-                <div className="mn-price-grid" style={{ gap: "0" }}>
+                <div className="mn-price-grid" style={{ columnGap: "3rem", rowGap: "0" }}>
                   {s.items.map((item, i) => (
                     <div
                       key={i}
