@@ -160,7 +160,8 @@ export default function DentalHome() {
 
       {/* ── STATS ────────────────────────────────────────────────────────── */}
       <section style={{ padding: "5rem 2rem", maxWidth: 1280, margin: "0 auto" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 1, background: T.border }}>
+        <style>{`@media(max-width:640px){ .iv-stats-grid{grid-template-columns:1fr 1fr!important} }`}</style>
+        <div className="iv-stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 1, background: T.border }}>
           {[{ to: 4800, suffix: "+", label: "Patients treated" }, { to: 14, suffix: " yrs", label: "In private practice" }, { to: 4.9, suffix: "", label: "Google rating", decimal: true }, { to: 98, suffix: "%", label: "Patient satisfaction" }].map(s => (
             <div key={s.label} style={{ background: T.bg, padding: "2.5rem 2rem", textAlign: "center" }}>
               <div style={{ fontFamily: SERIF, fontSize: "clamp(2rem,3.5vw,2.8rem)", fontWeight: 500, color: T.text, marginBottom: "0.4rem", lineHeight: 1 }}>

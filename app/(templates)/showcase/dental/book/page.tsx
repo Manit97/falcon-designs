@@ -265,7 +265,8 @@ export default function BookPage() {
             <h2 style={{ fontFamily: SERIF, fontSize: "1.5rem", fontWeight: 600, color: T.text, marginBottom: "0.5rem" }}>Your details</h2>
             <p style={{ fontSize: "0.875rem", color: T.textLt, marginBottom: "2rem" }}>We'll use this to confirm your appointment and send reminders.</p>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem", marginBottom: "1.25rem" }}>
+            <style>{`@media(max-width:480px){ .iv-book-form-row{grid-template-columns:1fr!important} }`}</style>
+            <div className="iv-book-form-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem", marginBottom: "1.25rem" }}>
               {([
                 { key: "name",  label: "Full Name",      placeholder: "Sarah Johnson", type: "text" },
                 { key: "phone", label: "Phone Number",   placeholder: "07700 900000",  type: "tel" },

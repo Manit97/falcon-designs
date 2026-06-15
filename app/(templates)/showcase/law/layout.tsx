@@ -225,6 +225,11 @@ export default function LawLayout({ children }: { children: React.ReactNode }) {
           .sterling-newsletter-btn { width: 100% !important; }
         }
 
+        /* ── Practice page sub-cards ── */
+        @media (max-width: 480px) {
+          .sterling-practice-subs-grid { grid-template-columns: 1fr !important; }
+        }
+
         /* ── Section horizontal padding ── */
         @media (max-width: 640px) {
           .sterling-px { padding-left: 1.25rem !important; padding-right: 1.25rem !important; }

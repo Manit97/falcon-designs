@@ -40,6 +40,7 @@ function FontLoader() {
 export default function DentalLayout({ children }: { children: React.ReactNode }) {
   const pathname   = usePathname();
   const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -47,8 +48,7 @@ export default function DentalLayout({ children }: { children: React.ReactNode }
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Reset scroll to top on page change
-  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  useEffect(() => { window.scrollTo(0, 0); setMobileOpen(false); }, [pathname]);
 
   const isActive = (href: string) =>
     href.startsWith("#") ? false : pathname === href || pathname === href + "/";
@@ -61,17 +61,28 @@ export default function DentalLayout({ children }: { children: React.ReactNode }
         #ivory-dental-root a * { cursor: pointer !important; }
         #ivory-dental-root button { cursor: pointer !important; }
         #ivory-dental-root button * { cursor: pointer !important; }
+
+        .iv-desktop-nav { display: flex !important; }
+        .iv-burger { display: none !important; }
+        @media (max-width: 820px) {
+          .iv-desktop-nav { display: none !important; }
+          .iv-burger { display: flex !important; }
+          .iv-nav { padding: 0 1.25rem !important; }
+        }
+        @media (max-width: 640px) {
+          .iv-px { padding-left: 1.25rem !important; padding-right: 1.25rem !important; }
+        }
       `}</style>
 
       {/* ── NAVBAR ── */}
       <header style={{
         position: "fixed", top: 0, left: 0, right: 0, zIndex: 400,
-        background: scrolled ? "rgba(250,250,248,0.96)" : "transparent",
-        backdropFilter: scrolled ? "blur(12px)" : "none",
+        background: scrolled ? "rgba(250,250,248,0.96)" : "rgba(250,250,248,0.98)",
+        backdropFilter: "blur(12px)",
         borderBottom: `1px solid ${scrolled ? T.border : "transparent"}`,
-        transition: "all 300ms",
+        transition: "border-color 300ms",
       }}>
-        <nav style={{ maxWidth: 1280, margin: "0 auto", padding: "0 2rem", height: 68, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <nav className="iv-nav" style={{ maxWidth: 1280, margin: "0 auto", padding: "0 2rem", height: 68, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
 
           {/* Logo */}
           <Link href={BASE} style={{ display: "flex", alignItems: "center", gap: "0.6rem", textDecoration: "none", cursor: "pointer" }}>
@@ -81,8 +92,8 @@ export default function DentalLayout({ children }: { children: React.ReactNode }
             <span style={{ fontFamily: SERIF, fontSize: "1.1rem", fontWeight: 600, color: T.text }}>Ivory Dental</span>
           </Link>
 
-          {/* Links */}
-          <div style={{ display: "flex", gap: "2.25rem", alignItems: "center" }}>
+          {/* Desktop links */}
+          <div className="iv-desktop-nav" style={{ gap: "2.25rem", alignItems: "center" }}>
             {NAV_LINKS.map(l => (
               <Link key={l.href} href={l.href}
                 style={{
@@ -105,7 +116,36 @@ export default function DentalLayout({ children }: { children: React.ReactNode }
               onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = T.sage}
             >Book Now</Link>
           </div>
+
+          {/* Burger */}
+          <button className="iv-burger" onClick={() => setMobileOpen(o => !o)} aria-label="Menu" style={{
+            background: "none", border: "none", padding: "0.5rem",
+            flexDirection: "column", gap: "5px",
+          }}>
+            {[0, 1, 2].map(i => (
+              <span key={i} style={{ display: "block", width: 22, height: 1.5, background: T.text, transition: "all 250ms" }} />
+            ))}
+          </button>
         </nav>
+
+        {/* Mobile menu */}
+        {mobileOpen && (
+          <div style={{ background: "rgba(250,250,248,0.98)", backdropFilter: "blur(16px)", borderTop: `1px solid ${T.border}`, padding: "1.25rem 1.5rem 1.75rem" }}>
+            {NAV_LINKS.map(l => (
+              <Link key={l.href} href={l.href} style={{
+                display: "block", padding: "0.7rem 0",
+                fontSize: "0.9rem", fontWeight: 500, color: isActive(l.href) ? T.sage : T.textMd,
+                textDecoration: "none", borderBottom: `1px solid ${T.border}`,
+              }}>{l.label}</Link>
+            ))}
+            <Link href={`${BASE}/book`} style={{
+              display: "block", marginTop: "1.25rem", padding: "0.85rem 1.5rem",
+              background: T.sage, color: "#fff", textAlign: "center",
+              textDecoration: "none", fontSize: "0.78rem", fontWeight: 600,
+              letterSpacing: "0.14em", textTransform: "uppercase",
+            }}>Book Now</Link>
+          </div>
+        )}
       </header>
 
       {/* Page content — padded for fixed nav */}

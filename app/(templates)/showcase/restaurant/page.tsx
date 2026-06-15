@@ -195,20 +195,27 @@ function DishRow({ dish, index }: { dish: typeof SIGNATURE[0]; index: number }) 
 // ── Gallery ──────────────────────────────────────────────────────────────────
 function Gallery() {
   const { ref, isInView } = useReveal(0.08);
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 900);
+    check();
+    window.addEventListener("resize", check, { passive: true });
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   const layouts = [
-    { gridColumn: "1 / 5",  gridRow: "1 / 3", aspectRatio: "3/4" },   // tall left
-    { gridColumn: "5 / 9",  gridRow: "1 / 2", aspectRatio: "4/3" },   // wide top-mid
-    { gridColumn: "9 / 13", gridRow: "1 / 2", aspectRatio: "1/1" },   // sq top-right
-    { gridColumn: "5 / 9",  gridRow: "2 / 3", aspectRatio: "1/1" },   // sq bot-mid
-    { gridColumn: "9 / 13", gridRow: "2 / 3", aspectRatio: "4/3" },   // wide bot-right
+    { gridColumn: "1 / 5",  gridRow: "1 / 3", aspectRatio: "3/4" },
+    { gridColumn: "5 / 9",  gridRow: "1 / 2", aspectRatio: "4/3" },
+    { gridColumn: "9 / 13", gridRow: "1 / 2", aspectRatio: "1/1" },
+    { gridColumn: "5 / 9",  gridRow: "2 / 3", aspectRatio: "1/1" },
+    { gridColumn: "9 / 13", gridRow: "2 / 3", aspectRatio: "4/3" },
   ];
 
   return (
     <div ref={ref} style={{ padding: "0 2.5rem", maxWidth: 1320, margin: "0 auto" }}>
       <div className="em-gallery-grid" style={{ gap: 8 }}>
         {GALLERY.map((g, i) => (
-          <div key={i} style={{ ...layouts[i], overflow: "hidden", position: "relative" }}>
+          <div key={i} style={{ ...(isMobile ? { aspectRatio: layouts[i].aspectRatio } : layouts[i]), overflow: "hidden", position: "relative" }}>
             <motion.div
               initial={{ clipPath: "inset(100% 0 0 0)" }}
               animate={isInView ? { clipPath: "inset(0% 0 0 0)" } : {}}
@@ -235,6 +242,13 @@ function Gallery() {
 // ── Press Strip ──────────────────────────────────────────────────────────────
 function PressStrip() {
   const { ref, isInView } = useReveal();
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 900);
+    check();
+    window.addEventListener("resize", check, { passive: true });
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   return (
     <div ref={ref} style={{ background: T.bgMd, borderTop: `1px solid ${T.border}`, borderBottom: `1px solid ${T.border}`, padding: "5rem 2.5rem" }}>
@@ -245,7 +259,8 @@ function PressStrip() {
             transition={{ duration: 0.7, ease: [0.23,1,0.32,1], delay: i * 0.12 }}
             style={{
               padding: "2.5rem 3rem",
-              borderRight: i < PRESS.length - 1 ? `1px solid ${T.border}` : "none",
+              borderRight: !isMobile && i < PRESS.length - 1 ? `1px solid ${T.border}` : "none",
+              borderBottom: isMobile && i < PRESS.length - 1 ? `1px solid ${T.border}` : "none",
               textAlign: "center",
             }}
           >
@@ -264,6 +279,13 @@ function PressStrip() {
 // ── Chef Section ─────────────────────────────────────────────────────────────
 function ChefSection() {
   const { ref, isInView } = useReveal(0.1);
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 900);
+    check();
+    window.addEventListener("resize", check, { passive: true });
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   return (
     <section style={{ padding: "clamp(5rem,8vw,10rem) 2.5rem" }}>
@@ -271,11 +293,11 @@ function ChefSection() {
 
         {/* Image */}
         <div style={{ position: "relative" }}>
-          {/* Offset amber frame */}
-          <div style={{
+          {/* Offset amber frame — hidden on mobile to prevent overflow */}
+          {!isMobile && <div style={{
             position: "absolute", top: -16, right: -16, bottom: 16, left: 16,
             border: `1px solid ${T.border}`, zIndex: 0,
-          }} />
+          }} />}
 
           <motion.div
             initial={{ clipPath: "inset(0 100% 0 0)" }}

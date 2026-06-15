@@ -68,7 +68,7 @@ export default function StoryPage() {
 
       {/* ── Intro ── */}
       <section style={{ padding: "clamp(4rem,7vw,8rem) 2.5rem" }}>
-        <div ref={introRef} style={{ maxWidth: 1320, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(3rem,6vw,8rem)", alignItems: "center" }}>
+        <div ref={introRef} className="em-chef-grid" style={{ maxWidth: 1320, margin: "0 auto", gap: "clamp(3rem,6vw,8rem)", alignItems: "center" }}>
           <motion.div initial={{ opacity: 0, x: -32 }} animate={introIn ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 1.0, ease: [0.23,1,0.32,1] }}>
             <div style={{ fontSize: "0.58rem", letterSpacing: "0.35em", textTransform: "uppercase", color: T.amber, marginBottom: "1.5rem" }}>The Beginning</div>

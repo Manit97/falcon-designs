@@ -95,7 +95,7 @@ export default function PracticeAreaPage({ params }: { params: Promise<{ practic
             <h2 style={{ fontFamily: SERIF, fontSize: "clamp(1.6rem,3vw,2.4rem)", fontWeight: 500, color: T.cream, marginBottom: "2rem" }}>
               Areas of Expertise
             </h2>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
+            <div className="sterling-practice-subs-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
               {practice.subs.map((s, i) => (
                 <SubCard key={s.slug} s={s} practiceSlug={practice.slug} i={i} />
               ))}
