@@ -135,11 +135,24 @@ ${configForm.keyInfo ? `Key information: ${configForm.keyInfo}` : ""}
 
 Tone: ${configForm.tone}. Keep replies concise (2-4 sentences). Be helpful, answer questions about the business, and guide customers towards getting in touch or making a purchase/booking. If you don't know specific details, invite them to call or email the business directly.`;
 
-  const handleBuild = (e: React.FormEvent) => {
+  const handleBuild = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!configForm.businessName || !configForm.industry) return;
     setCustomSystem(buildSystemPrompt());
     setStep("chat");
+
+    // Capture as a lead in the background — fire and forget
+    fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name:     configForm.businessName,
+        email:    "unknown@widget-demo.com",
+        company:  configForm.businessName,
+        message:  `Widget demo built: ${configForm.industry}. Services: ${configForm.services}. Key info: ${configForm.keyInfo}`,
+        services: [configForm.industry],
+      }),
+    }).catch(() => {});
   };
 
   return (

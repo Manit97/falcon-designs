@@ -240,7 +240,7 @@ export default function ClinicHome() {
 
       {/* ── PHILOSOPHY STRIP ── */}
       <section style={{ background: T.bgMd, borderTop: `1px solid ${T.border}`, borderBottom: `1px solid ${T.border}`, padding: "0 2.5rem" }}>
-        <div ref={philRef} style={{ maxWidth: 1280, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(3,1fr)" }}>
+        <div ref={philRef} className="lm-phil-grid" style={{ maxWidth: 1280, margin: "0 auto" }}>
           {[
             { num: "I",   title: "Science First",  body: "Every treatment protocol is grounded in peer-reviewed clinical evidence. We do not follow trends — we follow results." },
             { num: "II",  title: "Artistry",        body: "Technical excellence alone is not enough. Our practitioners bring an aesthetic sensibility that ensures enhancement always looks natural." },
@@ -397,7 +397,7 @@ export default function ClinicHome() {
               </div>
             </div>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem", marginTop: "1.25rem" }}>
+          <div className="lm-testimonial-grid" style={{ gap: "1.25rem", marginTop: "1.25rem" }}>
             {TESTIMONIALS.slice(1).map((t, i) => <TestCard key={i} t={t} i={i} />)}
           </div>
         </div>
@@ -419,7 +419,7 @@ export default function ClinicHome() {
             }}>Meet Everyone →</Link>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "2rem" }}>
+          <div className="lm-team-preview" style={{ gap: "2rem" }}>
             {[0, 1].map(i => {
               const m = [
                 { name: "Dr. Sophie Marchand", role: "Medical Director & Founder", img: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=700&q=80", area: "Aesthetics · Dermatology" },
@@ -431,7 +431,8 @@ export default function ClinicHome() {
                   initial={{ opacity: 0, y: 24 }}
                   animate={teamInView ? { opacity: 1, y: 0 } : {}}
                   transition={{ duration: 0.7, delay: i * 0.12, ease: [0.23, 1, 0.32, 1] }}
-                  style={{ display: "grid", gridTemplateColumns: "160px 1fr", gap: "1.5rem", alignItems: "start", padding: "1.75rem", border: `1px solid ${T.border}`, background: T.bgMd }}
+                  className="lm-team-card"
+                  style={{ gap: "1.5rem", alignItems: "start", padding: "1.75rem", border: `1px solid ${T.border}`, background: T.bgMd }}
                 >
                   <img src={m.img} alt={m.name} style={{ width: "100%", aspectRatio: "3/4", objectFit: "cover", objectPosition: "top" }} />
                   <div style={{ paddingTop: "0.25rem" }}>

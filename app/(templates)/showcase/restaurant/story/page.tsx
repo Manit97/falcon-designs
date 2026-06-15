@@ -42,6 +42,14 @@ export default function StoryPage() {
 
   return (
     <main style={{ background: T.bg, overflow: "hidden" }}>
+      <style>{`
+        @media (max-width: 600px) {
+          .ember-timeline-item { grid-template-columns: 1fr !important; }
+          .ember-timeline-dot  { display: none !important; }
+          .ember-timeline-line { display: none !important; }
+          .ember-timeline-content { padding: 0 0 0.5rem !important; text-align: left !important; }
+        }
+      `}</style>
 
       {/* ── Hero ── */}
       <div ref={heroRef} style={{ position: "relative", height: "80vh", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -131,7 +139,7 @@ export default function StoryPage() {
 
           <div style={{ position: "relative" }}>
             {/* Vertical line */}
-            <div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 1, background: T.border, transform: "translateX(-50%)" }} />
+            <div className="ember-timeline-line" style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 1, background: T.border, transform: "translateX(-50%)" }} />
 
             {TIMELINE.map((t, i) => {
               const left = i % 2 === 0;
@@ -140,24 +148,25 @@ export default function StoryPage() {
                   initial={{ opacity: 0, x: left ? -30 : 30 }}
                   animate={timelineIn ? { opacity: 1, x: 0 } : {}}
                   transition={{ duration: 0.8, ease: [0.23,1,0.32,1], delay: i * 0.1 }}
+                  className="ember-timeline-item"
                   style={{
                     display: "grid", gridTemplateColumns: "1fr 1fr",
                     gap: "0", marginBottom: "3.5rem",
                   }}>
                   {left ? (
                     <>
-                      <div style={{ paddingRight: "3rem", textAlign: "right" }}>
+                      <div className="ember-timeline-content" style={{ paddingRight: "3rem", textAlign: "right" }}>
                         <div style={{ fontFamily: DISPLAY, fontSize: "2.5rem", fontWeight: 300, color: T.amber, opacity: 0.35, lineHeight: 1 }}>{t.year}</div>
                         <h3 style={{ fontFamily: DISPLAY, fontSize: "1.35rem", fontWeight: 400, fontStyle: "italic", color: T.cream, margin: "0.3rem 0 0.7rem" }}>{t.title}</h3>
                         <p style={{ fontSize: "0.8rem", color: T.textMd, lineHeight: 1.85 }}>{t.body}</p>
                       </div>
-                      <div style={{ paddingLeft: "3rem", display: "flex", alignItems: "flex-start", paddingTop: "0.5rem" }}>
+                      <div className="ember-timeline-dot" style={{ paddingLeft: "3rem", display: "flex", alignItems: "flex-start", paddingTop: "0.5rem" }}>
                         <div style={{ width: 10, height: 10, background: T.amber, transform: "rotate(45deg)", marginTop: "0.4rem", marginLeft: -5, flexShrink: 0 }} />
                       </div>
                     </>
                   ) : (
                     <>
-                      <div style={{ paddingRight: "3rem", display: "flex", alignItems: "flex-start", justifyContent: "flex-end", paddingTop: "0.5rem" }}>
+                      <div className="ember-timeline-dot" style={{ paddingRight: "3rem", display: "flex", alignItems: "flex-start", justifyContent: "flex-end", paddingTop: "0.5rem" }}>
                         <div style={{ width: 10, height: 10, background: T.amber, transform: "rotate(45deg)", marginTop: "0.4rem", marginRight: -5, flexShrink: 0 }} />
                       </div>
                       <div style={{ paddingLeft: "3rem" }}>

@@ -101,28 +101,37 @@ export default function ClinicLayout({ children }: { children: React.ReactNode }
           .lm-px { padding-left:1.25rem !important; padding-right:1.25rem !important; }
           .lm-hero-h1 { font-size:clamp(2.8rem,12vw,5rem) !important; }
         }
-        .lm-about-grid  { display:grid; grid-template-columns:1fr 1fr; }
-        .lm-team-grid   { display:grid; grid-template-columns:repeat(3,1fr); }
-        .lm-svc-grid    { display:grid; grid-template-columns:repeat(3,1fr); }
-        .lm-stats-grid  { display:grid; grid-template-columns:repeat(4,1fr); }
-        .lm-sub-grid    { display:grid; grid-template-columns:1fr 360px; }
-        .lm-steps-grid  { display:grid; grid-template-columns:1fr 1fr; }
-        .lm-contact-grid{ display:grid; grid-template-columns:1fr 1fr; }
+        .lm-about-grid       { display:grid; grid-template-columns:1fr 1fr; }
+        .lm-team-grid        { display:grid; grid-template-columns:repeat(3,1fr); }
+        .lm-svc-grid         { display:grid; grid-template-columns:repeat(3,1fr); }
+        .lm-stats-grid       { display:grid; grid-template-columns:repeat(4,1fr); }
+        .lm-sub-grid         { display:grid; grid-template-columns:1fr 360px; }
+        .lm-steps-grid       { display:grid; grid-template-columns:1fr 1fr; }
+        .lm-contact-grid     { display:grid; grid-template-columns:1fr 1fr; }
+        .lm-phil-grid        { display:grid; grid-template-columns:repeat(3,1fr); }
+        .lm-testimonial-grid { display:grid; grid-template-columns:1fr 1fr; }
+        .lm-team-preview     { display:grid; grid-template-columns:1fr 1fr; }
+        .lm-team-card        { display:grid; grid-template-columns:160px 1fr; }
         @media (max-width:860px) {
-          .lm-about-grid  { grid-template-columns:1fr !important; }
-          .lm-team-grid   { grid-template-columns:1fr 1fr !important; gap:2rem !important; }
-          .lm-svc-grid    { grid-template-columns:1fr 1fr !important; }
-          .lm-stats-grid  { grid-template-columns:1fr 1fr !important; }
-          .lm-sub-grid    { grid-template-columns:1fr !important; }
-          .lm-sub-sidebar { position:static !important; }
-          .lm-contact-grid{ grid-template-columns:1fr !important; }
-          .lm-footer-grid { grid-template-columns:1fr 1fr !important; gap:2.5rem !important; }
+          .lm-about-grid       { grid-template-columns:1fr !important; }
+          .lm-team-grid        { grid-template-columns:1fr 1fr !important; gap:2rem !important; }
+          .lm-svc-grid         { grid-template-columns:1fr 1fr !important; }
+          .lm-stats-grid       { grid-template-columns:1fr 1fr !important; }
+          .lm-sub-grid         { grid-template-columns:1fr !important; }
+          .lm-sub-sidebar      { position:static !important; }
+          .lm-contact-grid     { grid-template-columns:1fr !important; }
+          .lm-footer-grid      { grid-template-columns:1fr 1fr !important; gap:2.5rem !important; }
+          .lm-phil-grid        { grid-template-columns:1fr 1fr !important; }
+          .lm-testimonial-grid { grid-template-columns:1fr !important; }
+          .lm-team-preview     { grid-template-columns:1fr !important; }
         }
         @media (max-width:600px) {
-          .lm-svc-grid   { grid-template-columns:1fr !important; }
-          .lm-team-grid  { grid-template-columns:1fr !important; }
-          .lm-steps-grid { grid-template-columns:1fr !important; }
-          .lm-footer-grid{ grid-template-columns:1fr !important; }
+          .lm-svc-grid         { grid-template-columns:1fr !important; }
+          .lm-team-grid        { grid-template-columns:1fr !important; }
+          .lm-steps-grid       { grid-template-columns:1fr !important; }
+          .lm-footer-grid      { grid-template-columns:1fr !important; }
+          .lm-phil-grid        { grid-template-columns:1fr !important; }
+          .lm-team-card        { grid-template-columns:1fr !important; }
         }
       `}</style>
 

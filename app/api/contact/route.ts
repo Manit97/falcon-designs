@@ -44,17 +44,37 @@ export async function POST(req: NextRequest) {
 
     // ── 1. Write to Supabase ──────────────────────────────────────────────
     const supabase = getSupabase();
+    const nameTrimmed    = body.name.trim();
+    const emailTrimmed   = body.email.trim().toLowerCase();
+    const companyTrimmed = body.company?.trim() ?? null;
+    const msgTrimmed     = body.message.trim();
+    const servicesList   = body.services ?? [];
+
     const { error: dbError } = await supabase.from("contact_leads").insert({
-      name:     body.name.trim(),
-      email:    body.email.trim().toLowerCase(),
-      company:  body.company?.trim() ?? null,
-      message:  body.message.trim(),
-      services: body.services ?? [],
+      name:     nameTrimmed,
+      email:    emailTrimmed,
+      company:  companyTrimmed,
+      message:  msgTrimmed,
+      services: servicesList,
       source:   "falcon-designs-website",
       status:   "new",
     });
 
-    if (dbError) console.error("Supabase insert error:", dbError);
+    if (dbError) console.error("Supabase contact_leads insert error:", dbError);
+
+    // Also insert into shared leads table so Dashboard CRM can see it
+    const { error: leadsError } = await supabase.from("leads").insert({
+      name:            nameTrimmed,
+      email:           emailTrimmed,
+      trade:           servicesList.length > 0 ? servicesList.join(", ") : companyTrimmed ?? "Unknown",
+      location:        null,
+      website_quality: null,
+      fit_reason:      msgTrimmed,
+      status:          "new",
+      drafted_email:   null,
+    });
+
+    if (leadsError) console.error("Supabase leads insert error:", leadsError);
 
     // ── 2. Send notification email via Resend ─────────────────────────────
     const RESEND_KEY = process.env.RESEND_API_KEY;
