@@ -9,13 +9,11 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     const isHomePage = pathname === "/";
+    if (!isHomePage) return;
 
     const lenis = new Lenis({
-      // Homepage: slow floaty config — the 300vh ZoomParallax sticky section
-      // masks the deceleration so it feels premium, not heavy.
-      // All other pages: snappy config that matches native/template scroll feel.
-      lerp:            isHomePage ? 0.06 : 0.14,
-      wheelMultiplier: isHomePage ? 0.7  : 1.0,
+      lerp:            0.06,
+      wheelMultiplier: 0.7,
       orientation:     "vertical",
       smoothWheel:     true,
       syncTouch:       false,
@@ -35,7 +33,7 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
       lenis.destroy();
       lenisRef.current = null;
     };
-  }, [pathname]); // re-create Lenis when route changes so config updates
+  }, [pathname]);
 
   useEffect(() => {
     if (lenisRef.current) {
