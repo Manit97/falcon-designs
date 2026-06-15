@@ -5,7 +5,23 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
+// Rate limiting: 10 requests per minute per IP
+const rateLimitStore = new Map<string, number[]>();
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const hits = (rateLimitStore.get(ip) ?? []).filter(t => now - t < 60_000);
+  if (hits.length >= 10) return true;
+  hits.push(now);
+  rateLimitStore.set(ip, hits);
+  return false;
+}
+
 export async function POST(req: NextRequest) {
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  if (isRateLimited(ip)) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
   const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
   if (!ANTHROPIC_KEY) {
     return NextResponse.json({ error: "AI not configured" }, { status: 503 });
