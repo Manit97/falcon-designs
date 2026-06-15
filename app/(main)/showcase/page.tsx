@@ -109,6 +109,18 @@ const LIVE_PROJECTS = [
     colour: "#C4813A",
     bgColour: "#090705",
   },
+  {
+    id: "salon",
+    title: "Maison Noir — Hair Atelier",
+    category: "Beauty · Hair Salon",
+    year: "2026",
+    desc: "Deep malachite luxury hair salon template. Parallax editorial hero, scrolling amber treatment ticker, philosophy pillars, alternating services with offset-frame images and price lists, filterable gallery with lightbox, team portraits, testimonials, and a 4-step animated booking flow.",
+    tech: ["Next.js 15", "Framer Motion", "TypeScript"],
+    href: "/showcase/salon",
+    status: "live",
+    colour: "#C9973A",
+    bgColour: "#0B1512",
+  },
 ];
 
 
