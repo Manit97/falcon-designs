@@ -157,7 +157,7 @@ export default function BookPage() {
           </motion.h1>
 
           {/* Step indicators */}
-          <div style={{ display: "flex", gap: "2.5rem", flexWrap: "wrap" }}>
+          <div className="mn-step-row">
             {([1, 2, 3, 4] as Step[]).map((s, i) => (
               <div key={s} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                 <StepIndicator step={s} current={step} />

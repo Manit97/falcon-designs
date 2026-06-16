@@ -90,7 +90,7 @@ export default function ServicesPage() {
                 style={{ position: "relative" }}
               >
                 {/* Offset frame */}
-                <div style={{
+                <div className="mn-svc-offset-frame" style={{
                   position: "absolute", top: -14, left: -14, right: 14, bottom: 14,
                   border: `1px solid ${sIdx % 2 === 0 ? T.border : "rgba(138,100,40,0.2)"}`,
                   zIndex: 0,
@@ -99,7 +99,7 @@ export default function ServicesPage() {
                   <img src={s.img} alt={s.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 </div>
                 {/* Amber tag */}
-                <div style={{
+                <div className="mn-svc-price-tag" style={{
                   position: "absolute", bottom: -14, right: -14, zIndex: 2,
                   background: T.amber, padding: "0.75rem 1.25rem",
                 }}>

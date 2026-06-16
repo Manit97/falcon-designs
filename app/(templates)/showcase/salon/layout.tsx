@@ -95,6 +95,30 @@ export default function SalonLayout({ children }: { children: React.ReactNode })
           .mn-burger      { display: flex !important; }
         }
 
+        /* Homepage philosophy pillars */
+        .mn-philosophy-pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem; }
+
+        /* Homepage gallery preview (asymmetric) */
+        .mn-gallery-preview      { display: grid; grid-template-columns: 1.2fr 1fr 1fr; grid-template-rows: auto auto; gap: 0.75rem; }
+        .mn-gallery-preview-hero { grid-row: 1 / 3; }
+
+        /* Book page step row */
+        .mn-step-row { display: flex; gap: 2.5rem; flex-wrap: wrap; }
+
+        @media (max-width: 900px) {
+          .mn-philosophy-pillars   { grid-template-columns: 1fr 1fr !important; }
+          .mn-gallery-preview      { grid-template-columns: 1fr 1fr !important; grid-template-rows: auto !important; }
+          .mn-gallery-preview-hero { grid-row: auto !important; aspect-ratio: 1 / 1 !important; }
+        }
+        @media (max-width: 600px) {
+          .mn-philosophy-pillars   { grid-template-columns: 1fr !important; }
+          .mn-svc-offset-frame     { display: none !important; }
+          .mn-svc-price-tag        { position: absolute !important; bottom: 0 !important; right: 0 !important; }
+          .mn-step-row             { gap: 1rem !important; }
+          nav { padding: 0 1.25rem !important; }
+          footer > div             { padding-left: 1.25rem !important; padding-right: 1.25rem !important; }
+        }
+
         /* Reduced motion */
         @media (prefers-reduced-motion: reduce) {
           #mn-root *, #mn-root *::before, #mn-root *::after {

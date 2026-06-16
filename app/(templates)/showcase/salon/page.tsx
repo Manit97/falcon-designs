@@ -252,7 +252,7 @@ export default function SalonHomepage() {
                 No two heads of<br />hair are the same.
               </h2>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "2.5rem" }}>
+            <div className="mn-philosophy-pillars">
               {[
                 { num: "I",   title: "Consult",   body: "Every appointment begins with a genuine conversation — about your hair history, your life, and how much time you have on a Tuesday morning." },
                 { num: "II",  title: "Create",    body: "We work from the inside out. Colour is bespoke-mixed for your skin tone. Cuts are shaped around your natural growth patterns." },
@@ -343,7 +343,7 @@ export default function SalonHomepage() {
           </div>
 
           {/* Asymmetric gallery — 2 large + 4 smaller */}
-          <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr 1fr", gridTemplateRows: "auto auto", gap: "0.75rem" }}>
+          <div className="mn-gallery-preview">
             {GALLERY.slice(0, 5).map((g, i) => {
               const isHero = i === 0;
               return (
@@ -353,8 +353,8 @@ export default function SalonHomepage() {
                   whileInView={{ opacity: 1 }}
                   viewport={{ once: true, amount: 0.1 }}
                   transition={{ duration: 0.6, delay: i * 0.07 }}
+                  className={isHero ? "mn-gallery-preview-hero" : ""}
                   style={{
-                    gridRow: isHero ? "1 / 3" : "auto",
                     overflow: "hidden", position: "relative", cursor: "pointer",
                     aspectRatio: isHero ? "auto" : "1 / 1",
                     background: T.bgMd,
