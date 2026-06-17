@@ -128,17 +128,71 @@ function useReveal(threshold = 0.1) {
   return { ref, inView };
 }
 
+function CardPanel({ p, i }: { p: { slug: string; name: string; tag: string; img: string; price: string; desc: string }; i: number }) {
+  return (
+    <div style={{ position: "absolute", inset: 0, background: BG }}>
+      <img src={p.img} alt={p.name} style={{
+        position: "absolute", inset: 0,
+        width: "100%", height: "100%", objectFit: "cover",
+        filter: "grayscale(100%) brightness(0.38)",
+      }} />
+      <div style={{
+        position: "absolute", inset: 0,
+        background: "linear-gradient(180deg, rgba(12,12,12,0.2) 0%, transparent 30%, rgba(12,12,12,0.88) 100%)",
+      }} />
+      {/* Counter */}
+      <div style={{
+        position: "absolute", top: "2.5rem", right: "2.5rem",
+        fontFamily: DISPLAY, fontSize: "0.65rem", fontWeight: 700,
+        color: CREAM, opacity: 0.28, letterSpacing: "0.1em",
+      }}>
+        {String(i + 1).padStart(2, "0")} / {String(PROGRAMMES.length).padStart(2, "0")}
+      </div>
+      {/* Bottom text */}
+      <div style={{
+        position: "absolute", bottom: 0, left: 0, right: 0,
+        padding: "clamp(2rem, 4vw, 3.5rem)",
+      }}>
+        <div style={{ display: "inline-flex", alignItems: "center", background: LIME, borderRadius: 999, padding: "0.3rem 0.9rem", marginBottom: "1.25rem" }}>
+          <span style={{ fontFamily: DISPLAY, fontSize: "0.58rem", fontWeight: 700, color: BG, letterSpacing: "0.12em", textTransform: "uppercase" }}>{p.tag}</span>
+        </div>
+        <div style={{
+          fontFamily: DISPLAY, fontWeight: 700,
+          fontSize: "clamp(2.5rem, 6vw, 5.5rem)",
+          textTransform: "uppercase", letterSpacing: "-0.02em",
+          color: CREAM, lineHeight: 0.92, marginBottom: "1.5rem",
+        }}>{p.name}</div>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "1.5rem" }}>
+          <div>
+            <div style={{ fontFamily: DISPLAY, fontSize: "0.75rem", fontWeight: 600, color: LIME, letterSpacing: "0.08em", marginBottom: "0.6rem" }}>{p.price}</div>
+            <p style={{ fontFamily: BODY, fontSize: "0.85rem", color: GREY, lineHeight: 1.75, maxWidth: 500 }}>{p.desc}</p>
+          </div>
+          <ArrowButton href="#contact" text="Book This" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── COMPONENT ─────────────────────────────────────────────────────────────────
 export default function PTPage() {
   const heroRef      = useRef<HTMLDivElement>(null);
   const [scrolled,   setScrolled]   = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [form, setForm] = useState({ name: "", email: "", phone: "", goal: "", sent: false });
 
   // Hero parallax
   const { scrollYProgress: heroP } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const heroY       = useTransform(heroP, [0, 1], [0, 160]);
   const heroOpacity = useTransform(heroP, [0, 0.6], [1, 0]);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", phone: "", goal: "", sent: false });
+
+  // Programme scroll-driven card stack
+  const programmeRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: progP } = useScroll({ target: programmeRef, offset: ["start start", "end end"] });
+  // Card 2 rises from bottom: enters at 20% progress, fully covers at 45%
+  const card2Y = useTransform(progP, [0.15, 0.45], ["100vh", "0vh"]);
+  // Card 3 rises from bottom: enters at 50% progress, fully covers at 80%
+  const card3Y = useTransform(progP, [0.5, 0.8], ["100vh", "0vh"]);
 
   const { ref: statsRef,  inView: statsIn  } = useReveal(0.2);
   const { ref: processRef, inView: processIn } = useReveal();
@@ -162,7 +216,7 @@ export default function PTPage() {
   };
 
   return (
-    <div id="pt2" style={{ background: BG, color: CREAM, fontFamily: BODY, minHeight: "100dvh", overflowX: "hidden" }}>
+    <div id="pt2" style={{ background: BG, color: CREAM, fontFamily: BODY, minHeight: "100dvh" }}>
 
       {/* ── FONTS + GLOBAL ─────────────────────────────────────────────────── */}
       <style>{`
@@ -463,13 +517,13 @@ export default function PTPage() {
         </div>
       </section>
 
-      {/* ── PROGRAMMES — STICKY CARD STACK ──────────────────────────────────── */}
-      {/* Each card is position:sticky top:0 height:100vh; cards slide up from  */}
-      {/* below and cover the previous card as you scroll — pure CSS, no JS.    */}
-      <section id="programmes" style={{ position: "relative", isolation: "isolate" }}>
+      {/* ── PROGRAMMES — SCROLL-DRIVEN CARD STACK ───────────────────────────── */}
+      {/* One sticky viewport pinned at top. Cards 2 & 3 start at y:100vh and  */}
+      {/* are driven to y:0 by scroll progress, each covering the one before.  */}
+      <section id="programmes" style={{ position: "relative", zIndex: 2, background: BG }}>
 
-        {/* Section header — normal flow, scrolls away */}
-        <div style={{ padding: "5rem 2.5rem 3rem", borderTop: `1px solid ${BORDER}`, background: BG }}>
+        {/* Section header — scrolls away before the sticky stack locks */}
+        <div style={{ padding: "5rem 2.5rem 3rem", borderTop: `1px solid ${BORDER}` }}>
           <div style={{ maxWidth: 1320, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "2rem" }}>
             <div>
               <SectionLabel text="Programmes" />
@@ -485,66 +539,34 @@ export default function PTPage() {
           </div>
         </div>
 
-        {/* Card stack — each card sticky, stacked by z-index */}
-        {PROGRAMMES.map((p, i) => (
-          <div
-            key={p.slug}
-            style={{
-              position: "sticky", top: 0,
-              height: "100vh", zIndex: i + 1,
-              overflow: "hidden",
-            }}
-          >
-            <img src={p.img} alt={p.name} style={{
-              position: "absolute", inset: 0,
-              width: "100%", height: "100%", objectFit: "cover",
-              filter: "grayscale(100%) brightness(0.4)",
-            }} />
-            {/* Gradient overlay */}
-            <div style={{
-              position: "absolute", inset: 0,
-              background: "linear-gradient(180deg, rgba(12,12,12,0.25) 0%, transparent 35%, rgba(12,12,12,0.9) 100%)",
-            }} />
-            {/* Card counter top-right */}
-            <div style={{
-              position: "absolute", top: "2rem", right: "2.5rem",
-              fontFamily: DISPLAY, fontSize: "0.65rem", fontWeight: 700,
-              color: CREAM, opacity: 0.3, letterSpacing: "0.1em",
-            }}>
-              {String(i + 1).padStart(2, "0")} / {String(PROGRAMMES.length).padStart(2, "0")}
+        {/* Scroll container — 300vh so the sticky has room to animate */}
+        <div ref={programmeRef} style={{ position: "relative", height: "300vh" }}>
+          {/* Single sticky viewport */}
+          <div style={{ position: "sticky", top: 0, height: "100vh", overflow: "hidden" }}>
+
+            {/* Card 1 — always visible base layer */}
+            <div style={{ position: "absolute", inset: 0, zIndex: 1 }}>
+              <CardPanel p={PROGRAMMES[0]} i={0} />
             </div>
-            {/* Bottom content */}
-            <div style={{
-              position: "absolute", bottom: 0, left: 0, right: 0,
-              padding: "clamp(2rem, 4vw, 3.5rem)",
-            }}>
-              <div style={{ display: "inline-flex", alignItems: "center", background: LIME, borderRadius: 999, padding: "0.3rem 0.9rem", marginBottom: "1.5rem" }}>
-                <span style={{ fontFamily: DISPLAY, fontSize: "0.58rem", fontWeight: 700, color: BG, letterSpacing: "0.12em", textTransform: "uppercase" }}>{p.tag}</span>
-              </div>
-              <div style={{
-                fontFamily: DISPLAY, fontWeight: 700,
-                fontSize: "clamp(2.5rem, 6vw, 5.5rem)",
-                textTransform: "uppercase", letterSpacing: "-0.02em",
-                color: CREAM, lineHeight: 0.92, marginBottom: "1.5rem",
-              }}>{p.name}</div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "1.5rem" }}>
-                <div>
-                  <div style={{ fontFamily: DISPLAY, fontSize: "0.75rem", fontWeight: 600, color: LIME, letterSpacing: "0.08em", marginBottom: "0.6rem" }}>{p.price}</div>
-                  <p style={{ fontFamily: BODY, fontSize: "0.85rem", color: GREY, lineHeight: 1.75, maxWidth: 500 }}>{p.desc}</p>
-                </div>
-                <ArrowButton href="#contact" text="Book This" />
-              </div>
+
+            {/* Card 2 — rises from below */}
+            <motion.div style={{ position: "absolute", inset: 0, zIndex: 2, y: card2Y }}>
+              <CardPanel p={PROGRAMMES[1]} i={1} />
+            </motion.div>
+
+            {/* Card 3 — rises from below, sits on top */}
+            <motion.div style={{ position: "absolute", inset: 0, zIndex: 3, y: card3Y }}>
+              <CardPanel p={PROGRAMMES[2]} i={2} />
+            </motion.div>
+
+            {/* Scroll hint */}
+            <div style={{ position: "absolute", bottom: "2rem", left: "50%", transform: "translateX(-50%)", display: "flex", alignItems: "center", gap: "0.5rem", opacity: 0.3, zIndex: 10 }}>
+              <div style={{ width: 24, height: 1, background: CREAM }} />
+              <span style={{ fontFamily: DISPLAY, fontSize: "0.55rem", fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", color: CREAM }}>Scroll</span>
+              <div style={{ width: 24, height: 1, background: CREAM }} />
             </div>
-            {/* Scroll hint on first card only */}
-            {i === 0 && (
-              <div style={{ position: "absolute", bottom: "2.5rem", left: "50%", transform: "translateX(-50%)", display: "flex", alignItems: "center", gap: "0.5rem", opacity: 0.3 }}>
-                <div style={{ width: 24, height: 1, background: CREAM }} />
-                <span style={{ fontFamily: DISPLAY, fontSize: "0.55rem", fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", color: CREAM }}>Scroll</span>
-                <div style={{ width: 24, height: 1, background: CREAM }} />
-              </div>
-            )}
           </div>
-        ))}
+        </div>
       </section>
 
       {/* ── PROCESS ──────────────────────────────────────────────────────────── */}
