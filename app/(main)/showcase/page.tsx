@@ -121,6 +121,18 @@ const LIVE_PROJECTS = [
     colour: "#C9973A",
     bgColour: "#0B1512",
   },
+  {
+    id: "pt",
+    title: "James Cole — Personal Trainer",
+    category: "Fitness · Personal Training",
+    year: "2026",
+    desc: "Editorial athletic 1-pager for a London PT. Massive Barlow Condensed headlines with filled/outlined duality signature, parallax hero, red stats ticker, bleeding about photo with subtle parallax, 3 programme cards, full-bleed quote section, numbered 4-step process, and a contact form with animated panels.",
+    tech: ["Next.js 15", "Framer Motion", "TypeScript"],
+    href: "/showcase/pt",
+    status: "live",
+    colour: "#D4453C",
+    bgColour: "#101010",
+  },
 ];
 
 
