@@ -107,7 +107,13 @@ export default function ContactPage() {
       </div>
 
       {/* Split layout */}
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "4rem 2rem 5rem", display: "grid", gridTemplateColumns: "1fr 420px", gap: "4rem", alignItems: "start" }}>
+      <style>{`
+        .iv-contact-grid { display: grid; grid-template-columns: 1fr 420px; gap: 4rem; align-items: start; }
+        .iv-contact-name-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+        @media (max-width: 820px) { .iv-contact-grid { grid-template-columns: 1fr !important; gap: 3rem !important; } }
+        @media (max-width: 480px) { .iv-contact-name-row { grid-template-columns: 1fr !important; } }
+      `}</style>
+      <div className="iv-contact-grid" style={{ maxWidth: 1200, margin: "0 auto", padding: "4rem 2rem 5rem" }}>
 
         {/* Left — Form */}
         <div>
@@ -115,7 +121,7 @@ export default function ContactPage() {
           <p style={{ fontSize: "0.875rem", color: T.textLt, marginBottom: "2.5rem" }}>Fill in the form and we'll get back to you within one working day.</p>
 
           <form onSubmit={submit} noValidate style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
+            <div className="iv-contact-name-row">
               <label style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
                 <span style={{ fontSize: "0.72rem", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: T.textMd }}>Full Name *</span>
                 <input type="text" placeholder="Sarah Johnson" value={form.name}

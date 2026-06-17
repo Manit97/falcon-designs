@@ -58,9 +58,17 @@ const MON_SHORT = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","
 const TOTAL_STEPS = 5;
 
 function StepBar({ step }: { step: number }) {
-  const labels = ["Treatment","Clinician","Date & Time","Your Details","Confirm"];
+  const labels = ["Treatment","Clinician","Date & Time","Details","Confirm"];
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 0, marginBottom: "3rem" }}>
+    <>
+    <style>{`
+      @media (max-width: 500px) {
+        .iv-step-label { display: none !important; }
+        .iv-step-circle { width: 26px !important; height: 26px !important; font-size: 0.7rem !important; }
+        .iv-step-bar { margin-bottom: 1.5rem !important; }
+      }
+    `}</style>
+    <div className="iv-step-bar" style={{ display: "flex", alignItems: "center", gap: 0, marginBottom: "3rem" }}>
       {labels.map((label, i) => {
         const idx = i + 1;
         const done = step > idx;
@@ -68,7 +76,7 @@ function StepBar({ step }: { step: number }) {
         return (
           <div key={label} style={{ display: "flex", alignItems: "center", flex: i < labels.length - 1 ? 1 : undefined }}>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.4rem" }}>
-              <div style={{
+              <div className="iv-step-circle" style={{
                 width: 32, height: 32, borderRadius: "50%",
                 background: done ? T.sage : active ? T.sage : T.border,
                 color: done || active ? "#fff" : T.textLt,
@@ -78,7 +86,7 @@ function StepBar({ step }: { step: number }) {
               }}>
                 {done ? "✓" : idx}
               </div>
-              <span style={{ fontSize: "0.65rem", fontWeight: active ? 600 : 400, color: active ? T.sage : done ? T.textMd : T.textLt, whiteSpace: "nowrap", letterSpacing: "0.04em" }}>{label}</span>
+              <span className="iv-step-label" style={{ fontSize: "0.65rem", fontWeight: active ? 600 : 400, color: active ? T.sage : done ? T.textMd : T.textLt, whiteSpace: "nowrap", letterSpacing: "0.04em" }}>{label}</span>
             </div>
             {i < labels.length - 1 && (
               <div style={{ flex: 1, height: 2, background: done ? T.sage : T.border, margin: "0 0.5rem", marginBottom: "1.4rem", transition: "background 300ms" }} />
@@ -87,6 +95,7 @@ function StepBar({ step }: { step: number }) {
         );
       })}
     </div>
+    </>
   );
 }
 

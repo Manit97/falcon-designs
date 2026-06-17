@@ -109,7 +109,17 @@ export default function DentalHome() {
     <div style={{ background: T.bg, fontFamily: SANS }}>
 
       {/* ── HERO ────────────────────────────────────────────────────────── */}
-      <section style={{ display: "grid", gridTemplateColumns: "52fr 48fr", minHeight: "calc(100dvh - 68px)", overflow: "hidden" }}>
+      <style>{`
+        .iv-hero-section { display: grid; grid-template-columns: 52fr 48fr; }
+        .iv-why-section  { display: grid; grid-template-columns: 1fr 1fr; }
+        @media (max-width: 768px) {
+          .iv-hero-section { grid-template-columns: 1fr !important; }
+          .iv-hero-section .iv-hero-img { display: none; }
+          .iv-why-section  { grid-template-columns: 1fr !important; }
+          .iv-why-section .iv-why-img { display: none; }
+        }
+      `}</style>
+      <section className="iv-hero-section" style={{ minHeight: "calc(100dvh - 68px)", overflow: "hidden" }}>
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", padding: "4rem 3rem 4rem clamp(2rem,5vw,5rem)", background: T.bg }}>
           <motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
             style={{ fontSize: "0.68rem", fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", color: T.sage, marginBottom: "1.25rem" }}>
@@ -136,14 +146,13 @@ export default function DentalHome() {
             </Link>
           </motion.div>
         </div>
-        <div style={{ position: "relative", overflow: "hidden", minHeight: 400 }}>
+        <div className="iv-hero-img" style={{ position: "relative", overflow: "hidden", minHeight: 400 }}>
           <motion.img src="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=1400&q=80" alt="Dentist with patient"
             initial={{ scale: 1.08, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 1, ease: EASE }}
             style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 20%" }} />
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(92,122,98,0.12) 0%, transparent 55%)" }} />
           <div style={{ position: "absolute", top: 0, left: 0, bottom: 0, width: 80, background: `linear-gradient(to right, ${T.bg}, transparent)` }} />
         </div>
-        <style>{`@media(max-width:768px){ section:first-of-type{grid-template-columns:1fr!important} }`}</style>
       </section>
 
       {/* ── ACCREDITATIONS MARQUEE ───────────────────────────────────────── */}
@@ -211,8 +220,8 @@ export default function DentalHome() {
       </section>
 
       {/* ── WHY US — SPLIT ───────────────────────────────────────────────── */}
-      <section style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
-        <div style={{ position: "relative", overflow: "hidden", minHeight: 480 }}>
+      <section className="iv-why-section">
+        <div className="iv-why-img" style={{ position: "relative", overflow: "hidden", minHeight: 480 }}>
           <img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=1200&q=80" alt="Modern dental practice" style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
           <div style={{ position: "absolute", inset: 0, background: `linear-gradient(to right, transparent 60%, ${T.bg})` }} />
         </div>
@@ -241,7 +250,6 @@ export default function DentalHome() {
             Meet the team →
           </Link>
         </div>
-        <style>{`@media(max-width:768px){ section:nth-of-type(4){grid-template-columns:1fr!important} }`}</style>
       </section>
 
       {/* ── GALLERY ──────────────────────────────────────────────────────── */}

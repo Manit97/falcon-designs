@@ -236,6 +236,9 @@ export default function PTPage() {
     };
 
     const onWheel = (e: WheelEvent) => {
+      // Disable scroll lock on mobile — touch scroll handles the section natively
+      if (window.innerWidth <= 768) return;
+
       const r = outer.getBoundingClientRect();
       const vh = window.innerHeight;
 
@@ -359,6 +362,22 @@ export default function PTPage() {
         /* Stats mobile border fix */
         @media (max-width: 900px) { .pt2-stat-border { border-right: none !important; border-bottom: 1px solid rgba(255,255,255,0.12); } }
         @media (max-width: 540px) { .pt2-stat-border { border-right: none !important; } }
+
+        /* Programme section — desktop vs mobile */
+        .pt2-prog-desktop { display: block; }
+        .pt2-prog-mobile  { display: none; }
+        @media (max-width: 768px) {
+          .pt2-prog-desktop { display: none !important; }
+          .pt2-prog-mobile  { display: block !important; }
+        }
+
+        /* Hero preview thumbnails — hide on small screens */
+        @media (max-width: 600px) { .pt2-hero-cards { display: none !important; } }
+
+        /* Results row — tighten gap on mobile */
+        @media (max-width: 600px) {
+          .pt2-result-inner-right { flex-direction: column !important; align-items: flex-start !important; gap: 0.4rem !important; }
+        }
 
         @media (prefers-reduced-motion: reduce) {
           #pt2 *, #pt2 *::before, #pt2 *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
@@ -494,6 +513,7 @@ export default function PTPage() {
 
             {/* Hero preview cards */}
             <motion.div
+              className="pt2-hero-cards"
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 1.1 }}
@@ -531,6 +551,7 @@ export default function PTPage() {
           {STATS.map((s, i) => (
             <motion.div
               key={s.label}
+              className="pt2-stat-border"
               initial={{ opacity: 0, y: 16 }}
               animate={statsIn ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: i * 0.07 }}
@@ -599,8 +620,36 @@ export default function PTPage() {
       </section>
 
       {/* ── PROGRAMMES — SCROLL-DRIVEN CARD STACK ───────────────────────────── */}
+      <div id="programmes">
+
+      {/* Mobile: simple stacked cards */}
+      <section className="pt2-prog-mobile" style={{ borderTop: `1px solid ${BORDER}`, position: "relative", zIndex: 2, background: BG }}>
+        <div style={{ padding: "4rem 1.5rem 2rem" }}>
+          <SectionLabel text="Programmes" />
+          <h2 style={{ fontFamily: DISPLAY, fontWeight: 700, textTransform: "uppercase", fontSize: "clamp(1.8rem, 7vw, 3rem)", lineHeight: 0.95, letterSpacing: "-0.02em", color: CREAM }}>
+            Our Training Programmes
+          </h2>
+        </div>
+        {PROGRAMMES.map((p, i) => (
+          <div key={p.slug} style={{ position: "relative", height: "70vw", minHeight: 320, borderTop: `1px solid ${BORDER}` }}>
+            <img src={p.img} alt={p.name} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", filter: "grayscale(100%) brightness(0.38)" }} />
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, transparent 20%, rgba(12,12,12,0.92) 100%)" }} />
+            <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "1.5rem" }}>
+              <div style={{ display: "inline-flex", alignItems: "center", background: LIME, borderRadius: 999, padding: "0.25rem 0.8rem", marginBottom: "0.75rem" }}>
+                <span style={{ fontFamily: DISPLAY, fontSize: "0.55rem", fontWeight: 700, color: BG, letterSpacing: "0.1em", textTransform: "uppercase" }}>{p.tag}</span>
+              </div>
+              <div style={{ fontFamily: DISPLAY, fontWeight: 700, fontSize: "clamp(1.6rem, 6vw, 2.5rem)", textTransform: "uppercase", color: CREAM, lineHeight: 0.95, marginBottom: "0.6rem" }}>{p.name}</div>
+              <div style={{ fontFamily: DISPLAY, fontSize: "0.72rem", color: LIME, marginBottom: "0.4rem" }}>{p.price}</div>
+              <p style={{ fontFamily: BODY, fontSize: "0.8rem", color: GREY, lineHeight: 1.65, marginBottom: "1rem" }}>{p.desc}</p>
+              <ArrowButton href="#contact" text="Book This" />
+            </div>
+          </div>
+        ))}
+      </section>
+
+      {/* Desktop: scroll-jacked full-screen stack */}
       <section
-        id="programmes"
+        className="pt2-prog-desktop"
         ref={programmeRef}
         style={{ position: "relative", zIndex: 2, height: "calc(100dvh + 10px)", borderTop: `1px solid ${BORDER}` }}
       >
@@ -650,6 +699,8 @@ export default function PTPage() {
           </div>
         </div>
       </section>
+
+      </div>{/* end #programmes wrapper */}
 
       {/* ── PROCESS ──────────────────────────────────────────────────────────── */}
       <section id="process" className="pt2-pad" style={{ borderTop: `1px solid ${BORDER}`, position: "relative", zIndex: 10, background: BG }}>
@@ -716,7 +767,7 @@ export default function PTPage() {
                   <span style={{ fontFamily: DISPLAY, fontWeight: 700, fontSize: "1.1rem", textTransform: "uppercase", color: CREAM }}>{r.name}</span>
                   <span style={{ fontFamily: BODY, fontSize: "0.78rem", color: GREY, display: "none" /* shown wider */ }}>{r.result}</span>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: "2rem" }}>
+                <div className="pt2-result-inner-right" style={{ display: "flex", alignItems: "center", gap: "2rem" }}>
                   <span style={{ fontFamily: BODY, fontSize: "0.78rem", color: GREY, display: "flex" }}>{r.result}</span>
                   <span style={{ fontFamily: DISPLAY, fontSize: "0.65rem", fontWeight: 600, color: LIME, letterSpacing: "0.08em", whiteSpace: "nowrap" }}>{r.duration}</span>
                 </div>
