@@ -131,21 +131,14 @@ function useReveal(threshold = 0.1) {
 // ── COMPONENT ─────────────────────────────────────────────────────────────────
 export default function PTPage() {
   const heroRef      = useRef<HTMLDivElement>(null);
-  const programmeRef = useRef<HTMLDivElement>(null);
   const [scrolled,   setScrolled]   = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", phone: "", goal: "", sent: false });
 
   // Hero parallax
   const { scrollYProgress: heroP } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const heroY       = useTransform(heroP, [0, 1], [0, 160]);
   const heroOpacity = useTransform(heroP, [0, 0.6], [1, 0]);
-
-  // Scroll-driven horizontal programme track
-  // Cards: 3 × 88vw + 2 × 1.5rem gap + 2.5rem paddingLeft ≈ 267vw total
-  // Last card left edge: ~179vw → translate to -(179vw - 2.5rem) ≈ -176vw
-  const { scrollYProgress: progP } = useScroll({ target: programmeRef, offset: ["start start", "end end"] });
-  const trackX = useTransform(progP, [0, 1], ["0vw", "-176vw"]);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [form, setForm] = useState({ name: "", email: "", phone: "", goal: "", sent: false });
 
   const { ref: statsRef,  inView: statsIn  } = useReveal(0.2);
   const { ref: processRef, inView: processIn } = useReveal();
@@ -398,7 +391,7 @@ export default function PTPage() {
       </section>
 
       {/* ── STATS ────────────────────────────────────────────────────────────── */}
-      <div ref={statsRef} style={{ borderTop: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}` }}>
+      <div ref={statsRef} style={{ borderTop: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}`, position: "relative", zIndex: 2, background: BG }}>
         <div className="pt2-stats">
           {STATS.map((s, i) => (
             <motion.div
@@ -419,7 +412,7 @@ export default function PTPage() {
       </div>
 
       {/* ── ABOUT ────────────────────────────────────────────────────────────── */}
-      <section id="about" className="pt2-pad">
+      <section id="about" className="pt2-pad" style={{ position: "relative", zIndex: 2, background: BG }}>
         <div style={{ maxWidth: 1320, margin: "0 auto" }}>
           <div className="pt2-about">
             <motion.div
@@ -470,81 +463,92 @@ export default function PTPage() {
         </div>
       </section>
 
-      {/* ── PROGRAMMES — SCROLL-DRIVEN HORIZONTAL ────────────────────────────── */}
-      <section id="programmes" ref={programmeRef} style={{ height: "300vh", position: "relative" }}>
-        {/* Sticky viewport */}
-        <div style={{ position: "sticky", top: 0, height: "100vh", overflow: "hidden" }}>
+      {/* ── PROGRAMMES — STICKY CARD STACK ──────────────────────────────────── */}
+      {/* Each card is position:sticky top:0 height:100vh; cards slide up from  */}
+      {/* below and cover the previous card as you scroll — pure CSS, no JS.    */}
+      <section id="programmes" style={{ position: "relative", isolation: "isolate" }}>
 
-          {/* Header row — sits above the cards */}
-          <div style={{ position: "absolute", top: 0, left: 0, right: 0, zIndex: 10, padding: "2.5rem 2.5rem 0" }}>
-            <div style={{ maxWidth: 1320, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div>
-                <SectionLabel text="Programmes" />
-                <h2 style={{
-                  fontFamily: DISPLAY, fontWeight: 700, textTransform: "uppercase",
-                  fontSize: "clamp(2rem, 4vw, 3.5rem)", lineHeight: 0.95,
-                  letterSpacing: "-0.02em", color: CREAM,
-                }}>
-                  Our Training<br />Programmes
-                </h2>
-              </div>
-              <ArrowButton href="#contact" text="Get Started" />
-            </div>
-          </div>
-
-          {/* Horizontal track — 3 cards × 88vw + gaps + left padding */}
-          <motion.div
-            style={{
-              display: "flex", alignItems: "flex-end",
-              width: "max-content", height: "100%",
-              paddingTop: "160px", paddingBottom: "2.5rem",
-              paddingLeft: "2.5rem", paddingRight: "2.5rem", gap: "1.5rem",
-              x: trackX,
-            }}
-          >
-            {PROGRAMMES.map((p, i) => (
-              <div key={p.slug} style={{
-                position: "relative", flexShrink: 0,
-                width: "88vw", height: "100%",
-                borderRadius: 16, overflow: "hidden", background: CARD,
+        {/* Section header — normal flow, scrolls away */}
+        <div style={{ padding: "5rem 2.5rem 3rem", borderTop: `1px solid ${BORDER}`, background: BG }}>
+          <div style={{ maxWidth: 1320, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "2rem" }}>
+            <div>
+              <SectionLabel text="Programmes" />
+              <h2 style={{
+                fontFamily: DISPLAY, fontWeight: 700, textTransform: "uppercase",
+                fontSize: "clamp(2rem, 4vw, 3.5rem)", lineHeight: 0.95,
+                letterSpacing: "-0.02em", color: CREAM,
               }}>
-                <img src={p.img} alt={p.name} style={{
-                  width: "100%", height: "100%", objectFit: "cover",
-                  filter: "grayscale(100%) brightness(0.45)",
-                }} />
-                <div style={{
-                  position: "absolute", inset: 0,
-                  background: "linear-gradient(180deg, transparent 40%, rgba(12,12,12,0.95) 100%)",
-                }} />
-                <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "2.5rem" }}>
-                  {/* Tag */}
-                  <div style={{ display: "inline-flex", alignItems: "center", background: LIME, borderRadius: 999, padding: "0.3rem 0.85rem", marginBottom: "1.25rem" }}>
-                    <span style={{ fontFamily: DISPLAY, fontSize: "0.6rem", fontWeight: 700, color: BG, letterSpacing: "0.12em", textTransform: "uppercase" }}>{p.tag}</span>
-                  </div>
-                  <div style={{ fontFamily: DISPLAY, fontWeight: 700, fontSize: "clamp(2rem, 4vw, 4rem)", textTransform: "uppercase", letterSpacing: "-0.01em", color: CREAM, lineHeight: 0.95, marginBottom: "1rem" }}>{p.name}</div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "1rem" }}>
-                    <div>
-                      <div style={{ fontFamily: DISPLAY, fontSize: "0.72rem", fontWeight: 600, color: LIME, letterSpacing: "0.08em", marginBottom: "0.5rem" }}>{p.price}</div>
-                      <p style={{ fontFamily: BODY, fontSize: "0.82rem", color: GREY, lineHeight: 1.7, maxWidth: 440 }}>{p.desc}</p>
-                    </div>
-                    <div style={{ fontFamily: DISPLAY, fontSize: "0.68rem", fontWeight: 700, color: GREY, letterSpacing: "0.1em", opacity: 0.4 }}>{String(i+1).padStart(2,"0")} / 03</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </motion.div>
-
-          {/* Scroll hint */}
-          <div style={{ position: "absolute", bottom: "2rem", left: "50%", transform: "translateX(-50%)", display: "flex", alignItems: "center", gap: "0.6rem", opacity: 0.35 }}>
-            <div style={{ width: 32, height: 1, background: CREAM }} />
-            <span style={{ fontFamily: DISPLAY, fontSize: "0.58rem", fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", color: CREAM }}>Scroll to explore</span>
-            <div style={{ width: 32, height: 1, background: CREAM }} />
+                Our Training<br />Programmes
+              </h2>
+            </div>
+            <ArrowButton href="#contact" text="Get Started" />
           </div>
         </div>
+
+        {/* Card stack — each card sticky, stacked by z-index */}
+        {PROGRAMMES.map((p, i) => (
+          <div
+            key={p.slug}
+            style={{
+              position: "sticky", top: 0,
+              height: "100vh", zIndex: i + 1,
+              overflow: "hidden",
+            }}
+          >
+            <img src={p.img} alt={p.name} style={{
+              position: "absolute", inset: 0,
+              width: "100%", height: "100%", objectFit: "cover",
+              filter: "grayscale(100%) brightness(0.4)",
+            }} />
+            {/* Gradient overlay */}
+            <div style={{
+              position: "absolute", inset: 0,
+              background: "linear-gradient(180deg, rgba(12,12,12,0.25) 0%, transparent 35%, rgba(12,12,12,0.9) 100%)",
+            }} />
+            {/* Card counter top-right */}
+            <div style={{
+              position: "absolute", top: "2rem", right: "2.5rem",
+              fontFamily: DISPLAY, fontSize: "0.65rem", fontWeight: 700,
+              color: CREAM, opacity: 0.3, letterSpacing: "0.1em",
+            }}>
+              {String(i + 1).padStart(2, "0")} / {String(PROGRAMMES.length).padStart(2, "0")}
+            </div>
+            {/* Bottom content */}
+            <div style={{
+              position: "absolute", bottom: 0, left: 0, right: 0,
+              padding: "clamp(2rem, 4vw, 3.5rem)",
+            }}>
+              <div style={{ display: "inline-flex", alignItems: "center", background: LIME, borderRadius: 999, padding: "0.3rem 0.9rem", marginBottom: "1.5rem" }}>
+                <span style={{ fontFamily: DISPLAY, fontSize: "0.58rem", fontWeight: 700, color: BG, letterSpacing: "0.12em", textTransform: "uppercase" }}>{p.tag}</span>
+              </div>
+              <div style={{
+                fontFamily: DISPLAY, fontWeight: 700,
+                fontSize: "clamp(2.5rem, 6vw, 5.5rem)",
+                textTransform: "uppercase", letterSpacing: "-0.02em",
+                color: CREAM, lineHeight: 0.92, marginBottom: "1.5rem",
+              }}>{p.name}</div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "1.5rem" }}>
+                <div>
+                  <div style={{ fontFamily: DISPLAY, fontSize: "0.75rem", fontWeight: 600, color: LIME, letterSpacing: "0.08em", marginBottom: "0.6rem" }}>{p.price}</div>
+                  <p style={{ fontFamily: BODY, fontSize: "0.85rem", color: GREY, lineHeight: 1.75, maxWidth: 500 }}>{p.desc}</p>
+                </div>
+                <ArrowButton href="#contact" text="Book This" />
+              </div>
+            </div>
+            {/* Scroll hint on first card only */}
+            {i === 0 && (
+              <div style={{ position: "absolute", bottom: "2.5rem", left: "50%", transform: "translateX(-50%)", display: "flex", alignItems: "center", gap: "0.5rem", opacity: 0.3 }}>
+                <div style={{ width: 24, height: 1, background: CREAM }} />
+                <span style={{ fontFamily: DISPLAY, fontSize: "0.55rem", fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", color: CREAM }}>Scroll</span>
+                <div style={{ width: 24, height: 1, background: CREAM }} />
+              </div>
+            )}
+          </div>
+        ))}
       </section>
 
       {/* ── PROCESS ──────────────────────────────────────────────────────────── */}
-      <section id="process" className="pt2-pad" style={{ borderTop: `1px solid ${BORDER}` }}>
+      <section id="process" className="pt2-pad" style={{ borderTop: `1px solid ${BORDER}`, position: "relative", zIndex: 10, background: BG }}>
         <div style={{ maxWidth: 1320, margin: "0 auto" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "5rem", flexWrap: "wrap", gap: "2rem" }}>
             <div>
@@ -577,7 +581,7 @@ export default function PTPage() {
       </section>
 
       {/* ── RESULTS (event-highlights style) ─────────────────────────────────── */}
-      <section id="results" className="pt2-pad" style={{ background: CARD, borderTop: `1px solid ${BORDER}` }}>
+      <section id="results" className="pt2-pad" style={{ background: CARD, borderTop: `1px solid ${BORDER}`, position: "relative", zIndex: 10 }}>
         <div style={{ maxWidth: 1320, margin: "0 auto" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "3rem", flexWrap: "wrap", gap: "2rem" }}>
             <div>
@@ -619,7 +623,7 @@ export default function PTPage() {
       </section>
 
       {/* ── TESTIMONIALS ─────────────────────────────────────────────────────── */}
-      <section className="pt2-pad" style={{ borderTop: `1px solid ${BORDER}` }}>
+      <section className="pt2-pad" style={{ borderTop: `1px solid ${BORDER}`, position: "relative", zIndex: 10, background: BG }}>
         <div style={{ maxWidth: 1320, margin: "0 auto" }}>
           <div style={{ marginBottom: "3rem" }}>
             <SectionLabel text="Client Stories" />
@@ -658,7 +662,7 @@ export default function PTPage() {
       </section>
 
       {/* ── CONTACT ──────────────────────────────────────────────────────────── */}
-      <section id="contact" className="pt2-pad" style={{ background: CARD, borderTop: `1px solid ${BORDER}` }}>
+      <section id="contact" className="pt2-pad" style={{ background: CARD, borderTop: `1px solid ${BORDER}`, position: "relative", zIndex: 10 }}>
         <div style={{ maxWidth: 1320, margin: "0 auto" }}>
           <div ref={contactRef} className="pt2-contact">
 
@@ -757,7 +761,7 @@ export default function PTPage() {
       </section>
 
       {/* ── FOOTER ───────────────────────────────────────────────────────────── */}
-      <footer style={{ borderTop: `1px solid ${BORDER}`, padding: "2.5rem 2.5rem" }}>
+      <footer style={{ borderTop: `1px solid ${BORDER}`, padding: "2.5rem 2.5rem", position: "relative", zIndex: 10, background: BG }}>
         <div style={{ maxWidth: 1320, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
           <span style={{ fontFamily: DISPLAY, fontSize: "1rem", fontWeight: 700, color: CREAM }}>JAMES <span style={{ color: LIME }}>COLE</span></span>
           <div style={{ display: "flex", gap: "2rem", flexWrap: "wrap" }}>
