@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
-import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import { motion, useMotionValue, useScroll, useTransform, useInView } from "framer-motion";
 
 // ── TOKENS ────────────────────────────────────────────────────────────────────
 const BG      = "#0c0c0c";
@@ -186,13 +186,42 @@ export default function PTPage() {
   const heroY       = useTransform(heroP, [0, 1], [0, 160]);
   const heroOpacity = useTransform(heroP, [0, 0.6], [1, 0]);
 
-  // Programme scroll-driven card stack
+  // Programme card stack — manual wheel-intercepted progress (creates true scroll lock)
   const programmeRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress: progP } = useScroll({ target: programmeRef, offset: ["start start", "end end"] });
-  // Card 2 rises from bottom: enters at 20% progress, fully covers at 45%
-  const card2Y = useTransform(progP, [0.15, 0.45], ["100vh", "0vh"]);
-  // Card 3 rises from bottom: enters at 50% progress, fully covers at 80%
-  const card3Y = useTransform(progP, [0.5, 0.8], ["100vh", "0vh"]);
+  const progMV  = useMotionValue(0);
+  const card2Y  = useTransform(progMV, [0.1, 0.45], ["100vh", "0vh"]);
+  const card3Y  = useTransform(progMV, [0.52, 0.88], ["100vh", "0vh"]);
+
+  useEffect(() => {
+    const outer = programmeRef.current;
+    if (!outer) return;
+
+    // True when the sticky viewport is pinned (section in scroll range)
+    const isActive = () => {
+      const r = outer.getBoundingClientRect();
+      return r.top <= 2 && r.bottom >= window.innerHeight - 2;
+    };
+
+    const onWheel = (e: WheelEvent) => {
+      if (!isActive()) return;
+      const p = progMV.get();
+
+      // Animation done → jump past the section on next forward scroll
+      if (p >= 1 && e.deltaY > 0) {
+        e.preventDefault();
+        window.scrollTo({ top: outer.offsetTop + outer.offsetHeight, behavior: "smooth" });
+        return;
+      }
+      // At start → let page scroll back up naturally
+      if (p <= 0 && e.deltaY < 0) return;
+
+      e.preventDefault(); // ← this is the lock
+      progMV.set(Math.max(0, Math.min(1, p + e.deltaY / (window.innerHeight * 1.4))));
+    };
+
+    window.addEventListener("wheel", onWheel, { passive: false });
+    return () => window.removeEventListener("wheel", onWheel);
+  }, []);
 
   const { ref: statsRef,  inView: statsIn  } = useReveal(0.2);
   const { ref: processRef, inView: processIn } = useReveal();
