@@ -133,6 +133,18 @@ const LIVE_PROJECTS = [
     colour: "#D4453C",
     bgColour: "#101010",
   },
+  {
+    id: "nails",
+    title: "Velour — Nail Studio",
+    category: "Beauty · Nail Salon",
+    year: "2026",
+    desc: "Feminine rose/plum luxury nail studio. Parallax bleeding hero, services marquee ticker, arch-cropped service cards, CSS infinite nail image slider, multi-step booking flow, filterable products shop with add-to-bag, team portraits, and an OpenStreetMap embed on the about page.",
+    tech: ["Next.js 15", "Framer Motion", "TypeScript"],
+    href: "/showcase/nails",
+    status: "live",
+    colour: "#C05472",
+    bgColour: "#3E1D4A",
+  },
 ];
 
 
