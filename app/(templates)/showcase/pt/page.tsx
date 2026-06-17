@@ -186,7 +186,7 @@ export default function PTPage() {
   const heroY       = useTransform(heroP, [0, 1], [0, 160]);
   const heroOpacity = useTransform(heroP, [0, 0.6], [1, 0]);
 
-  // Programme card stack — manual wheel-intercepted progress (creates true scroll lock)
+  // Programme card stack — wheel-intercepted progress (true scroll lock)
   const programmeRef = useRef<HTMLDivElement>(null);
   const progMV  = useMotionValue(0);
   const card2Y  = useTransform(progMV, [0.1, 0.45], ["100vh", "0vh"]);
@@ -196,32 +196,46 @@ export default function PTPage() {
     const outer = programmeRef.current;
     if (!outer) return;
 
-    // True when the sticky viewport is pinned (section in scroll range)
+    let jumping = false; // prevents re-trigger loop during the jump scroll
+
+    // Section is "active" (sticky pinned) when its top ≤ 0 and bottom ≥ vh
     const isActive = () => {
       const r = outer.getBoundingClientRect();
       return r.top <= 2 && r.bottom >= window.innerHeight - 2;
     };
 
     const onWheel = (e: WheelEvent) => {
+      // Reset progress if user has scrolled back above the section
+      if (outer.getBoundingClientRect().top > window.innerHeight) {
+        progMV.set(0);
+      }
+
+      if (jumping) { e.preventDefault(); return; }
       if (!isActive()) return;
+
       const p = progMV.get();
 
-      // Animation done → jump past the section on next forward scroll
+      // Done — jump instantly to end of container on next forward scroll
       if (p >= 1 && e.deltaY > 0) {
         e.preventDefault();
-        window.scrollTo({ top: outer.offsetTop + outer.offsetHeight, behavior: "smooth" });
+        jumping = true;
+        // Use getBoundingClientRect so offsetTop parent chain doesn't matter
+        const absBottom = window.scrollY + outer.getBoundingClientRect().bottom;
+        window.scrollTo({ top: absBottom });          // instant, not smooth
+        // Two rAF frames is enough to clear after the layout paint
+        requestAnimationFrame(() => requestAnimationFrame(() => { jumping = false; }));
         return;
       }
-      // At start → let page scroll back up naturally
+      // At start — release upward naturally
       if (p <= 0 && e.deltaY < 0) return;
 
-      e.preventDefault(); // ← this is the lock
+      e.preventDefault(); // ← the actual lock
       progMV.set(Math.max(0, Math.min(1, p + e.deltaY / (window.innerHeight * 1.4))));
     };
 
     window.addEventListener("wheel", onWheel, { passive: false });
     return () => window.removeEventListener("wheel", onWheel);
-  }, []);
+  }, [progMV]);
 
   const { ref: statsRef,  inView: statsIn  } = useReveal(0.2);
   const { ref: processRef, inView: processIn } = useReveal();
@@ -547,53 +561,57 @@ export default function PTPage() {
       </section>
 
       {/* ── PROGRAMMES — SCROLL-DRIVEN CARD STACK ───────────────────────────── */}
-      {/* One sticky viewport pinned at top. Cards 2 & 3 start at y:100vh and  */}
-      {/* are driven to y:0 by scroll progress, each covering the one before.  */}
-      <section id="programmes" style={{ position: "relative", zIndex: 2, background: BG }}>
+      {/* programmeRef is on the outer section so the lock triggers the instant  */}
+      {/* the section top hits the viewport — no header gap above the sticky.   */}
+      <section
+        id="programmes"
+        ref={programmeRef}
+        style={{ position: "relative", zIndex: 2, height: "300vh", borderTop: `1px solid ${BORDER}` }}
+      >
+        {/* Single sticky viewport — pins at top:0 and fills 100vh */}
+        <div style={{ position: "sticky", top: 0, height: "100dvh", overflow: "hidden" }}>
 
-        {/* Section header — scrolls away before the sticky stack locks */}
-        <div style={{ padding: "5rem 2.5rem 3rem", borderTop: `1px solid ${BORDER}` }}>
-          <div style={{ maxWidth: 1320, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "2rem" }}>
-            <div>
-              <SectionLabel text="Programmes" />
-              <h2 style={{
-                fontFamily: DISPLAY, fontWeight: 700, textTransform: "uppercase",
-                fontSize: "clamp(2rem, 4vw, 3.5rem)", lineHeight: 0.95,
-                letterSpacing: "-0.02em", color: CREAM,
-              }}>
-                Our Training<br />Programmes
-              </h2>
+          {/* Section label + title overlay — shown on Card 1 */}
+          <div style={{
+            position: "absolute", top: 0, left: 0, right: 0,
+            zIndex: 10, padding: "2.5rem 2.5rem 0",
+            background: "linear-gradient(180deg, rgba(12,12,12,0.8) 0%, transparent 100%)",
+          }}>
+            <div style={{ maxWidth: 1320, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div>
+                <SectionLabel text="Programmes" />
+                <h2 style={{
+                  fontFamily: DISPLAY, fontWeight: 700, textTransform: "uppercase",
+                  fontSize: "clamp(1.6rem, 3vw, 2.8rem)", lineHeight: 0.95,
+                  letterSpacing: "-0.02em", color: CREAM,
+                }}>
+                  Our Training Programmes
+                </h2>
+              </div>
+              <ArrowButton href="#contact" text="Get Started" />
             </div>
-            <ArrowButton href="#contact" text="Get Started" />
           </div>
-        </div>
 
-        {/* Scroll container — 300vh so the sticky has room to animate */}
-        <div ref={programmeRef} style={{ position: "relative", height: "300vh" }}>
-          {/* Single sticky viewport */}
-          <div style={{ position: "sticky", top: 0, height: "100vh", overflow: "hidden" }}>
+          {/* Card 1 — always visible base layer */}
+          <div style={{ position: "absolute", inset: 0, zIndex: 1 }}>
+            <CardPanel p={PROGRAMMES[0]} i={0} />
+          </div>
 
-            {/* Card 1 — always visible base layer */}
-            <div style={{ position: "absolute", inset: 0, zIndex: 1 }}>
-              <CardPanel p={PROGRAMMES[0]} i={0} />
-            </div>
+          {/* Card 2 — rises from below */}
+          <motion.div style={{ position: "absolute", inset: 0, zIndex: 2, y: card2Y }}>
+            <CardPanel p={PROGRAMMES[1]} i={1} />
+          </motion.div>
 
-            {/* Card 2 — rises from below */}
-            <motion.div style={{ position: "absolute", inset: 0, zIndex: 2, y: card2Y }}>
-              <CardPanel p={PROGRAMMES[1]} i={1} />
-            </motion.div>
+          {/* Card 3 — rises from below, sits on top */}
+          <motion.div style={{ position: "absolute", inset: 0, zIndex: 3, y: card3Y }}>
+            <CardPanel p={PROGRAMMES[2]} i={2} />
+          </motion.div>
 
-            {/* Card 3 — rises from below, sits on top */}
-            <motion.div style={{ position: "absolute", inset: 0, zIndex: 3, y: card3Y }}>
-              <CardPanel p={PROGRAMMES[2]} i={2} />
-            </motion.div>
-
-            {/* Scroll hint */}
-            <div style={{ position: "absolute", bottom: "2rem", left: "50%", transform: "translateX(-50%)", display: "flex", alignItems: "center", gap: "0.5rem", opacity: 0.3, zIndex: 10 }}>
-              <div style={{ width: 24, height: 1, background: CREAM }} />
-              <span style={{ fontFamily: DISPLAY, fontSize: "0.55rem", fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", color: CREAM }}>Scroll</span>
-              <div style={{ width: 24, height: 1, background: CREAM }} />
-            </div>
+          {/* Scroll hint */}
+          <div style={{ position: "absolute", bottom: "2rem", left: "50%", transform: "translateX(-50%)", display: "flex", alignItems: "center", gap: "0.5rem", opacity: 0.3, zIndex: 10, pointerEvents: "none" }}>
+            <div style={{ width: 24, height: 1, background: CREAM }} />
+            <span style={{ fontFamily: DISPLAY, fontSize: "0.55rem", fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", color: CREAM }}>Scroll</span>
+            <div style={{ width: 24, height: 1, background: CREAM }} />
           </div>
         </div>
       </section>
