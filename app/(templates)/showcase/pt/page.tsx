@@ -186,55 +186,93 @@ export default function PTPage() {
   const heroY       = useTransform(heroP, [0, 1], [0, 160]);
   const heroOpacity = useTransform(heroP, [0, 0.6], [1, 0]);
 
-  // Programme card stack — wheel-intercepted progress (true scroll lock)
+  // Programme card stack.
+  // Section is "100dvh + 10px" so the sticky travels only 10px after unlock —
+  // giving a near-instant natural exit with zero jump.
+  // Wheel lock engages when section top = viewport top (card fully visible, no cut).
+  // progMV 0→1 drives the card animations while locked.
+  // completed flag prevents re-lock during natural entry/exit.
   const programmeRef = useRef<HTMLDivElement>(null);
-  const progMV  = useMotionValue(0);
-  const card2Y  = useTransform(progMV, [0.1, 0.45], ["100vh", "0vh"]);
-  const card3Y  = useTransform(progMV, [0.52, 0.88], ["100vh", "0vh"]);
+  const progMV = useMotionValue(0);
+  const card2Y = useTransform(progMV, [0.08, 0.45], ["100vh", "0vh"]);
+  const card3Y = useTransform(progMV, [0.55, 0.92], ["100vh", "0vh"]);
 
   useEffect(() => {
     const outer = programmeRef.current;
     if (!outer) return;
+    let locked = false;
+    let completed = 0;
+    let savedScrollY = 0;
 
-    let jumping = false; // prevents re-trigger loop during the jump scroll
+    const bodyUnlock = () => {
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.overflow = "";
+    };
 
-    // Section is "active" (sticky pinned) when its top ≤ 0 and bottom ≥ vh
-    const isActive = () => {
+    // Snap to section-top-at-viewport-top, then freeze the page with position:fixed.
+    // position:fixed is the only method that stops trackpad momentum 100% reliably.
+    const engage = (startProg: number) => {
       const r = outer.getBoundingClientRect();
-      return r.top <= 2 && r.bottom >= window.innerHeight - 2;
+      savedScrollY = Math.round(window.scrollY + r.top);
+      window.scrollTo({ top: savedScrollY, behavior: "instant" as ScrollBehavior });
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${savedScrollY}px`;
+      document.body.style.left = "0";
+      document.body.style.right = "0";
+      document.body.style.overflow = "hidden";
+      locked = true;
+      completed = 0;
+      progMV.set(startProg);
+    };
+
+    const release = (dir: 1 | -1) => {
+      bodyUnlock();
+      window.scrollTo({ top: savedScrollY, behavior: "instant" as ScrollBehavior });
+      locked = false;
+      completed = dir;
     };
 
     const onWheel = (e: WheelEvent) => {
-      // Reset progress if user has scrolled back above the section
-      if (outer.getBoundingClientRect().top > window.innerHeight) {
-        progMV.set(0);
-      }
+      const r = outer.getBoundingClientRect();
+      const vh = window.innerHeight;
 
-      if (jumping) { e.preventDefault(); return; }
-      if (!isActive()) return;
+      // Section fully outside viewport — reset
+      if (!locked) {
+        if (r.top > vh)   { progMV.set(0); completed = 0; return; }
+        if (r.bottom < 0) { progMV.set(1); completed = 0; return; }
 
-      const p = progMV.get();
-
-      // Done — jump instantly to end of container on next forward scroll
-      if (p >= 1 && e.deltaY > 0) {
-        e.preventDefault();
-        jumping = true;
-        // Use getBoundingClientRect so offsetTop parent chain doesn't matter
-        const absBottom = window.scrollY + outer.getBoundingClientRect().bottom;
-        window.scrollTo({ top: absBottom });          // instant, not smooth
-        // Two rAF frames is enough to clear after the layout paint
-        requestAnimationFrame(() => requestAnimationFrame(() => { jumping = false; }));
+        // Engage when section top reaches the viewport top.
+        // Small positive tolerance (20px) lets natural scroll settle before locking.
+        // Negative tolerance catches fast scrollers who overshoot by up to 40% of vh.
+        if (completed !== 1  && e.deltaY > 0 && r.top <= 20 && r.top >= -vh * 0.4) {
+          e.preventDefault(); engage(0); return;
+        }
+        if (completed !== -1 && e.deltaY < 0 && r.top >= -20 && r.top <= vh * 0.4) {
+          e.preventDefault(); engage(1); return;
+        }
         return;
       }
-      // At start — release upward naturally
-      if (p <= 0 && e.deltaY < 0) return;
 
-      e.preventDefault(); // ← the actual lock
-      progMV.set(Math.max(0, Math.min(1, p + e.deltaY / (window.innerHeight * 1.4))));
+      // Locked — body is position:fixed so the page cannot move at all.
+      // Drive animation with capped delta so hard swipes don't skip cards.
+      e.preventDefault();
+      const p = progMV.get();
+
+      if (p >= 1 && e.deltaY > 0) { release(1);  return; }
+      if (p <= 0 && e.deltaY < 0) { release(-1); return; }
+
+      const delta = Math.min(Math.abs(e.deltaY), 50) * Math.sign(e.deltaY);
+      progMV.set(Math.max(0, Math.min(1, p + delta / (vh * 1.2))));
     };
 
     window.addEventListener("wheel", onWheel, { passive: false });
-    return () => window.removeEventListener("wheel", onWheel);
+    return () => {
+      window.removeEventListener("wheel", onWheel);
+      bodyUnlock();
+    };
   }, [progMV]);
 
   const { ref: statsRef,  inView: statsIn  } = useReveal(0.2);
@@ -306,9 +344,9 @@ export default function PTPage() {
         .pt2-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
         @media (max-width: 560px) { .pt2-form-row { grid-template-columns: 1fr !important; } }
 
-        /* Section pad */
-        .pt2-pad { padding: 8rem 2.5rem; }
-        @media (max-width: 600px) { .pt2-pad { padding: 5rem 1.5rem !important; } }
+        /* Section pad — needs #pt2 prefix to beat the margin/padding reset above */
+        #pt2 .pt2-pad { padding: 10rem 2.5rem; }
+        @media (max-width: 600px) { #pt2 .pt2-pad { padding: 6rem 1.5rem; } }
 
         /* Results hover — smooth indent */
         .pt2-result-row { transition: padding-left 220ms cubic-bezier(0.23,1,0.32,1); }
@@ -561,14 +599,11 @@ export default function PTPage() {
       </section>
 
       {/* ── PROGRAMMES — SCROLL-DRIVEN CARD STACK ───────────────────────────── */}
-      {/* programmeRef is on the outer section so the lock triggers the instant  */}
-      {/* the section top hits the viewport — no header gap above the sticky.   */}
       <section
         id="programmes"
         ref={programmeRef}
-        style={{ position: "relative", zIndex: 2, height: "300vh", borderTop: `1px solid ${BORDER}` }}
+        style={{ position: "relative", zIndex: 2, height: "calc(100dvh + 10px)", borderTop: `1px solid ${BORDER}` }}
       >
-        {/* Single sticky viewport — pins at top:0 and fills 100vh */}
         <div style={{ position: "sticky", top: 0, height: "100dvh", overflow: "hidden" }}>
 
           {/* Section label + title overlay — shown on Card 1 */}
@@ -638,7 +673,7 @@ export default function PTPage() {
                 initial={{ opacity: 0, y: 24 }}
                 animate={processIn ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.6, delay: i * 0.1, ease: [0.23, 1, 0.32, 1] }}
-                style={{ borderTop: `1px solid ${BORDER}`, paddingTop: "2.5rem" }}
+                style={{ borderTop: `1px solid ${BORDER}`, paddingTop: "3.5rem" }}
               >
                 <div style={{ fontFamily: DISPLAY, fontSize: "0.75rem", fontWeight: 700, color: LIME, letterSpacing: "0.15em", marginBottom: "2rem" }}>{step.num}</div>
                 <h3 style={{ fontFamily: DISPLAY, fontWeight: 700, fontSize: "1.2rem", textTransform: "uppercase", letterSpacing: "0.02em", color: CREAM, marginBottom: "1rem" }}>{step.title}</h3>
@@ -652,7 +687,7 @@ export default function PTPage() {
       {/* ── RESULTS (event-highlights style) ─────────────────────────────────── */}
       <section id="results" className="pt2-pad" style={{ background: CARD, borderTop: `1px solid ${BORDER}`, position: "relative", zIndex: 10 }}>
         <div style={{ maxWidth: 1320, margin: "0 auto" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "3rem", flexWrap: "wrap", gap: "2rem" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "5rem", flexWrap: "wrap", gap: "2rem" }}>
             <div>
               <SectionLabel text="Client Results" />
               <h2 style={{ fontFamily: DISPLAY, fontWeight: 700, textTransform: "uppercase", fontSize: "clamp(2rem, 4vw, 3.5rem)", lineHeight: 0.95, letterSpacing: "-0.02em", color: CREAM }}>
@@ -672,7 +707,7 @@ export default function PTPage() {
                 transition={{ duration: 0.5, delay: i * 0.07 }}
                 style={{
                   display: "flex", justifyContent: "space-between", alignItems: "center",
-                  padding: "1.5rem 0", borderBottom: `1px solid ${BORDER}`,
+                  padding: "2rem 0", borderBottom: `1px solid ${BORDER}`,
                   flexWrap: "wrap", gap: "0.75rem",
                 }}
               >
@@ -694,7 +729,7 @@ export default function PTPage() {
       {/* ── TESTIMONIALS ─────────────────────────────────────────────────────── */}
       <section className="pt2-pad" style={{ borderTop: `1px solid ${BORDER}`, position: "relative", zIndex: 10, background: BG }}>
         <div style={{ maxWidth: 1320, margin: "0 auto" }}>
-          <div style={{ marginBottom: "3rem" }}>
+          <div style={{ marginBottom: "5rem" }}>
             <SectionLabel text="Client Stories" />
             <h2 style={{ fontFamily: DISPLAY, fontWeight: 700, textTransform: "uppercase", fontSize: "clamp(2rem, 4vw, 3.5rem)", lineHeight: 0.95, letterSpacing: "-0.02em", color: CREAM }}>
               What Clients Say
@@ -780,7 +815,7 @@ export default function PTPage() {
                       </div>
                     ))}
                   </div>
-                  <div style={{ marginBottom: "1rem" }}>
+                  <div style={{ marginBottom: "1rem", marginTop: "1rem" }}>
                     <label style={{ fontFamily: DISPLAY, fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: LIME, display: "block", marginBottom: "0.5rem" }}>Phone (Optional)</label>
                     <input type="tel" placeholder="07700 900 000"
                       value={form.phone}
