@@ -140,11 +140,12 @@ export default function PTPage() {
   };
 
   return (
-    <div id="pt-root" style={{ background: BG, color: CREAM, fontFamily: SANS, minHeight: "100dvh" }}>
+    <div id="pt-root" style={{ background: BG, color: CREAM, fontFamily: SANS, minHeight: "100dvh", overflowX: "hidden" }}>
 
       {/* ── FONTS + GLOBAL STYLES ───────────────────────────────────────────── */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;800;900&family=DM+Sans:wght@300;400;500;600&display=swap');
+        html, body { overflow-x: hidden; }
         #pt-root *, #pt-root *::before, #pt-root *::after { box-sizing: border-box; margin: 0; padding: 0; }
         #pt-root a { text-decoration: none; color: inherit; }
         #pt-root button { cursor: pointer; border: none; background: none; font-family: inherit; }
@@ -165,7 +166,7 @@ export default function PTPage() {
         }
 
         /* About bleeding grid */
-        .pt-about-grid { display: grid; grid-template-columns: 50vw 1fr; }
+        .pt-about-grid { display: grid; grid-template-columns: 50% 50%; }
         @media (max-width: 900px) {
           .pt-about-grid { grid-template-columns: 1fr !important; }
           .pt-about-img  { min-height: 360px !important; }
@@ -422,7 +423,7 @@ export default function PTPage() {
           </div>
 
           {/* Copy */}
-          <div className="pt-about-copy" style={{ padding: "0 5rem", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          <div className="pt-about-copy" style={{ padding: "4rem 4rem 4rem 5rem", display: "flex", flexDirection: "column", justifyContent: "center" }}>
             <motion.div
               initial={{ opacity: 0, x: 32 }}
               whileInView={{ opacity: 1, x: 0 }}
