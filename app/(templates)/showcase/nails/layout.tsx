@@ -103,7 +103,8 @@ function NavInner() {
   const { count, setOpen: setCartOpen } = useCart();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    // Hero is 100svh tall — start gaining opacity only in the last ~15% of it
+    const onScroll = () => setScrolled(window.scrollY > window.innerHeight * 0.85);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
