@@ -32,19 +32,20 @@ function FadeUp({ children, delay = 0 }: { children: React.ReactNode; delay?: nu
 function Hero() {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const imgY = useTransform(scrollYProgress, [0,1], ["0%", "30%"]);
-  const textY = useTransform(scrollYProgress, [0,1], ["0%", "15%"]);
+  const videoY = useTransform(scrollYProgress, [0,1], ["0%", "25%"]);
+  const textY   = useTransform(scrollYProgress, [0,1], ["0%", "15%"]);
 
   return (
     <section ref={ref} style={{ position: "relative", height: "100svh", minHeight: 600, overflow: "hidden", display: "flex", alignItems: "center" }}>
-      {/* Full-bleed background image with overlay */}
-      <motion.div style={{ position: "absolute", inset: 0, y: imgY }}>
-        <img
-          src="https://images.unsplash.com/photo-1604946989636-d4b76e25e05b?w=1800&q=90"
-          alt="Luxury nail art"
-          style={{ width: "100%", height: "115%", objectFit: "cover", objectPosition: "center" }}
-        />
-        <div style={{ position: "absolute", inset: 0, background: `linear-gradient(105deg, rgba(253,250,248,0.97) 0%, rgba(253,250,248,0.88) 38%, rgba(253,250,248,0.35) 65%, transparent 100%)` }} />
+      {/* Looping hero video with parallax */}
+      <motion.div style={{ position: "absolute", inset: 0, y: videoY }}>
+        <video
+          autoPlay muted loop playsInline
+          style={{ width: "100%", height: "115%", objectFit: "cover", objectPosition: "center", display: "block" }}
+        >
+          <source src="/nails-hero.mp4" type="video/mp4" />
+        </video>
+        <div style={{ position: "absolute", inset: 0, background: `linear-gradient(105deg, rgba(253,250,248,0.97) 0%, rgba(253,250,248,0.88) 38%, rgba(253,250,248,0.30) 65%, transparent 100%)` }} />
       </motion.div>
 
       <motion.div style={{ position: "relative", zIndex: 2, maxWidth: 1280, width: "100%", margin: "0 auto", padding: "0 2.5rem", y: textY }}>
