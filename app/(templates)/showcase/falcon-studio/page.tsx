@@ -651,8 +651,8 @@ function FeatureTabs() {
 
           {/* Corner accents — top-left & bottom-right only */}
           {[
-            { top: 20, left: 20, rotate: 0 },
-            { bottom: 20, right: 20, rotate: 180 },
+            { top: 20, left: 20, transform: "rotate(0deg)" },
+            { bottom: 20, right: 20, transform: "rotate(180deg)" },
           ].map((pos, ci) => (
             <div key={ci} style={{
               position: "absolute", ...pos,
@@ -1531,6 +1531,7 @@ function MatrixCanvas() {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+    const draw = ctx;
     const CHARS = "アイウエオカキクケコサシスセソタチツテトナニヌネノ01アABCDEF0123456789@#$%/\\|{}[]";
     const FS = 13;
     let W = canvas.offsetWidth, H = canvas.offsetHeight;
@@ -1543,19 +1544,19 @@ function MatrixCanvas() {
       raf = requestAnimationFrame(frame);
       if (t - last < 45) return;
       last = t;
-      ctx.fillStyle = "rgba(0,13,0,0.06)";
-      ctx.fillRect(0, 0, W, H);
+      draw.fillStyle = "rgba(0,13,0,0.06)";
+      draw.fillRect(0, 0, W, H);
       for (let i = 0; i < drops.length; i++) {
         const y = drops[i] * FS;
         if (y < 0) { drops[i] += 0.5; continue; }
         // bright head
-        ctx.fillStyle = "#afffaf";
-        ctx.font = `bold ${FS}px 'Courier New', monospace`;
-        ctx.fillText(CHARS[Math.floor(Math.random() * CHARS.length)], i * FS, y);
+        draw.fillStyle = "#afffaf";
+        draw.font = `bold ${FS}px 'Courier New', monospace`;
+        draw.fillText(CHARS[Math.floor(Math.random() * CHARS.length)], i * FS, y);
         // dim trail char one step above head
         if (y > FS) {
-          ctx.fillStyle = "rgba(0,255,65,0.4)";
-          ctx.fillText(CHARS[Math.floor(Math.random() * CHARS.length)], i * FS, y - FS);
+          draw.fillStyle = "rgba(0,255,65,0.4)";
+          draw.fillText(CHARS[Math.floor(Math.random() * CHARS.length)], i * FS, y - FS);
         }
         drops[i] += 0.6;
         if (y > H && Math.random() > 0.978) drops[i] = Math.random() * -60;
