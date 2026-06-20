@@ -1795,89 +1795,96 @@ function HandwritingShowcase() {
     return () => clearInterval(id);
   }, []);
 
+  /* Outer wrapper is 3× the viewport height so the sticky panel
+     locks for 2 full screen-lengths of scroll, then releases naturally */
   return (
-    <section style={{ background: TERM.bg, position: "relative", overflow: "hidden", borderTop: `1px solid ${TERM.border}`, borderBottom: `1px solid ${TERM.border}`, minHeight: 520, display: "flex" }}>
-      {/* ── Left 60% — matrix rain pane ── */}
-      <div style={{ position: "relative", flex: "0 0 60%", overflow: "hidden" }}>
-        {/* Live matrix canvas */}
-        <MatrixCanvas />
-        {/* Scanlines */}
-        <div aria-hidden="true" style={{
-          position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none",
-          backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.18) 2px, rgba(0,0,0,0.18) 4px)",
-        }} />
-        {/* Right-side fade so pane bleeds cleanly into right column */}
-        <div aria-hidden="true" style={{
-          position: "absolute", inset: 0, zIndex: 2, pointerEvents: "none",
-          background: "linear-gradient(to right, transparent 70%, rgba(0,13,0,0.95) 100%)",
-        }} />
-        {/* Phosphor vignette */}
-        <div aria-hidden="true" style={{
-          position: "absolute", inset: 0, zIndex: 2, pointerEvents: "none",
-          background: "radial-gradient(ellipse at 40% 50%, transparent 45%, rgba(0,0,0,0.55) 100%)",
-        }} />
-        {/* Centred label */}
-        <div style={{
-          position: "absolute", inset: 0, zIndex: 3,
-          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "1.2rem",
-          padding: "4rem 3rem",
-        }}>
-          <div style={{ fontFamily: TERM.font, fontSize: "0.8rem", color: TERM.greenDim, letterSpacing: "0.28em" }}>
-            SYSTEM:// TYPOGRAPHY_ENGINE v2.4.1
-          </div>
-          <h2 style={{
-            fontFamily: TERM.font, fontSize: "clamp(2rem,4vw,3.6rem)", fontWeight: 400,
-            lineHeight: 1.05, letterSpacing: "0.06em", color: TERM.green, textAlign: "center",
-            textShadow: `0 0 30px ${TERM.green}66, 0 0 60px ${TERM.green}33`,
-          }}>
-            TYPOGRAPHY<br />IN MOTION
-            <span style={{ opacity: blink ? 1 : 0, transition: "opacity 0.1s" }}>_</span>
-          </h2>
-          <div style={{ fontFamily: TERM.font, fontSize: "0.75rem", color: TERM.greenMuted, letterSpacing: "0.15em" }}>
-            [RENDERING LIVE OUTPUT...]
-          </div>
-        </div>
-      </div>
-
-      {/* ── Right 40% — dark panel with copy ── */}
-      <div style={{
-        flex: "0 0 40%", background: "rgba(0,8,0,0.97)",
-        borderLeft: `1px solid ${TERM.border}`,
-        display: "flex", flexDirection: "column", justifyContent: "center",
-        padding: "4rem 3.5rem", gap: "2rem",
+    <div style={{ height: "300vh", borderTop: `1px solid ${TERM.border}`, borderBottom: `1px solid ${TERM.border}` }}>
+      <section style={{
+        position: "sticky", top: 0,
+        height: "100vh", overflow: "hidden",
+        background: TERM.bg, display: "flex",
       }}>
-        <div style={{ fontFamily: TERM.font, fontSize: "0.75rem", color: TERM.greenMuted, letterSpacing: "0.2em" }}>
-          &gt; CAPABILITY_STACK.exe
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.4rem" }}>
-          {[
-            { label: "Custom typefaces", sub: "Hand-picked for your brand voice" },
-            { label: "Handwriting animations", sub: "SVG draw-on effects that feel alive" },
-            { label: "Variable font control", sub: "Weight, width, slant — all tuned" },
-            { label: "Motion typography", sub: "Kinetic text that earns attention" },
-          ].map((item, i) => (
-            <div key={i} style={{ display: "flex", gap: "1rem", alignItems: "flex-start" }}>
-              <div style={{ fontFamily: TERM.font, fontSize: "0.85rem", color: TERM.green, flexShrink: 0, marginTop: 2 }}>
-                [{String(i + 1).padStart(2, "0")}]
-              </div>
-              <div>
-                <div style={{ fontFamily: TERM.font, fontSize: "1rem", color: TERM.green, letterSpacing: "0.08em" }}>{item.label}</div>
-                <div style={{ fontFamily: "'Wix Madefor Text', sans-serif", fontSize: "0.8rem", color: TERM.greenMuted, marginTop: "0.2rem", lineHeight: 1.5 }}>{item.sub}</div>
-              </div>
+        {/* ── Left 60% — matrix rain pane ── */}
+        <div style={{ position: "relative", flex: "0 0 60%", overflow: "hidden" }}>
+          <MatrixCanvas />
+          {/* Scanlines */}
+          <div aria-hidden="true" style={{
+            position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none",
+            backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.18) 2px, rgba(0,0,0,0.18) 4px)",
+          }} />
+          {/* Right-edge fade into right pane */}
+          <div aria-hidden="true" style={{
+            position: "absolute", inset: 0, zIndex: 2, pointerEvents: "none",
+            background: "linear-gradient(to right, transparent 70%, rgba(0,13,0,0.95) 100%)",
+          }} />
+          {/* Phosphor vignette */}
+          <div aria-hidden="true" style={{
+            position: "absolute", inset: 0, zIndex: 2, pointerEvents: "none",
+            background: "radial-gradient(ellipse at 40% 50%, transparent 45%, rgba(0,0,0,0.55) 100%)",
+          }} />
+          {/* Centred heading */}
+          <div style={{
+            position: "absolute", inset: 0, zIndex: 3,
+            display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "1.2rem",
+            padding: "4rem 3rem",
+          }}>
+            <div style={{ fontFamily: TERM.font, fontSize: "0.8rem", color: TERM.greenDim, letterSpacing: "0.28em" }}>
+              SYSTEM:// TYPOGRAPHY_ENGINE v2.4.1
             </div>
-          ))}
+            <h2 style={{
+              fontFamily: TERM.font, fontSize: "clamp(2rem,4vw,3.6rem)", fontWeight: 400,
+              lineHeight: 1.05, letterSpacing: "0.06em", color: TERM.green, textAlign: "center",
+              textShadow: `0 0 30px ${TERM.green}66, 0 0 60px ${TERM.green}33`,
+            }}>
+              TYPOGRAPHY<br />IN MOTION
+              <span style={{ opacity: blink ? 1 : 0, transition: "opacity 0.1s" }}>_</span>
+            </h2>
+            <div style={{ fontFamily: TERM.font, fontSize: "0.75rem", color: TERM.greenMuted, letterSpacing: "0.15em" }}>
+              [RENDERING LIVE OUTPUT...]
+            </div>
+          </div>
         </div>
-        <a href="#" onClick={e => e.preventDefault()} style={{
-          display: "inline-flex", alignItems: "center", gap: "0.5rem", marginTop: "0.5rem",
-          fontFamily: TERM.font, fontSize: "0.85rem", color: TERM.bg,
-          background: TERM.green, padding: "0.7rem 1.4rem", borderRadius: 4,
-          letterSpacing: "0.12em", textDecoration: "none", width: "fit-content",
-          boxShadow: `0 0 20px ${TERM.green}55`,
+
+        {/* ── Right 40% — capability list ── */}
+        <div style={{
+          flex: "0 0 40%", background: "rgba(0,8,0,0.97)",
+          borderLeft: `1px solid ${TERM.border}`,
+          display: "flex", flexDirection: "column", justifyContent: "center",
+          padding: "4rem 3.5rem", gap: "2rem",
         }}>
-          SEE_TYPOGRAPHY_DEMOS &gt;
-        </a>
-      </div>
-    </section>
+          <div style={{ fontFamily: TERM.font, fontSize: "0.75rem", color: TERM.greenMuted, letterSpacing: "0.2em" }}>
+            &gt; CAPABILITY_STACK.exe
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "1.4rem" }}>
+            {[
+              { label: "Custom typefaces", sub: "Hand-picked for your brand voice" },
+              { label: "Handwriting animations", sub: "SVG draw-on effects that feel alive" },
+              { label: "Variable font control", sub: "Weight, width, slant — all tuned" },
+              { label: "Motion typography", sub: "Kinetic text that earns attention" },
+            ].map((item, i) => (
+              <div key={i} style={{ display: "flex", gap: "1rem", alignItems: "flex-start" }}>
+                <div style={{ fontFamily: TERM.font, fontSize: "0.85rem", color: TERM.green, flexShrink: 0, marginTop: 2 }}>
+                  [{String(i + 1).padStart(2, "0")}]
+                </div>
+                <div>
+                  <div style={{ fontFamily: TERM.font, fontSize: "1rem", color: TERM.green, letterSpacing: "0.08em" }}>{item.label}</div>
+                  <div style={{ fontFamily: "'Wix Madefor Text', sans-serif", fontSize: "0.8rem", color: TERM.greenMuted, marginTop: "0.2rem", lineHeight: 1.5 }}>{item.sub}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <a href="#" onClick={e => e.preventDefault()} style={{
+            display: "inline-flex", alignItems: "center", gap: "0.5rem", marginTop: "0.5rem",
+            fontFamily: TERM.font, fontSize: "0.85rem", color: TERM.bg,
+            background: TERM.green, padding: "0.7rem 1.4rem", borderRadius: 4,
+            letterSpacing: "0.12em", textDecoration: "none", width: "fit-content",
+            boxShadow: `0 0 20px ${TERM.green}55`,
+          }}>
+            SEE_TYPOGRAPHY_DEMOS &gt;
+          </a>
+        </div>
+      </section>
+    </div>
   );
 }
 
