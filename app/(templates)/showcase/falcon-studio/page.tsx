@@ -1652,18 +1652,12 @@ const HW_STYLE_CYCLE = [
   { font: HW_FONTS.kalam, label: "Kalam", color: "#00e538" },
 ];
 
-function HandwritingShowcase() {
+function HwCardsGrid() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: false, margin: "-10% 0px" });
   const [styleIdx, setStyleIdx] = useState(0);
   const [testimonialIdx, setTestimonialIdx] = useState(0);
   const [cycleKey, setCycleKey] = useState(0);
-  const [blink, setBlink] = useState(true);
-
-  useEffect(() => {
-    const id = setInterval(() => setBlink(b => !b), 530);
-    return () => clearInterval(id);
-  }, []);
 
   useEffect(() => {
     if (!inView) return;
@@ -1690,136 +1684,198 @@ function HandwritingShowcase() {
   });
 
   return (
-    <section ref={ref} style={{ background: TERM.bg, position: "relative", overflow: "hidden", padding: "9rem 0", borderTop: `1px solid ${TERM.border}` }}>
-      {/* Animated matrix rain */}
-      <MatrixCanvas />
+    <div ref={ref} style={{ background: TERM.bg, borderRadius: 16, padding: "2.5rem", border: `1px solid ${TERM.border}`, boxShadow: TERM.glow }}>
+      {/* Row 1 */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem", marginBottom: "1.5rem" }}>
+        {/* THE BRIEF */}
+        <HwCard title="The Brief">
+          <div style={{ display: "flex", gap: "0.75rem", alignItems: "flex-start", minWidth: 0 }}>
+            <div style={innerCard()}>
+              <div style={{ fontFamily: TERM.font, fontSize: "0.75rem", color: TERM.greenMuted, marginBottom: "0.75rem", letterSpacing: "0.12em" }}>// CLIENT_REQUEST</div>
+              <SvgHandwrite text="Build me something" font={HW_FONTS.caveat} fontSize={30} color={TERM.green} width={260} height={72} delay={0.1} triggerKey={inView ? 1 : 0} />
+              <SvgHandwrite text="that actually converts." font={HW_FONTS.caveat} fontSize={28} color={TERM.greenDim} width={260} height={72} delay={1.2} triggerKey={inView ? 1 : 0} />
+            </div>
+            <div style={{ display: "flex", alignItems: "center", paddingTop: "3.5rem" }}>
+              <svg width={28} height={16} viewBox="0 0 32 18" fill="none"><path d="M0 9h28M20 2l8 7-8 7" stroke={TERM.green} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"/></svg>
+            </div>
+            <div style={innerCard({ background: TERM.innerBg2, borderColor: TERM.borderHi })}>
+              <div style={{ fontFamily: TERM.font, fontSize: "0.75rem", color: TERM.greenMuted, marginBottom: "0.75rem", letterSpacing: "0.12em" }}>// RESPONSE</div>
+              <SvgHandwrite text="Delivered." font={HW_FONTS.dancing} fontSize={52} color={TERM.green} width={260} height={96} delay={2.2} triggerKey={inView ? 1 : 0} />
+              <svg width={180} height={14} viewBox="0 0 180 14" style={{ display: "block", marginTop: -14 }}>
+                <path d="M8 10 Q90 2 172 10" fill="none" stroke={TERM.green} strokeWidth={2.5} strokeLinecap="round"
+                  strokeDasharray="180 180" strokeDashoffset={inView ? 0 : 180}
+                  style={{ transition: inView ? "stroke-dashoffset 0.6s 3s ease" : "none" }}
+                />
+              </svg>
+            </div>
+          </div>
+        </HwCard>
 
-      {/* Scanline overlay */}
-      <div aria-hidden="true" style={{
-        position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none",
-        backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.18) 2px, rgba(0,0,0,0.18) 4px)",
-      }} />
+        {/* THE CRAFT */}
+        <HwCard title="The Craft">
+          <div style={{ display: "flex", gap: "0.75rem", minWidth: 0 }}>
+            <div style={innerCard({ background: "rgba(0,255,65,0.06)", transition: "background 0.4s" })}>
+              <div style={{ fontFamily: TERM.font, fontSize: "0.75rem", color: TERM.greenMuted, marginBottom: "0.75rem", letterSpacing: "0.1em" }}>{curStyle.label.toUpperCase()}</div>
+              <SvgHandwrite key={`opt2-l-${cycleKey}`} text="Falcon" font={curStyle.font} fontSize={56} color={curStyle.color} width={220} height={100} delay={0} triggerKey={cycleKey} />
+            </div>
+            <div style={innerCard()}>
+              <div style={{ fontFamily: TERM.font, fontSize: "0.75rem", color: TERM.greenMuted, marginBottom: "0.75rem", letterSpacing: "0.1em" }}>YOUR_BRAND</div>
+              <SvgHandwrite key={`opt2-r-${cycleKey}`} text="Designs." font={curStyle.font} fontSize={56} color={TERM.green} width={220} height={100} delay={0.5} triggerKey={cycleKey} />
+            </div>
+          </div>
+          <div style={{ display: "flex", gap: 6, marginTop: "0.5rem" }}>
+            {HW_STYLE_CYCLE.map((_, i) => (
+              <div key={i} style={{ width: i === styleIdx ? 18 : 6, height: 4, borderRadius: 2, background: i === styleIdx ? TERM.green : TERM.greenMuted, transition: "all 0.3s" }} />
+            ))}
+          </div>
+        </HwCard>
+      </div>
 
-      {/* Phosphor vignette */}
-      <div aria-hidden="true" style={{
-        position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none",
-        background: "radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.6) 100%)",
-      }} />
+      {/* Row 2 */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
+        {/* BEFORE & AFTER */}
+        <HwCard title="Before & After">
+          <div style={{ display: "flex", gap: "0.75rem", alignItems: "flex-start", minWidth: 0 }}>
+            <div style={innerCard()}>
+              <div style={{ fontFamily: TERM.font, fontSize: "0.75rem", color: TERM.greenMuted, marginBottom: "0.75rem", letterSpacing: "0.1em" }}>BEFORE</div>
+              <div style={{ position: "relative", display: "inline-block" }}>
+                <SvgHandwrite text="Homepage?" font={HW_FONTS.kalam} fontSize={32} color={TERM.greenDim} width={240} height={68} delay={0.1} triggerKey={inView ? 1 : 0} />
+                <svg width={180} height={8} viewBox="0 0 180 8" style={{ display: "block", marginTop: -48, marginLeft: 8 }}>
+                  <line x1={0} y1={4} x2={168} y2={4} stroke="#ff4444" strokeWidth={2.5}
+                    strokeDasharray="168 168" strokeDashoffset={inView ? 0 : 168}
+                    style={{ transition: inView ? "stroke-dashoffset 0.5s 1.2s ease" : "none" }}
+                  />
+                </svg>
+              </div>
+              <SvgHandwrite text="Landing page? Both?" font={HW_FONTS.kalam} fontSize={28} color={TERM.greenMuted} width={240} height={68} delay={1.8} triggerKey={inView ? 1 : 0} />
+            </div>
+            <div style={{ display: "flex", alignItems: "center", paddingTop: "3rem" }}>
+              <svg width={28} height={16} viewBox="0 0 32 18" fill="none"><path d="M0 9h28M20 2l8 7-8 7" stroke={TERM.green} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"/></svg>
+            </div>
+            <div style={innerCard({ background: TERM.innerBg2, borderColor: TERM.borderHi })}>
+              <div style={{ fontFamily: TERM.font, fontSize: "0.75rem", color: TERM.greenMuted, marginBottom: "0.75rem", letterSpacing: "0.1em" }}>AFTER</div>
+              <SvgHandwrite text="Done." font={HW_FONTS.dancing} fontSize={64} color={TERM.green} width={200} height={100} delay={3.2} triggerKey={inView ? 1 : 0} />
+              <svg width={130} height={14} viewBox="0 0 130 14" style={{ display: "block", marginTop: -14, marginLeft: 8 }}>
+                <path d="M4 10 Q65 2 126 10" fill="none" stroke={TERM.green} strokeWidth={2.5} strokeLinecap="round"
+                  strokeDasharray="130 130" strokeDashoffset={inView ? 0 : 130}
+                  style={{ transition: inView ? "stroke-dashoffset 0.5s 4.2s ease" : "none" }}
+                />
+              </svg>
+            </div>
+          </div>
+        </HwCard>
 
-      <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 2.5rem", position: "relative", zIndex: 2 }}>
-        {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: "5rem" }}>
-          <div style={{ fontFamily: TERM.font, fontSize: "0.85rem", color: TERM.greenDim, letterSpacing: "0.25em", marginBottom: "0.75rem" }}>
+        {/* WHAT CLIENTS WRITE */}
+        <HwCard title="What Clients Write">
+          <div style={{ display: "flex", gap: "0.75rem", minWidth: 0 }}>
+            <div style={innerCard({ minHeight: 160 })}>
+              <div style={{ fontFamily: TERM.font, fontSize: "1.2rem", color: TERM.greenMuted, marginBottom: "0.75rem" }}>❝</div>
+              <SvgHandwrite key={`t-l-${testimonialIdx}`} text={testimonials[testimonialIdx].l} font={HW_FONTS.dancing} fontSize={38} color={TERM.greenDim} width={240} height={76} delay={0} triggerKey={testimonialIdx} />
+            </div>
+            <div style={innerCard({ background: TERM.innerBg2, borderColor: TERM.borderHi, minHeight: 160 })}>
+              <div style={{ fontFamily: TERM.font, fontSize: "1.2rem", color: TERM.greenMuted, marginBottom: "0.75rem" }}>❞</div>
+              <SvgHandwrite key={`t-r-${testimonialIdx}`} text={testimonials[testimonialIdx].r} font={HW_FONTS.dancing} fontSize={38} color={TERM.green} width={240} height={76} delay={0.6} triggerKey={testimonialIdx} />
+            </div>
+          </div>
+          <div style={{ display: "flex", gap: 6, marginTop: "0.25rem" }}>
+            {testimonials.map((_, i) => (
+              <div key={i} style={{ width: i === testimonialIdx ? 18 : 6, height: 4, borderRadius: 2, background: i === testimonialIdx ? TERM.green : TERM.greenMuted, transition: "all 0.3s" }} />
+            ))}
+          </div>
+        </HwCard>
+      </div>
+    </div>
+  );
+}
+
+function HandwritingShowcase() {
+  const [blink, setBlink] = useState(true);
+  useEffect(() => {
+    const id = setInterval(() => setBlink(b => !b), 530);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <section style={{ background: TERM.bg, position: "relative", overflow: "hidden", borderTop: `1px solid ${TERM.border}`, borderBottom: `1px solid ${TERM.border}`, minHeight: 520, display: "flex" }}>
+      {/* ── Left 60% — matrix rain pane ── */}
+      <div style={{ position: "relative", flex: "0 0 60%", overflow: "hidden" }}>
+        {/* Live matrix canvas */}
+        <MatrixCanvas />
+        {/* Scanlines */}
+        <div aria-hidden="true" style={{
+          position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none",
+          backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.18) 2px, rgba(0,0,0,0.18) 4px)",
+        }} />
+        {/* Right-side fade so pane bleeds cleanly into right column */}
+        <div aria-hidden="true" style={{
+          position: "absolute", inset: 0, zIndex: 2, pointerEvents: "none",
+          background: "linear-gradient(to right, transparent 70%, rgba(0,13,0,0.95) 100%)",
+        }} />
+        {/* Phosphor vignette */}
+        <div aria-hidden="true" style={{
+          position: "absolute", inset: 0, zIndex: 2, pointerEvents: "none",
+          background: "radial-gradient(ellipse at 40% 50%, transparent 45%, rgba(0,0,0,0.55) 100%)",
+        }} />
+        {/* Centred label */}
+        <div style={{
+          position: "absolute", inset: 0, zIndex: 3,
+          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "1.2rem",
+          padding: "4rem 3rem",
+        }}>
+          <div style={{ fontFamily: TERM.font, fontSize: "0.8rem", color: TERM.greenDim, letterSpacing: "0.28em" }}>
             SYSTEM:// TYPOGRAPHY_ENGINE v2.4.1
           </div>
-          <h2 style={{ fontFamily: TERM.font, fontSize: "clamp(2.4rem,5vw,4.2rem)", fontWeight: 400, lineHeight: 1, letterSpacing: "0.05em", color: TERM.green, textShadow: `0 0 30px ${TERM.green}66, 0 0 60px ${TERM.green}33` }}>
-            TYPOGRAPHY IN MOTION
+          <h2 style={{
+            fontFamily: TERM.font, fontSize: "clamp(2rem,4vw,3.6rem)", fontWeight: 400,
+            lineHeight: 1.05, letterSpacing: "0.06em", color: TERM.green, textAlign: "center",
+            textShadow: `0 0 30px ${TERM.green}66, 0 0 60px ${TERM.green}33`,
+          }}>
+            TYPOGRAPHY<br />IN MOTION
             <span style={{ opacity: blink ? 1 : 0, transition: "opacity 0.1s" }}>_</span>
           </h2>
-          <div style={{ fontFamily: TERM.font, fontSize: "0.8rem", color: TERM.greenMuted, letterSpacing: "0.15em", marginTop: "0.75rem" }}>
+          <div style={{ fontFamily: TERM.font, fontSize: "0.75rem", color: TERM.greenMuted, letterSpacing: "0.15em" }}>
             [RENDERING LIVE OUTPUT...]
           </div>
         </div>
+      </div>
 
-        {/* Row 1 */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem", marginBottom: "1.5rem" }}>
-          {/* THE BRIEF */}
-          <HwCard title="The Brief">
-            <div style={{ display: "flex", gap: "0.75rem", alignItems: "flex-start", minWidth: 0 }}>
-              <div style={innerCard()}>
-                <div style={{ fontFamily: TERM.font, fontSize: "0.75rem", color: TERM.greenMuted, marginBottom: "0.75rem", letterSpacing: "0.12em" }}>// CLIENT_REQUEST</div>
-                <SvgHandwrite text="Build me something" font={HW_FONTS.caveat} fontSize={30} color={TERM.green} width={260} height={72} delay={0.1} triggerKey={inView ? 1 : 0} />
-                <SvgHandwrite text="that actually converts." font={HW_FONTS.caveat} fontSize={28} color={TERM.greenDim} width={260} height={72} delay={1.2} triggerKey={inView ? 1 : 0} />
-              </div>
-              <div style={{ display: "flex", alignItems: "center", paddingTop: "3.5rem" }}>
-                <svg width={28} height={16} viewBox="0 0 32 18" fill="none"><path d="M0 9h28M20 2l8 7-8 7" stroke={TERM.green} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"/></svg>
-              </div>
-              <div style={innerCard({ background: TERM.innerBg2, borderColor: TERM.borderHi })}>
-                <div style={{ fontFamily: TERM.font, fontSize: "0.75rem", color: TERM.greenMuted, marginBottom: "0.75rem", letterSpacing: "0.12em" }}>// RESPONSE</div>
-                <SvgHandwrite text="Delivered." font={HW_FONTS.dancing} fontSize={52} color={TERM.green} width={260} height={96} delay={2.2} triggerKey={inView ? 1 : 0} />
-                <svg width={180} height={14} viewBox="0 0 180 14" style={{ display: "block", marginTop: -14 }}>
-                  <path d="M8 10 Q90 2 172 10" fill="none" stroke={TERM.green} strokeWidth={2.5} strokeLinecap="round"
-                    strokeDasharray="180 180" strokeDashoffset={inView ? 0 : 180}
-                    style={{ transition: inView ? "stroke-dashoffset 0.6s 3s ease" : "none" }}
-                  />
-                </svg>
-              </div>
-            </div>
-          </HwCard>
-
-          {/* THE CRAFT */}
-          <HwCard title="The Craft">
-            <div style={{ display: "flex", gap: "0.75rem", minWidth: 0 }}>
-              <div style={innerCard({ background: "rgba(0,255,65,0.06)", transition: "background 0.4s" })}>
-                <div style={{ fontFamily: TERM.font, fontSize: "0.75rem", color: TERM.greenMuted, marginBottom: "0.75rem", letterSpacing: "0.1em" }}>{curStyle.label.toUpperCase()}</div>
-                <SvgHandwrite key={`opt2-l-${cycleKey}`} text="Falcon" font={curStyle.font} fontSize={56} color={curStyle.color} width={220} height={100} delay={0} triggerKey={cycleKey} />
-              </div>
-              <div style={innerCard()}>
-                <div style={{ fontFamily: TERM.font, fontSize: "0.75rem", color: TERM.greenMuted, marginBottom: "0.75rem", letterSpacing: "0.1em" }}>YOUR_BRAND</div>
-                <SvgHandwrite key={`opt2-r-${cycleKey}`} text="Designs." font={curStyle.font} fontSize={56} color={TERM.green} width={220} height={100} delay={0.5} triggerKey={cycleKey} />
-              </div>
-            </div>
-            <div style={{ display: "flex", gap: 6, marginTop: "0.5rem" }}>
-              {HW_STYLE_CYCLE.map((_, i) => (
-                <div key={i} style={{ width: i === styleIdx ? 18 : 6, height: 4, borderRadius: 2, background: i === styleIdx ? TERM.green : TERM.greenMuted, transition: "all 0.3s" }} />
-              ))}
-            </div>
-          </HwCard>
+      {/* ── Right 40% — dark panel with copy ── */}
+      <div style={{
+        flex: "0 0 40%", background: "rgba(0,8,0,0.97)",
+        borderLeft: `1px solid ${TERM.border}`,
+        display: "flex", flexDirection: "column", justifyContent: "center",
+        padding: "4rem 3.5rem", gap: "2rem",
+      }}>
+        <div style={{ fontFamily: TERM.font, fontSize: "0.75rem", color: TERM.greenMuted, letterSpacing: "0.2em" }}>
+          &gt; CAPABILITY_STACK.exe
         </div>
-
-        {/* Row 2 */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
-          {/* BEFORE & AFTER */}
-          <HwCard title="Before & After">
-            <div style={{ display: "flex", gap: "0.75rem", alignItems: "flex-start", minWidth: 0 }}>
-              <div style={innerCard()}>
-                <div style={{ fontFamily: TERM.font, fontSize: "0.75rem", color: TERM.greenMuted, marginBottom: "0.75rem", letterSpacing: "0.1em" }}>BEFORE</div>
-                <div style={{ position: "relative", display: "inline-block" }}>
-                  <SvgHandwrite text="Homepage?" font={HW_FONTS.kalam} fontSize={32} color={TERM.greenDim} width={240} height={68} delay={0.1} triggerKey={inView ? 1 : 0} />
-                  <svg width={180} height={8} viewBox="0 0 180 8" style={{ display: "block", marginTop: -48, marginLeft: 8 }}>
-                    <line x1={0} y1={4} x2={168} y2={4} stroke="#ff4444" strokeWidth={2.5}
-                      strokeDasharray="168 168" strokeDashoffset={inView ? 0 : 168}
-                      style={{ transition: inView ? "stroke-dashoffset 0.5s 1.2s ease" : "none" }}
-                    />
-                  </svg>
-                </div>
-                <SvgHandwrite text="Landing page? Both?" font={HW_FONTS.kalam} fontSize={28} color={TERM.greenMuted} width={240} height={68} delay={1.8} triggerKey={inView ? 1 : 0} />
+        <div style={{ display: "flex", flexDirection: "column", gap: "1.4rem" }}>
+          {[
+            { label: "Custom typefaces", sub: "Hand-picked for your brand voice" },
+            { label: "Handwriting animations", sub: "SVG draw-on effects that feel alive" },
+            { label: "Variable font control", sub: "Weight, width, slant — all tuned" },
+            { label: "Motion typography", sub: "Kinetic text that earns attention" },
+          ].map((item, i) => (
+            <div key={i} style={{ display: "flex", gap: "1rem", alignItems: "flex-start" }}>
+              <div style={{ fontFamily: TERM.font, fontSize: "0.85rem", color: TERM.green, flexShrink: 0, marginTop: 2 }}>
+                [{String(i + 1).padStart(2, "0")}]
               </div>
-              <div style={{ display: "flex", alignItems: "center", paddingTop: "3rem" }}>
-                <svg width={28} height={16} viewBox="0 0 32 18" fill="none"><path d="M0 9h28M20 2l8 7-8 7" stroke={TERM.green} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"/></svg>
-              </div>
-              <div style={innerCard({ background: TERM.innerBg2, borderColor: TERM.borderHi })}>
-                <div style={{ fontFamily: TERM.font, fontSize: "0.75rem", color: TERM.greenMuted, marginBottom: "0.75rem", letterSpacing: "0.1em" }}>AFTER</div>
-                <SvgHandwrite text="Done." font={HW_FONTS.dancing} fontSize={64} color={TERM.green} width={200} height={100} delay={3.2} triggerKey={inView ? 1 : 0} />
-                <svg width={130} height={14} viewBox="0 0 130 14" style={{ display: "block", marginTop: -14, marginLeft: 8 }}>
-                  <path d="M4 10 Q65 2 126 10" fill="none" stroke={TERM.green} strokeWidth={2.5} strokeLinecap="round"
-                    strokeDasharray="130 130" strokeDashoffset={inView ? 0 : 130}
-                    style={{ transition: inView ? "stroke-dashoffset 0.5s 4.2s ease" : "none" }}
-                  />
-                </svg>
+              <div>
+                <div style={{ fontFamily: TERM.font, fontSize: "1rem", color: TERM.green, letterSpacing: "0.08em" }}>{item.label}</div>
+                <div style={{ fontFamily: "'Wix Madefor Text', sans-serif", fontSize: "0.8rem", color: TERM.greenMuted, marginTop: "0.2rem", lineHeight: 1.5 }}>{item.sub}</div>
               </div>
             </div>
-          </HwCard>
-
-          {/* WHAT CLIENTS WRITE */}
-          <HwCard title="What Clients Write">
-            <div style={{ display: "flex", gap: "0.75rem", minWidth: 0 }}>
-              <div style={innerCard({ minHeight: 160 })}>
-                <div style={{ fontFamily: TERM.font, fontSize: "1.2rem", color: TERM.greenMuted, marginBottom: "0.75rem" }}>❝</div>
-                <SvgHandwrite key={`t-l-${testimonialIdx}`} text={testimonials[testimonialIdx].l} font={HW_FONTS.dancing} fontSize={38} color={TERM.greenDim} width={240} height={76} delay={0} triggerKey={testimonialIdx} />
-              </div>
-              <div style={innerCard({ background: TERM.innerBg2, borderColor: TERM.borderHi, minHeight: 160 })}>
-                <div style={{ fontFamily: TERM.font, fontSize: "1.2rem", color: TERM.greenMuted, marginBottom: "0.75rem" }}>❞</div>
-                <SvgHandwrite key={`t-r-${testimonialIdx}`} text={testimonials[testimonialIdx].r} font={HW_FONTS.dancing} fontSize={38} color={TERM.green} width={240} height={76} delay={0.6} triggerKey={testimonialIdx} />
-              </div>
-            </div>
-            <div style={{ display: "flex", gap: 6, marginTop: "0.25rem" }}>
-              {testimonials.map((_, i) => (
-                <div key={i} style={{ width: i === testimonialIdx ? 18 : 6, height: 4, borderRadius: 2, background: i === testimonialIdx ? TERM.green : TERM.greenMuted, transition: "all 0.3s" }} />
-              ))}
-            </div>
-          </HwCard>
+          ))}
         </div>
+        <a href="#" onClick={e => e.preventDefault()} style={{
+          display: "inline-flex", alignItems: "center", gap: "0.5rem", marginTop: "0.5rem",
+          fontFamily: TERM.font, fontSize: "0.85rem", color: TERM.bg,
+          background: TERM.green, padding: "0.7rem 1.4rem", borderRadius: 4,
+          letterSpacing: "0.12em", textDecoration: "none", width: "fit-content",
+          boxShadow: `0 0 20px ${TERM.green}55`,
+        }}>
+          SEE_TYPOGRAPHY_DEMOS &gt;
+        </a>
       </div>
     </section>
   );
@@ -2512,6 +2568,12 @@ export default function FalconStudioPage() {
             Everything you need to succeed
           </h2>
         </SlideReveal>
+
+        {/* 4 hacker cards */}
+        <div style={{ marginBottom: "4rem" }}>
+          <HwCardsGrid />
+        </div>
+
         <div className="res-grid">
           {RESOURCES.map((r, i) => (
             <FlipReveal key={r.kicker} delay={i * 0.1}>
