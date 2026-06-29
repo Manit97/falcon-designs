@@ -5,7 +5,11 @@ import { motion, useInView, AnimatePresence, useScroll, useTransform } from "fra
 import Link from "next/link";
 
 const HeroCanvas = dynamic(() => import("./HeroCanvas"), { ssr: false });
+const ScannerCardStream = dynamic(() => import("@/components/ScannerCardStream").then(m => ({ default: m.ScannerCardStream })), { ssr: false });
+const CreditCardForm = dynamic(() => import("@/components/CreditCardForm").then(m => ({ default: m.CreditCardForm })), { ssr: false });
 import { CinematicHero } from "@/components/ui/cinematic-hero";
+import { WovenLightHero } from "@/components/ui/woven-light-hero";
+import FlowArt, { FlowSection } from "@/components/ui/flow-art";
 
 /* ── Design tokens ──────────────────────────────────────────────────── */
 const T = {
@@ -387,7 +391,7 @@ function FeatureTabs() {
   const tab = FEATURE_TABS[activeIdx];
 
   return (
-    <div ref={containerRef} style={{ height: `${FEATURE_TABS.length * 100}vh`, position: "relative" }}>
+    <div ref={containerRef} data-nav-theme="hero" style={{ height: `${FEATURE_TABS.length * 100}vh`, position: "relative" }}>
       <div style={{
         position: "sticky", top: 0, height: "100vh",
         display: "grid", gridTemplateColumns: "44fr 56fr",
@@ -1481,7 +1485,8 @@ function HorizontalScrollStrip() {
               scrollbarWidth: "none",
             }}
           >
-            <style>{`#work ::-webkit-scrollbar { display: none; }`}</style>
+            <style>{`#work ::-webkit-scrollbar { display: none; }
+        .flow-left-scroller::-webkit-scrollbar { display: none; }`}</style>
             {WIDGETS.map((w, i) => (
               <div key={i} style={{ flexShrink: 0, width: w.w }}>
                 <FloatingWidget delay={w.bob}>
@@ -1496,6 +1501,456 @@ function HorizontalScrollStrip() {
           <div style={{ position: "absolute", top: 0, right: 0, width: 80, height: "100%", background: "linear-gradient(to left, #0a0a0a, transparent)", pointerEvents: "none" }} />
         </div>
       </div>
+    </div>
+  );
+}
+
+/* ── FontShowcase — Scroll-driven typography specimen ────────────────── */
+const FONT_PAIRS = [
+  {
+    name: "Press Start 2P",
+    category: "Pixel Display",
+    tag: "Retro · Bold · Iconic",
+    headlineFont: "'Press Start 2P', monospace",
+    bodyFont: "'VT323', monospace",
+    headline: "STAND OUT.",
+    sub: "DEMAND ATTENTION.",
+    body: "For brands that refuse to blend in. Gaming studios, streetwear, tech startups. This font doesn't ask for attention — it takes it.",
+    weights: ["Regular 400"],
+    bg: "#0a0014",
+    surface: "#12001e",
+    text: "#ffd600",
+    muted: "rgba(255,214,0,0.5)",
+    accent: "#ffd600",
+    navTheme: "dark" as const,
+  },
+  {
+    name: "Playfair Display",
+    category: "Editorial Serif",
+    tag: "Luxury · Authority",
+    headlineFont: "'Playfair Display', Georgia, serif",
+    bodyFont: "'Wix Madefor Text', 'Inter', sans-serif",
+    headline: "Luxury, refined.",
+    sub: "Authority without noise.",
+    body: "The serif of choice for law firms, luxury hotels, and editorial brands. Playfair Display commands the page with timeless elegance.",
+    weights: ["Regular 400", "Bold 700", "ExtraBold 900", "Italic"],
+    bg: "#120608",
+    surface: "#1e0a10",
+    text: "#f5f0eb",
+    muted: "rgba(245,220,200,0.55)",
+    accent: "#d4a574",
+    navTheme: "dark" as const,
+  },
+  {
+    name: "DM Serif Display",
+    category: "Editorial Serif",
+    tag: "Sharp · Contemporary",
+    headlineFont: "'DM Serif Display', Georgia, serif",
+    bodyFont: "'Wix Madefor Text', 'Inter', sans-serif",
+    headline: "Sharp. Intentional.",
+    sub: "The editorial choice.",
+    body: "DM Serif Display brings precision and personality. Designed for agencies, studios, and premium services that want presence — not noise.",
+    weights: ["Regular 400", "Italic"],
+    bg: "#f8f5f0",
+    surface: "#ede8e0",
+    text: "#0d0d0d",
+    muted: "#6a6060",
+    accent: "#D45C20",
+    navTheme: "hacker" as const,
+  },
+] as const;
+
+function FontPairSpecimen({ fp }: { fp: typeof FONT_PAIRS[number] }) {
+  return (
+    <div style={{ position: "relative", flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", padding: "3rem 4rem" }}>
+      {/* Watermark letter */}
+      <div aria-hidden style={{
+        position: "absolute", right: "-0.05em", top: "50%",
+        transform: "translateY(-52%)",
+        fontFamily: fp.headlineFont,
+        fontSize: "clamp(10rem, 20vw, 20rem)",
+        fontWeight: 900,
+        color: `${fp.accent}09`,
+        lineHeight: 1,
+        userSelect: "none",
+        pointerEvents: "none",
+      }}>
+        {fp.headline[0]}
+      </div>
+
+      {/* Tag chip */}
+      <div style={{
+        display: "inline-flex", alignItems: "center",
+        marginBottom: "1.5rem",
+        background: `${fp.accent}15`,
+        border: `1px solid ${fp.accent}33`,
+        borderRadius: 4, padding: "0.3rem 0.75rem",
+        width: "fit-content",
+      }}>
+        <span style={{ fontFamily: T.body, fontSize: "0.65rem", fontWeight: 700, color: fp.accent, letterSpacing: "0.15em", textTransform: "uppercase" as const }}>
+          {fp.tag}
+        </span>
+      </div>
+
+      {/* Headline */}
+      <div style={{
+        fontFamily: fp.headlineFont,
+        fontSize: "clamp(2.8rem, 6vw, 5rem)",
+        fontWeight: 700,
+        color: fp.text,
+        lineHeight: 1.0,
+        letterSpacing: "-0.03em",
+        marginBottom: "0.2rem",
+      }}>
+        {fp.headline}
+      </div>
+      <div style={{
+        fontFamily: fp.headlineFont,
+        fontSize: "clamp(2.8rem, 6vw, 5rem)",
+        fontWeight: 300,
+        fontStyle: "italic",
+        color: fp.muted,
+        lineHeight: 1.0,
+        letterSpacing: "-0.03em",
+        marginBottom: "2.5rem",
+      }}>
+        {fp.sub}
+      </div>
+
+      {/* Divider */}
+      <div style={{ width: 60, height: 2, background: fp.accent, marginBottom: "1.5rem" }} />
+
+      {/* Body */}
+      <p style={{
+        fontFamily: fp.bodyFont,
+        fontSize: "clamp(0.9rem, 1.3vw, 1.05rem)",
+        color: fp.muted,
+        lineHeight: 1.8,
+        maxWidth: 460,
+        marginBottom: "2.5rem",
+      }}>
+        {fp.body}
+      </p>
+
+      {/* Weight chips */}
+      <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" as const }}>
+        {fp.weights.map(w => (
+          <div key={w} style={{
+            fontFamily: fp.headlineFont,
+            fontSize: "0.75rem",
+            color: fp.text,
+            background: fp.surface,
+            border: `1px solid ${fp.muted}30`,
+            borderRadius: 4,
+            padding: "0.3rem 0.75rem",
+          }}>
+            {w}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function HackerFontSpecimen({ fp }: { fp: typeof FONT_PAIRS[number] }) {
+  return (
+    <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", justifyContent: "space-between", overflow: "hidden" }}>
+
+      <div aria-hidden style={{ position: "absolute", inset: 0, zIndex: 0 }}><MatrixCanvas /></div>
+      <div aria-hidden style={{ position: "absolute", inset: 0, background: "rgba(0,13,0,0.6)", zIndex: 1 }} />
+      <div style={{ position: "absolute", top: 0, right: 0, bottom: 0, width: "55%", zIndex: 2, mixBlendMode: "screen", overflow: "hidden" }}>
+        <WovenLightHero hideContent bgColor="transparent" />
+      </div>
+
+      {/* Scanline */}
+      <div aria-hidden style={{ position: "absolute", inset: 0, backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,65,0.015) 2px, rgba(0,255,65,0.015) 4px)", pointerEvents: "none", zIndex: 3 }} />
+
+      {/* Top label */}
+      <div style={{ position: "relative", zIndex: 3, padding: "clamp(1.5rem,4vw,3rem) clamp(1.5rem,4vw,3rem) 0", pointerEvents: "none" }}>
+        <div style={{ fontFamily: TERM.font, fontSize: "0.6rem", color: TERM.greenDim, letterSpacing: "0.3em", marginBottom: "0.5rem" }}>
+          FALCON_STUDIO / TYPOGRAPHY / FONT_03
+        </div>
+        <div style={{ width: "100%", height: 1, background: TERM.border }} />
+      </div>
+
+      {/* Centre */}
+      <div style={{ position: "relative", zIndex: 3, display: "flex", flexDirection: "column", gap: "1.5rem", padding: "0 clamp(1.5rem,4vw,3rem)", pointerEvents: "none" }}>
+
+        <div style={{ fontFamily: TERM.font, fontSize: "0.7rem", color: TERM.greenDim, letterSpacing: "0.2em" }}>
+          &gt;&gt; LOADING_TYPEFACE...
+        </div>
+
+        {/* Big display name */}
+        <div style={{ fontFamily: TERM.font, fontSize: "clamp(2.5rem, 4.5vw, 4rem)", color: TERM.green, lineHeight: 1, letterSpacing: "0.05em", textShadow: `0 0 40px ${TERM.green}55` }}>
+          {fp.name.toUpperCase().replace(/ /g, "\n")}
+        </div>
+
+        {/* Tag with dot */}
+        <div style={{ display: "inline-flex", alignItems: "center", gap: "0.6rem", width: "fit-content" }}>
+          <div style={{ width: 8, height: 8, background: TERM.green, borderRadius: "50%", boxShadow: `0 0 10px ${TERM.green}` }} />
+          <span style={{ fontFamily: TERM.font, fontSize: "0.65rem", color: TERM.green, letterSpacing: "0.2em" }}>
+            {fp.tag.toUpperCase().replace(/ /g, "_").replace(/·/g, "/")}
+          </span>
+        </div>
+
+        {/* Category */}
+        <div style={{ fontFamily: TERM.font, fontSize: "0.55rem", color: TERM.greenDim, letterSpacing: "0.2em" }}>
+          [{fp.category.toUpperCase().replace(/ /g, "-")}]
+        </div>
+
+        {/* Divider */}
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+          <div style={{ flex: 1, height: 1, background: TERM.border }} />
+          <span style={{ fontFamily: TERM.font, fontSize: "0.5rem", color: TERM.greenDim, letterSpacing: "0.2em" }}>v2.4.1</span>
+          <div style={{ flex: 1, height: 1, background: TERM.border }} />
+        </div>
+
+        {/* Font index list */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+          {FONT_PAIRS.map((pair, i) => (
+            <div key={pair.name} style={{ display: "flex", alignItems: "center", gap: "0.65rem" }}>
+              <span style={{ fontFamily: TERM.font, fontSize: "0.5rem", color: i === 2 ? TERM.green : TERM.greenDim, minWidth: "1.2rem" }}>
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <div style={{ width: 16, height: 1, background: i === 2 ? TERM.green : TERM.border }} />
+              <span style={{ fontFamily: TERM.font, fontSize: "0.55rem", color: i === 2 ? TERM.green : TERM.greenDim, letterSpacing: "0.1em", textShadow: i === 2 ? `0 0 8px ${TERM.green}` : "none" }}>
+                {pair.name.toUpperCase().replace(/ /g, "_")}
+              </span>
+              {i === 2 && <span style={{ fontFamily: TERM.font, fontSize: "0.5rem", color: TERM.green, marginLeft: "auto" }}>◀ ACTIVE</span>}
+            </div>
+          ))}
+        </div>
+
+        {/* Weight chips */}
+        <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" as const }}>
+          {fp.weights.map((w) => (
+            <span key={w} style={{ fontFamily: TERM.font, fontSize: "0.5rem", color: TERM.greenDim, border: `1px solid ${TERM.border}`, padding: "0.25rem 0.6rem", letterSpacing: "0.1em" }}>
+              {w.toUpperCase()}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Bottom status */}
+      <div style={{ position: "relative", zIndex: 3, padding: "0 clamp(1.5rem,4vw,3rem) clamp(1.5rem,4vw,3rem)", pointerEvents: "none" }}>
+        <div style={{ width: "100%", height: 1, background: TERM.border, marginBottom: "0.75rem" }} />
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <span style={{ fontFamily: TERM.font, fontSize: "0.5rem", color: TERM.greenDim, letterSpacing: "0.2em" }}>SCROLL TO EXPLORE</span>
+          <span style={{ fontFamily: TERM.font, fontSize: "0.5rem", color: TERM.greenDim, letterSpacing: "0.15em" }}>{FONT_PAIRS.length} FONTS LOADED</span>
+        </div>
+      </div>
+
+      {/* CTA — bottom right */}
+      <div style={{ position: "absolute", bottom: 0, right: 0, width: "45%", zIndex: 4, padding: "2.5rem", background: "linear-gradient(to top, rgba(0,13,0,0.92) 0%, rgba(0,13,0,0.5) 60%, transparent 100%)", pointerEvents: "none" }}>
+        <p style={{ fontFamily: T.body, fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase" as const, color: "rgba(255,255,255,0.45)", marginBottom: "0.75rem" }}>Typography &amp; Backgrounds</p>
+        <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(1.4rem, 2.2vw, 2rem)", fontWeight: 700, lineHeight: 1.15, color: "#fff", marginBottom: "1rem", letterSpacing: "-0.02em" }}>Any choice.<br />We can build it.</h2>
+        <p style={{ fontFamily: T.body, fontSize: "clamp(0.75rem, 0.95vw, 0.85rem)", color: "rgba(255,255,255,0.6)", lineHeight: 1.7 }}>Every font and background you see here is just the start. We have a million more combinations — tailored precisely to your brand.</p>
+      </div>
+
+    </div>
+  );
+}
+
+function GoldInkFontSpecimen({ fp }: { fp: typeof FONT_PAIRS[number] }) {
+  return (
+    <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", justifyContent: "center", overflow: "hidden" }}>
+
+      <div aria-hidden style={{ position: "absolute", inset: 0, zIndex: 0 }}><GoldInkCanvas /></div>
+      <div style={{ position: "absolute", top: 0, right: 0, bottom: 0, width: "55%", zIndex: 1, mixBlendMode: "screen", overflow: "hidden" }}>
+        <WovenLightHero hideContent bgColor="transparent" />
+      </div>
+
+      <div style={{ position: "relative", zIndex: 2, display: "flex", flexDirection: "column", justifyContent: "center", flex: 1, padding: "3rem 4rem", pointerEvents: "none" }}>
+
+        {/* Watermark letter */}
+        <div aria-hidden style={{
+          position: "absolute", right: "-0.05em", top: "50%",
+          transform: "translateY(-52%)",
+          fontFamily: fp.headlineFont,
+          fontSize: "clamp(10rem, 20vw, 20rem)",
+          fontWeight: 900,
+          color: `${fp.accent}09`,
+          lineHeight: 1,
+          userSelect: "none",
+          pointerEvents: "none",
+        }}>
+          {fp.headline[0]}
+        </div>
+
+        {/* Tag chip */}
+        <div style={{ display: "inline-flex", alignItems: "center", marginBottom: "1.5rem", background: `${fp.accent}15`, border: `1px solid ${fp.accent}33`, borderRadius: 4, padding: "0.3rem 0.75rem", width: "fit-content" }}>
+          <span style={{ fontFamily: T.body, fontSize: "0.65rem", fontWeight: 700, color: fp.accent, letterSpacing: "0.15em", textTransform: "uppercase" as const }}>
+            {fp.tag}
+          </span>
+        </div>
+
+        {/* Headline */}
+        <div style={{ fontFamily: fp.headlineFont, fontSize: "clamp(2.8rem, 6vw, 5rem)", fontWeight: 700, color: fp.text, lineHeight: 1.0, letterSpacing: "-0.03em", marginBottom: "0.2rem" }}>
+          {fp.headline}
+        </div>
+        <div style={{ fontFamily: fp.headlineFont, fontSize: "clamp(2.8rem, 6vw, 5rem)", fontWeight: 300, fontStyle: "italic", color: fp.muted, lineHeight: 1.0, letterSpacing: "-0.03em", marginBottom: "2.5rem" }}>
+          {fp.sub}
+        </div>
+
+        {/* Divider */}
+        <div style={{ width: 60, height: 2, background: fp.accent, marginBottom: "1.5rem" }} />
+
+        {/* Body */}
+        <p style={{ fontFamily: fp.bodyFont, fontSize: "clamp(0.9rem, 1.3vw, 1.05rem)", color: fp.muted, lineHeight: 1.8, maxWidth: 460, marginBottom: "2.5rem" }}>
+          {fp.body}
+        </p>
+
+        {/* Weight chips */}
+        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" as const }}>
+          {fp.weights.map(w => (
+            <div key={w} style={{ fontFamily: fp.headlineFont, fontSize: "0.75rem", color: fp.text, background: `${fp.accent}18`, border: `1px solid ${fp.accent}30`, borderRadius: 4, padding: "0.3rem 0.75rem" }}>
+              {w}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* CTA — bottom right */}
+      <div style={{ position: "absolute", bottom: 0, right: 0, width: "45%", zIndex: 3, padding: "2.5rem", background: "linear-gradient(to top, rgba(18,6,8,0.92) 0%, rgba(18,6,8,0.5) 60%, transparent 100%)", pointerEvents: "none" }}>
+        <p style={{ fontFamily: T.body, fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase" as const, color: "rgba(255,255,255,0.45)", marginBottom: "0.75rem" }}>Typography &amp; Backgrounds</p>
+        <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(1.4rem, 2.2vw, 2rem)", fontWeight: 700, lineHeight: 1.15, color: "#fff", marginBottom: "1rem", letterSpacing: "-0.02em" }}>Any choice.<br />We can build it.</h2>
+        <p style={{ fontFamily: T.body, fontSize: "clamp(0.75rem, 0.95vw, 0.85rem)", color: "rgba(255,255,255,0.6)", lineHeight: 1.7 }}>Every font and background you see here is just the start. We have a million more combinations — tailored precisely to your brand.</p>
+      </div>
+
+    </div>
+  );
+}
+
+function StarWarpFontSpecimen({ fp }: { fp: typeof FONT_PAIRS[number] }) {
+  return (
+    <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", justifyContent: "center", overflow: "hidden" }}>
+
+      <div aria-hidden style={{ position: "absolute", inset: 0, zIndex: 0 }}><StarWarpCanvas /></div>
+      <div aria-hidden style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at center, transparent 30%, rgba(10,0,20,0.85) 100%)", zIndex: 1 }} />
+      <div style={{ position: "absolute", top: 0, right: 0, bottom: 0, width: "55%", zIndex: 2, mixBlendMode: "screen", overflow: "hidden" }}>
+        <WovenLightHero hideContent bgColor="transparent" />
+      </div>
+
+      <div style={{ position: "relative", zIndex: 3, display: "flex", flexDirection: "column", gap: "2rem", padding: "clamp(1.5rem,4vw,3rem)", pointerEvents: "none" }}>
+
+        {/* Tag chip */}
+        <div style={{ background: `${fp.accent}20`, border: `1px solid ${fp.accent}50`, borderRadius: 4, padding: "0.3rem 0.9rem", width: "fit-content" }}>
+          <span style={{ fontFamily: fp.headlineFont, fontSize: "0.55rem", color: fp.accent, letterSpacing: "0.2em" }}>
+            {fp.tag.toUpperCase()}
+          </span>
+        </div>
+
+        {/* Headline */}
+        <div style={{ fontFamily: fp.headlineFont, fontSize: "clamp(2rem, 4vw, 3.5rem)", color: fp.text, lineHeight: 1.1, letterSpacing: "0.05em", textShadow: `0 0 60px ${fp.accent}99, 0 0 20px ${fp.accent}66` }}>
+          {fp.headline}
+        </div>
+        <div style={{ fontFamily: fp.headlineFont, fontSize: "clamp(1.2rem, 2.5vw, 2rem)", color: fp.muted, letterSpacing: "0.08em", textShadow: `0 0 30px ${fp.accent}55` }}>
+          {fp.sub}
+        </div>
+
+        {/* Divider */}
+        <div style={{ width: 60, height: 2, background: fp.accent, boxShadow: `0 0 12px ${fp.accent}` }} />
+
+        {/* Body */}
+        <p style={{ fontFamily: fp.bodyFont, fontSize: "clamp(0.85rem, 1.2vw, 1rem)", color: fp.muted, lineHeight: 1.8, maxWidth: 380 }}>
+          {fp.body}
+        </p>
+
+        {/* Weight chips */}
+        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" as const, justifyContent: "center" }}>
+          {fp.weights.map(w => (
+            <div key={w} style={{ fontFamily: fp.headlineFont, fontSize: "0.65rem", color: fp.text, background: `${fp.accent}15`, border: `1px solid ${fp.accent}40`, borderRadius: 4, padding: "0.3rem 0.75rem" }}>
+              {w}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* CTA — bottom right */}
+      <div style={{ position: "absolute", bottom: 0, right: 0, width: "45%", zIndex: 4, padding: "2.5rem", background: "linear-gradient(to top, rgba(10,0,20,0.92) 0%, rgba(10,0,20,0.5) 60%, transparent 100%)", pointerEvents: "none" }}>
+        <p style={{ fontFamily: T.body, fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase" as const, color: "rgba(255,255,255,0.45)", marginBottom: "0.75rem" }}>Typography &amp; Backgrounds</p>
+        <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(1.4rem, 2.2vw, 2rem)", fontWeight: 700, lineHeight: 1.15, color: "#fff", marginBottom: "1rem", letterSpacing: "-0.02em" }}>Any choice.<br />We can build it.</h2>
+        <p style={{ fontFamily: T.body, fontSize: "clamp(0.75rem, 0.95vw, 0.85rem)", color: "rgba(255,255,255,0.6)", lineHeight: 1.7 }}>Every font and background you see here is just the start. We have a million more combinations — tailored precisely to your brand.</p>
+      </div>
+
+    </div>
+  );
+}
+
+function cardBg(fp: typeof FONT_PAIRS[number]): string {
+  if (fp.name === "DM Serif Display") return TERM.bg;
+  if (fp.name === "Playfair Display") return "#120608";
+  return fp.bg as string;
+}
+
+function FontShowcase() {
+  const [activeIdx, setActiveIdx] = useState<number>(0);
+  const rightColRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!rightColRef.current) return;
+      const rect = rightColRef.current.getBoundingClientRect();
+      const scrolledIn = -rect.top;
+      const cardH = window.innerHeight;
+      const idx = Math.max(0, Math.min(FONT_PAIRS.length - 1, Math.floor((scrolledIn + cardH * 0.6) / cardH)));
+      setActiveIdx(idx);
+      if (wrapperRef.current) wrapperRef.current.dataset.navTheme = FONT_PAIRS[idx].navTheme;
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const isLight = false; // all cards are now dark-themed
+
+  return (
+    <div ref={wrapperRef} data-nav-theme={FONT_PAIRS[0].navTheme} style={{ position: "relative" }}>
+
+      {/* Full-width sticky background — sits behind everything, takes no scroll space */}
+      <div style={{ position: "sticky", top: 0, height: "100vh", marginBottom: "-100vh", overflow: "hidden", zIndex: 0 }}>
+
+        {/* Layer 0 — StarWarp (Press Start 2P) */}
+        <div style={{ position: "absolute", inset: 0, background: "#0a0014", opacity: activeIdx === 0 ? 1 : 0, transition: "opacity 0.8s ease" }}>
+          <StarWarpCanvas />
+          <div aria-hidden style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at center, transparent 30%, rgba(10,0,20,0.85) 100%)" }} />
+        </div>
+
+        {/* Layer 1 — BurgundyInk (Playfair Display) */}
+        <div style={{ position: "absolute", inset: 0, background: "#120608", opacity: activeIdx === 1 ? 1 : 0, transition: "opacity 0.8s ease" }}>
+          <GoldInkCanvas />
+        </div>
+
+        {/* Layer 2 — Matrix (DM Serif) */}
+        <div style={{ position: "absolute", inset: 0, background: TERM.bg, opacity: activeIdx === 2 ? 1 : 0, transition: "opacity 0.8s ease" }}>
+          <MatrixCanvas />
+          <div aria-hidden style={{ position: "absolute", inset: 0, background: "rgba(0,13,0,0.55)" }} />
+        </div>
+
+        {/* WovenLightHero lives in a separate sticky layer above the cards — see below */}
+
+      </div>
+
+
+      {/* Cards column — full width, provides scroll height */}
+      <div ref={rightColRef} style={{ width: "100%", position: "relative", zIndex: 1 }}>
+
+        <FlowArt>
+          {FONT_PAIRS.map((fp, i) => (
+            <FlowSection key={fp.name} aria-label={fp.name} style={{
+              background: fp.name === "Playfair Display" ? "#120608"
+                        : fp.name === "DM Serif Display" ? TERM.bg
+                        : fp.bg as string
+            }}>
+              {fp.name === "Playfair Display" ? <GoldInkFontSpecimen fp={fp} /> : fp.name === "DM Serif Display" ? <HackerFontSpecimen fp={fp} /> : fp.name === "Press Start 2P" ? <StarWarpFontSpecimen fp={fp} /> : <FontPairSpecimen fp={fp} />}
+            </FlowSection>
+          ))}
+          {/* Dwell spacer inside FlowArt */}
+          <div style={{ height: "100vh" }} aria-hidden />
+        </FlowArt>
+      </div>
+
     </div>
   );
 }
@@ -1582,6 +2037,380 @@ function MatrixCanvas() {
   );
 }
 
+/* ── BurgundyInkCanvas — Crimson ink diffusion on near-black wine ────── */
+function GoldInkCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    let W = canvas.offsetWidth, H = canvas.offsetHeight;
+    canvas.width = W; canvas.height = H;
+
+    type Drop = { x: number; y: number; r: number; maxR: number; alpha: number; speed: number; hue: number };
+    const drops: Drop[] = [];
+    let raf: number;
+
+    function spawnDrop() {
+      // hue 340–355 = deep crimson/wine, occasionally 15–25 = warm rose
+      const isCrimson = Math.random() > 0.3;
+      drops.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: 0,
+        maxR: 150 + Math.random() * 300,
+        alpha: 0.18 + Math.random() * 0.18,
+        speed: 0.25 + Math.random() * 0.35,
+        hue: isCrimson ? 340 + Math.random() * 15 : 15 + Math.random() * 12,
+      });
+    }
+
+    for (let i = 0; i < 12; i++) spawnDrop();
+    let spawnTimer = 0;
+
+    function draw() {
+      ctx!.fillStyle = "rgba(18,6,8,0.012)";
+      ctx!.fillRect(0, 0, W, H);
+
+      for (let i = drops.length - 1; i >= 0; i--) {
+        const d = drops[i];
+        d.r += d.speed;
+        const progress = d.r / d.maxR;
+        const a = d.alpha * (1 - progress * progress);
+
+        const grad = ctx!.createRadialGradient(d.x, d.y, 0, d.x, d.y, d.r);
+        grad.addColorStop(0,   `hsla(${d.hue},70%,28%,${a})`);
+        grad.addColorStop(0.45,`hsla(${d.hue + 5},60%,20%,${a * 0.5})`);
+        grad.addColorStop(1,   `hsla(${d.hue},50%,15%,0)`);
+
+        ctx!.beginPath();
+        ctx!.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+        ctx!.fillStyle = grad;
+        ctx!.fill();
+
+        if (d.r >= d.maxR) drops.splice(i, 1);
+      }
+
+      spawnTimer++;
+      if (spawnTimer > 80) { spawnDrop(); spawnTimer = 0; }
+
+      raf = requestAnimationFrame(draw);
+    }
+
+    ctx.fillStyle = "#120608";
+    ctx.fillRect(0, 0, W, H);
+    draw();
+
+    const ro = new ResizeObserver(() => {
+      W = canvas.offsetWidth; H = canvas.offsetHeight;
+      canvas.width = W; canvas.height = H;
+      ctx!.fillStyle = "#120608";
+      ctx!.fillRect(0, 0, W, H);
+    });
+    ro.observe(canvas);
+    return () => { cancelAnimationFrame(raf); ro.disconnect(); };
+  }, []);
+  return (
+    <canvas ref={canvasRef} style={{
+      position: "absolute", inset: 0, width: "100%", height: "100%",
+      zIndex: 0, display: "block",
+    }} />
+  );
+}
+
+/* ── StarWarpCanvas — Hyperspace star warp ───────────────────────────── */
+function StarWarpCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    let W = canvas.offsetWidth, H = canvas.offsetHeight;
+    canvas.width = W; canvas.height = H;
+    const NUM = 220;
+    const stars = Array.from({ length: NUM }, () => ({
+      x: (Math.random() - 0.5) * W,
+      y: (Math.random() - 0.5) * H,
+      z: Math.random() * W,
+      pz: 0,
+    }));
+    stars.forEach(s => { s.pz = s.z; });
+    let raf: number;
+    function draw() {
+      ctx!.fillStyle = "#0a0014";
+      ctx!.fillRect(0, 0, W, H);
+      const cx = W / 2, cy = H / 2;
+      for (const s of stars) {
+        s.pz = s.z;
+        s.z -= 4;
+        if (s.z <= 0) {
+          s.x = (Math.random() - 0.5) * W;
+          s.y = (Math.random() - 0.5) * H;
+          s.z = W;
+          s.pz = s.z;
+        }
+        const sx = (s.x / s.z) * W + cx;
+        const sy = (s.y / s.z) * H + cy;
+        const px = (s.x / s.pz) * W + cx;
+        const py = (s.y / s.pz) * H + cy;
+        const size = Math.max(0.5, (1 - s.z / W) * 2.5);
+        const alpha = 1 - s.z / W;
+        // trail
+        ctx!.beginPath();
+        ctx!.moveTo(px, py);
+        ctx!.lineTo(sx, sy);
+        ctx!.strokeStyle = `rgba(255,214,0,${alpha * 0.7})`;
+        ctx!.lineWidth = size;
+        ctx!.stroke();
+        // star dot
+        ctx!.beginPath();
+        ctx!.arc(sx, sy, size * 0.8, 0, Math.PI * 2);
+        ctx!.fillStyle = `rgba(255,230,80,${alpha})`;
+        ctx!.fill();
+      }
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    const ro = new ResizeObserver(() => {
+      W = canvas.offsetWidth; H = canvas.offsetHeight;
+      canvas.width = W; canvas.height = H;
+    });
+    ro.observe(canvas);
+    return () => { cancelAnimationFrame(raf); ro.disconnect(); };
+  }, []);
+  return (
+    <canvas ref={canvasRef} style={{
+      position: "absolute", inset: 0, width: "100%", height: "100%",
+      zIndex: 0, display: "block",
+    }} />
+  );
+}
+
+/* ── PacManCanvas — Pac-Man inspired animated background ─────────────── */
+function PacManCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    const draw = ctx;
+
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const DOT_GAP    = 34;
+    const DOT_R      = 2.8;
+    const POWER_R    = 6;
+    const PAC_R      = 16;
+    const GHOST_SIZE = 22;
+    const PAC_SPEED  = 95; // px/s
+    const FRAME_MS   = 1000 / 30;
+
+    let W = 0, H = 0;
+
+    type Dot = { x: number; y: number; alive: boolean; power: boolean; respawnAt: number; phase: number };
+    let dots: Dot[] = [];
+
+    function buildDots() {
+      dots = [];
+      const cols = Math.ceil(W / DOT_GAP) + 1;
+      const rows = Math.ceil(H / DOT_GAP) + 1;
+      const ox = (W % DOT_GAP) / 2;
+      const oy = (H % DOT_GAP) / 2;
+      for (let r = 0; r <= rows; r++) {
+        for (let c = 0; c <= cols; c++) {
+          dots.push({
+            x: ox + c * DOT_GAP,
+            y: oy + r * DOT_GAP,
+            alive: true,
+            power: r % 6 === 0 && c % 6 === 0,
+            respawnAt: 0,
+            phase: Math.random() * Math.PI * 2,
+          });
+        }
+      }
+    }
+
+    const cv = canvas;
+    function resize() {
+      W = cv.offsetWidth;
+      H = cv.offsetHeight;
+      if (W > 0 && H > 0) { cv.width = W; cv.height = H; buildDots(); }
+    }
+
+    // Pac-Man
+    type Dir = { x: number; y: number };
+    const DIRS: Dir[] = [{ x: 1, y: 0 }, { x: -1, y: 0 }, { x: 0, y: 1 }, { x: 0, y: -1 }];
+    const pac = { x: 0, y: 0, dir: DIRS[0], angle: 0, mouth: 0.2, mouthV: 1, nextTurn: 2500 };
+
+    // Ghosts: Blinky (red), Pinky (pink), Inky (cyan), Clyde (orange)
+    const GHOST_DEFS = [
+      { fill: "rgba(231,28,28,0.55)",   pupil: "#1a40ff" },
+      { fill: "rgba(255,180,220,0.50)", pupil: "#1a40ff" },
+      { fill: "rgba(0,220,220,0.48)",   pupil: "#1a40ff" },
+      { fill: "rgba(255,160,32,0.50)",  pupil: "#1a40ff" },
+    ];
+    const ghosts = GHOST_DEFS.map((def, i) => ({
+      x: 0, y: 0,
+      vx: (i % 2 === 0 ? 1 : -1) * 40,
+      vy: (i < 2 ? -1 : 1) * 30,
+      wander: i * 1.57,
+      wanderSpd: 0.007 + i * 0.003,
+      bob: i * 1.1,
+      fill: def.fill,
+      pupil: def.pupil,
+    }));
+
+    function initPositions() {
+      pac.x = W * 0.25; pac.y = H * 0.5;
+      ghosts.forEach((g, i) => {
+        g.x = W * (0.5 + (i % 2 === 0 ? 0.15 : -0.15));
+        g.y = H * (0.4 + i * 0.12);
+      });
+    }
+
+    function drawGhost(g: typeof ghosts[0], t: number) {
+      const S = GHOST_SIZE;
+      const by = Math.sin(g.bob + t * 0.0008) * 3.5;
+      const x = g.x, y = g.y + by;
+
+      draw.save();
+      draw.fillStyle = g.fill;
+      draw.beginPath();
+      draw.arc(x, y, S, Math.PI, 0);                // head dome
+      draw.lineTo(x + S, y + S * 0.9);              // right side
+      // 3-hump wavy skirt
+      const base = y + S * 0.9;
+      const hw = (S * 2) / 3;
+      draw.quadraticCurveTo(x + S - hw * 0.5, base + S * 0.42, x + S - hw,     base);
+      draw.quadraticCurveTo(x + S - hw * 1.5, base - S * 0.18, x + S - hw * 2, base);
+      draw.quadraticCurveTo(x + S - hw * 2.5, base + S * 0.42, x - S,          base);
+      draw.closePath();
+      draw.fill();
+
+      // white sclerae
+      draw.fillStyle = "rgba(255,255,255,0.92)";
+      draw.beginPath(); draw.ellipse(x - S * 0.33, y - S * 0.18, S * 0.23, S * 0.3, 0, 0, Math.PI * 2); draw.fill();
+      draw.beginPath(); draw.ellipse(x + S * 0.33, y - S * 0.18, S * 0.23, S * 0.3, 0, 0, Math.PI * 2); draw.fill();
+      // pupils
+      draw.fillStyle = g.pupil;
+      draw.beginPath(); draw.arc(x - S * 0.30, y - S * 0.15, S * 0.12, 0, Math.PI * 2); draw.fill();
+      draw.beginPath(); draw.arc(x + S * 0.36, y - S * 0.15, S * 0.12, 0, Math.PI * 2); draw.fill();
+      draw.restore();
+    }
+
+    let raf = 0, lastT = 0;
+
+    function frame(t: number) {
+      raf = requestAnimationFrame(frame);
+      if (t - lastT < FRAME_MS) return;
+      const dt = Math.min(t - lastT, 50) / 1000;
+      lastT = t;
+
+      draw.clearRect(0, 0, W, H);
+
+      // Dots
+      for (const dot of dots) {
+        if (!dot.alive) { if (t >= dot.respawnAt) dot.alive = true; else continue; }
+        if (dot.power) {
+          dot.phase += 0.055;
+          const pulse = 0.5 + 0.5 * Math.sin(dot.phase);
+          draw.save();
+          draw.shadowBlur = 12 + pulse * 10;
+          draw.shadowColor = "rgba(255,214,0,0.75)";
+          draw.fillStyle = `rgba(255,214,0,${0.55 + pulse * 0.38})`;
+          draw.beginPath(); draw.arc(dot.x, dot.y, POWER_R * (0.82 + pulse * 0.28), 0, Math.PI * 2); draw.fill();
+          draw.restore();
+        } else {
+          draw.fillStyle = "rgba(255,214,0,0.26)";
+          draw.beginPath(); draw.arc(dot.x, dot.y, DOT_R, 0, Math.PI * 2); draw.fill();
+        }
+      }
+
+      if (!prefersReduced) {
+        // Pac-Man movement
+        pac.nextTurn -= dt * 1000;
+        if (pac.nextTurn <= 0) {
+          const d = DIRS[Math.floor(Math.random() * DIRS.length)];
+          pac.dir = d; pac.angle = Math.atan2(d.y, d.x);
+          pac.nextTurn = 1400 + Math.random() * 2000;
+        }
+        pac.x += pac.dir.x * PAC_SPEED * dt;
+        pac.y += pac.dir.y * PAC_SPEED * dt;
+        if (pac.x < -PAC_R * 2)   pac.x = W + PAC_R * 2;
+        if (pac.x > W + PAC_R * 2) pac.x = -PAC_R * 2;
+        if (pac.y < -PAC_R * 2)   pac.y = H + PAC_R * 2;
+        if (pac.y > H + PAC_R * 2) pac.y = -PAC_R * 2;
+
+        // Mouth chewing
+        pac.mouth += pac.mouthV * 2.8 * dt;
+        if (pac.mouth >= 1) { pac.mouth = 1; pac.mouthV = -1; }
+        if (pac.mouth <= 0) { pac.mouth = 0; pac.mouthV =  1; }
+
+        // Eat nearby dots
+        const eatR2 = (PAC_R + DOT_GAP * 0.38) ** 2;
+        for (const dot of dots) {
+          if (!dot.alive) continue;
+          const dx = dot.x - pac.x, dy = dot.y - pac.y;
+          if (dx * dx + dy * dy < eatR2) {
+            dot.alive = false;
+            dot.respawnAt = t + 6000 + Math.random() * 5000;
+          }
+        }
+
+        // Draw Pac-Man
+        const mAngle = pac.mouth * 0.36;
+        draw.save();
+        draw.translate(pac.x, pac.y);
+        draw.rotate(pac.angle);
+        draw.shadowBlur = 18;
+        draw.shadowColor = "rgba(255,220,0,0.65)";
+        draw.fillStyle = "rgba(255,220,0,0.82)";
+        draw.beginPath();
+        draw.moveTo(0, 0);
+        draw.arc(0, 0, PAC_R, mAngle, Math.PI * 2 - mAngle);
+        draw.closePath();
+        draw.fill();
+        draw.restore();
+
+        // Ghosts
+        for (const g of ghosts) {
+          g.wander += g.wanderSpd * dt * 60;
+          g.vx += Math.cos(g.wander) * 14 * dt;
+          g.vy += Math.sin(g.wander) * 14 * dt;
+          const spd = Math.sqrt(g.vx * g.vx + g.vy * g.vy);
+          const maxSpd = 52;
+          if (spd > maxSpd) { g.vx = (g.vx / spd) * maxSpd; g.vy = (g.vy / spd) * maxSpd; }
+          g.x += g.vx * dt; g.y += g.vy * dt;
+          if (g.x < -GHOST_SIZE * 2) g.x = W + GHOST_SIZE * 2;
+          else if (g.x > W + GHOST_SIZE * 2) g.x = -GHOST_SIZE * 2;
+          if (g.y < -GHOST_SIZE * 2) g.y = H + GHOST_SIZE * 2;
+          else if (g.y > H + GHOST_SIZE * 2) g.y = -GHOST_SIZE * 2;
+          drawGhost(g, t);
+        }
+      }
+    }
+
+    resize();
+    initPositions();
+    raf = requestAnimationFrame(frame);
+
+    const ro = new ResizeObserver(resize);
+    ro.observe(canvas);
+    return () => { cancelAnimationFrame(raf); ro.disconnect(); };
+  }, []);
+
+  return (
+    <canvas ref={canvasRef} style={{
+      position: "absolute", inset: 0, width: "100%", height: "100%",
+      zIndex: 0, display: "block", pointerEvents: "none",
+    }} />
+  );
+}
+
 function SvgHandwrite({ text, font, fontSize = 42, color = "#00ff41", width = 340, height = 90, delay = 0, triggerKey = 0 }: {
   text: string; font: string; fontSize?: number; color?: string;
   width?: number; height?: number; delay?: number; triggerKey?: number;
@@ -1623,21 +2452,15 @@ function SvgHandwrite({ text, font, fontSize = 42, color = "#00ff41", width = 34
 function HwCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div style={{
-      flex: 1, background: TERM.card,
-      border: `1px solid ${TERM.border}`,
+      flex: 1, background: "#fff",
+      border: `1px solid ${T.border}`,
       borderRadius: 12, padding: "2.5rem 2rem 2rem",
       display: "flex", flexDirection: "column", gap: "1.5rem",
-      boxShadow: TERM.glow,
+      boxShadow: "0 2px 16px rgba(0,0,0,0.06)",
       minWidth: 0, overflow: "hidden", position: "relative",
     }}>
-      {/* corner brackets */}
-      <div style={{ position: "absolute", top: 10, left: 10, width: 10, height: 10, borderTop: `2px solid ${TERM.greenDim}`, borderLeft: `2px solid ${TERM.greenDim}` }} />
-      <div style={{ position: "absolute", top: 10, right: 10, width: 10, height: 10, borderTop: `2px solid ${TERM.greenDim}`, borderRight: `2px solid ${TERM.greenDim}` }} />
-      <div style={{ position: "absolute", bottom: 10, left: 10, width: 10, height: 10, borderBottom: `2px solid ${TERM.greenDim}`, borderLeft: `2px solid ${TERM.greenDim}` }} />
-      <div style={{ position: "absolute", bottom: 10, right: 10, width: 10, height: 10, borderBottom: `2px solid ${TERM.greenDim}`, borderRight: `2px solid ${TERM.greenDim}` }} />
-
-      <div style={{ fontFamily: TERM.font, fontSize: "1rem", letterSpacing: "0.18em", color: TERM.greenDim }}>
-        &gt; {title.toUpperCase().replace(/\s/g, "_")}
+      <div style={{ fontFamily: T.body, fontSize: "0.72rem", fontWeight: 600, letterSpacing: "0.15em", color: T.muted, textTransform: "uppercase" }}>
+        {title}
       </div>
       {children}
     </div>
@@ -1679,30 +2502,34 @@ function HwCardsGrid() {
 
   const innerCard = (extra?: React.CSSProperties): React.CSSProperties => ({
     flex: 1, minWidth: 0, borderRadius: 8, padding: "1.6rem 1.4rem",
-    background: TERM.innerBg, border: `1px solid ${TERM.border}`, overflow: "hidden",
+    background: T.surface, border: `1px solid ${T.border}`, overflow: "hidden",
     ...extra,
   });
 
+  const INK = "#111";
+  const INK_MUTED = "#555";
+  const ACCENT = "#000";
+
   return (
-    <div ref={ref} style={{ background: TERM.bg, borderRadius: 16, padding: "2.5rem", border: `1px solid ${TERM.border}`, boxShadow: TERM.glow }}>
+    <div ref={ref} style={{ background: T.bg, borderRadius: 16, padding: "2.5rem", border: `1px solid ${T.border}`, boxShadow: "0 4px 32px rgba(0,0,0,0.06)" }}>
       {/* Row 1 */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem", marginBottom: "1.5rem" }}>
         {/* THE BRIEF */}
         <HwCard title="The Brief">
           <div style={{ display: "flex", gap: "0.75rem", alignItems: "flex-start", minWidth: 0 }}>
             <div style={innerCard()}>
-              <div style={{ fontFamily: TERM.font, fontSize: "0.75rem", color: TERM.greenMuted, marginBottom: "0.75rem", letterSpacing: "0.12em" }}>// CLIENT_REQUEST</div>
-              <SvgHandwrite text="Build me something" font={HW_FONTS.caveat} fontSize={30} color={TERM.green} width={260} height={72} delay={0.1} triggerKey={inView ? 1 : 0} />
-              <SvgHandwrite text="that actually converts." font={HW_FONTS.caveat} fontSize={28} color={TERM.greenDim} width={260} height={72} delay={1.2} triggerKey={inView ? 1 : 0} />
+              <div style={{ fontFamily: T.body, fontSize: "0.7rem", fontWeight: 600, color: INK_MUTED, marginBottom: "0.75rem", letterSpacing: "0.1em", textTransform: "uppercase" }}>Client Request</div>
+              <SvgHandwrite text="Build me something" font={HW_FONTS.caveat} fontSize={30} color={INK} width={260} height={72} delay={0.1} triggerKey={inView ? 1 : 0} />
+              <SvgHandwrite text="that actually converts." font={HW_FONTS.caveat} fontSize={28} color={INK_MUTED} width={260} height={72} delay={1.2} triggerKey={inView ? 1 : 0} />
             </div>
             <div style={{ display: "flex", alignItems: "center", paddingTop: "3.5rem" }}>
-              <svg width={28} height={16} viewBox="0 0 32 18" fill="none"><path d="M0 9h28M20 2l8 7-8 7" stroke={TERM.green} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"/></svg>
+              <svg width={28} height={16} viewBox="0 0 32 18" fill="none"><path d="M0 9h28M20 2l8 7-8 7" stroke={ACCENT} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"/></svg>
             </div>
-            <div style={innerCard({ background: TERM.innerBg2, borderColor: TERM.borderHi })}>
-              <div style={{ fontFamily: TERM.font, fontSize: "0.75rem", color: TERM.greenMuted, marginBottom: "0.75rem", letterSpacing: "0.12em" }}>// RESPONSE</div>
-              <SvgHandwrite text="Delivered." font={HW_FONTS.dancing} fontSize={52} color={TERM.green} width={260} height={96} delay={2.2} triggerKey={inView ? 1 : 0} />
+            <div style={innerCard({ background: "#fff", borderColor: "#d0d0d0" })}>
+              <div style={{ fontFamily: T.body, fontSize: "0.7rem", fontWeight: 600, color: INK_MUTED, marginBottom: "0.75rem", letterSpacing: "0.1em", textTransform: "uppercase" }}>Response</div>
+              <SvgHandwrite text="Delivered." font={HW_FONTS.dancing} fontSize={52} color={INK} width={260} height={96} delay={2.2} triggerKey={inView ? 1 : 0} />
               <svg width={180} height={14} viewBox="0 0 180 14" style={{ display: "block", marginTop: -14 }}>
-                <path d="M8 10 Q90 2 172 10" fill="none" stroke={TERM.green} strokeWidth={2.5} strokeLinecap="round"
+                <path d="M8 10 Q90 2 172 10" fill="none" stroke={INK} strokeWidth={2.5} strokeLinecap="round"
                   strokeDasharray="180 180" strokeDashoffset={inView ? 0 : 180}
                   style={{ transition: inView ? "stroke-dashoffset 0.6s 3s ease" : "none" }}
                 />
@@ -1714,18 +2541,18 @@ function HwCardsGrid() {
         {/* THE CRAFT */}
         <HwCard title="The Craft">
           <div style={{ display: "flex", gap: "0.75rem", minWidth: 0 }}>
-            <div style={innerCard({ background: "rgba(0,255,65,0.06)", transition: "background 0.4s" })}>
-              <div style={{ fontFamily: TERM.font, fontSize: "0.75rem", color: TERM.greenMuted, marginBottom: "0.75rem", letterSpacing: "0.1em" }}>{curStyle.label.toUpperCase()}</div>
-              <SvgHandwrite key={`opt2-l-${cycleKey}`} text="Falcon" font={curStyle.font} fontSize={56} color={curStyle.color} width={220} height={100} delay={0} triggerKey={cycleKey} />
-            </div>
             <div style={innerCard()}>
-              <div style={{ fontFamily: TERM.font, fontSize: "0.75rem", color: TERM.greenMuted, marginBottom: "0.75rem", letterSpacing: "0.1em" }}>YOUR_BRAND</div>
-              <SvgHandwrite key={`opt2-r-${cycleKey}`} text="Designs." font={curStyle.font} fontSize={56} color={TERM.green} width={220} height={100} delay={0.5} triggerKey={cycleKey} />
+              <div style={{ fontFamily: T.body, fontSize: "0.7rem", fontWeight: 600, color: INK_MUTED, marginBottom: "0.75rem", letterSpacing: "0.1em", textTransform: "uppercase" }}>{curStyle.label}</div>
+              <SvgHandwrite key={`opt2-l-${cycleKey}`} text="Falcon" font={curStyle.font} fontSize={56} color={INK} width={220} height={100} delay={0} triggerKey={cycleKey} />
+            </div>
+            <div style={innerCard({ background: "#fff", borderColor: "#d0d0d0" })}>
+              <div style={{ fontFamily: T.body, fontSize: "0.7rem", fontWeight: 600, color: INK_MUTED, marginBottom: "0.75rem", letterSpacing: "0.1em", textTransform: "uppercase" }}>Your Brand</div>
+              <SvgHandwrite key={`opt2-r-${cycleKey}`} text="Designs." font={curStyle.font} fontSize={56} color={INK} width={220} height={100} delay={0.5} triggerKey={cycleKey} />
             </div>
           </div>
           <div style={{ display: "flex", gap: 6, marginTop: "0.5rem" }}>
             {HW_STYLE_CYCLE.map((_, i) => (
-              <div key={i} style={{ width: i === styleIdx ? 18 : 6, height: 4, borderRadius: 2, background: i === styleIdx ? TERM.green : TERM.greenMuted, transition: "all 0.3s" }} />
+              <div key={i} style={{ width: i === styleIdx ? 18 : 6, height: 4, borderRadius: 2, background: i === styleIdx ? INK : "#ccc", transition: "all 0.3s" }} />
             ))}
           </div>
         </HwCard>
@@ -1737,26 +2564,26 @@ function HwCardsGrid() {
         <HwCard title="Before & After">
           <div style={{ display: "flex", gap: "0.75rem", alignItems: "flex-start", minWidth: 0 }}>
             <div style={innerCard()}>
-              <div style={{ fontFamily: TERM.font, fontSize: "0.75rem", color: TERM.greenMuted, marginBottom: "0.75rem", letterSpacing: "0.1em" }}>BEFORE</div>
+              <div style={{ fontFamily: T.body, fontSize: "0.7rem", fontWeight: 600, color: INK_MUTED, marginBottom: "0.75rem", letterSpacing: "0.1em", textTransform: "uppercase" }}>Before</div>
               <div style={{ position: "relative", display: "inline-block" }}>
-                <SvgHandwrite text="Homepage?" font={HW_FONTS.kalam} fontSize={32} color={TERM.greenDim} width={240} height={68} delay={0.1} triggerKey={inView ? 1 : 0} />
+                <SvgHandwrite text="Homepage?" font={HW_FONTS.kalam} fontSize={32} color={INK_MUTED} width={240} height={68} delay={0.1} triggerKey={inView ? 1 : 0} />
                 <svg width={180} height={8} viewBox="0 0 180 8" style={{ display: "block", marginTop: -48, marginLeft: 8 }}>
-                  <line x1={0} y1={4} x2={168} y2={4} stroke="#ff4444" strokeWidth={2.5}
+                  <line x1={0} y1={4} x2={168} y2={4} stroke="#e53e3e" strokeWidth={2.5}
                     strokeDasharray="168 168" strokeDashoffset={inView ? 0 : 168}
                     style={{ transition: inView ? "stroke-dashoffset 0.5s 1.2s ease" : "none" }}
                   />
                 </svg>
               </div>
-              <SvgHandwrite text="Landing page? Both?" font={HW_FONTS.kalam} fontSize={28} color={TERM.greenMuted} width={240} height={68} delay={1.8} triggerKey={inView ? 1 : 0} />
+              <SvgHandwrite text="Landing page? Both?" font={HW_FONTS.kalam} fontSize={28} color={INK_MUTED} width={240} height={68} delay={1.8} triggerKey={inView ? 1 : 0} />
             </div>
             <div style={{ display: "flex", alignItems: "center", paddingTop: "3rem" }}>
-              <svg width={28} height={16} viewBox="0 0 32 18" fill="none"><path d="M0 9h28M20 2l8 7-8 7" stroke={TERM.green} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"/></svg>
+              <svg width={28} height={16} viewBox="0 0 32 18" fill="none"><path d="M0 9h28M20 2l8 7-8 7" stroke={ACCENT} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"/></svg>
             </div>
-            <div style={innerCard({ background: TERM.innerBg2, borderColor: TERM.borderHi })}>
-              <div style={{ fontFamily: TERM.font, fontSize: "0.75rem", color: TERM.greenMuted, marginBottom: "0.75rem", letterSpacing: "0.1em" }}>AFTER</div>
-              <SvgHandwrite text="Done." font={HW_FONTS.dancing} fontSize={64} color={TERM.green} width={200} height={100} delay={3.2} triggerKey={inView ? 1 : 0} />
+            <div style={innerCard({ background: "#fff", borderColor: "#d0d0d0" })}>
+              <div style={{ fontFamily: T.body, fontSize: "0.7rem", fontWeight: 600, color: INK_MUTED, marginBottom: "0.75rem", letterSpacing: "0.1em", textTransform: "uppercase" }}>After</div>
+              <SvgHandwrite text="Done." font={HW_FONTS.dancing} fontSize={64} color={INK} width={200} height={100} delay={3.2} triggerKey={inView ? 1 : 0} />
               <svg width={130} height={14} viewBox="0 0 130 14" style={{ display: "block", marginTop: -14, marginLeft: 8 }}>
-                <path d="M4 10 Q65 2 126 10" fill="none" stroke={TERM.green} strokeWidth={2.5} strokeLinecap="round"
+                <path d="M4 10 Q65 2 126 10" fill="none" stroke={INK} strokeWidth={2.5} strokeLinecap="round"
                   strokeDasharray="130 130" strokeDashoffset={inView ? 0 : 130}
                   style={{ transition: inView ? "stroke-dashoffset 0.5s 4.2s ease" : "none" }}
                 />
@@ -1769,17 +2596,17 @@ function HwCardsGrid() {
         <HwCard title="What Clients Write">
           <div style={{ display: "flex", gap: "0.75rem", minWidth: 0 }}>
             <div style={innerCard({ minHeight: 160 })}>
-              <div style={{ fontFamily: TERM.font, fontSize: "1.2rem", color: TERM.greenMuted, marginBottom: "0.75rem" }}>❝</div>
-              <SvgHandwrite key={`t-l-${testimonialIdx}`} text={testimonials[testimonialIdx].l} font={HW_FONTS.dancing} fontSize={38} color={TERM.greenDim} width={240} height={76} delay={0} triggerKey={testimonialIdx} />
+              <div style={{ fontFamily: T.body, fontSize: "1.2rem", color: INK_MUTED, marginBottom: "0.75rem" }}>❝</div>
+              <SvgHandwrite key={`t-l-${testimonialIdx}`} text={testimonials[testimonialIdx].l} font={HW_FONTS.dancing} fontSize={38} color={INK} width={240} height={76} delay={0} triggerKey={testimonialIdx} />
             </div>
-            <div style={innerCard({ background: TERM.innerBg2, borderColor: TERM.borderHi, minHeight: 160 })}>
-              <div style={{ fontFamily: TERM.font, fontSize: "1.2rem", color: TERM.greenMuted, marginBottom: "0.75rem" }}>❞</div>
-              <SvgHandwrite key={`t-r-${testimonialIdx}`} text={testimonials[testimonialIdx].r} font={HW_FONTS.dancing} fontSize={38} color={TERM.green} width={240} height={76} delay={0.6} triggerKey={testimonialIdx} />
+            <div style={innerCard({ background: "#fff", borderColor: "#d0d0d0", minHeight: 160 })}>
+              <div style={{ fontFamily: T.body, fontSize: "1.2rem", color: INK_MUTED, marginBottom: "0.75rem" }}>❞</div>
+              <SvgHandwrite key={`t-r-${testimonialIdx}`} text={testimonials[testimonialIdx].r} font={HW_FONTS.dancing} fontSize={38} color={INK} width={240} height={76} delay={0.6} triggerKey={testimonialIdx} />
             </div>
           </div>
           <div style={{ display: "flex", gap: 6, marginTop: "0.25rem" }}>
             {testimonials.map((_, i) => (
-              <div key={i} style={{ width: i === testimonialIdx ? 18 : 6, height: 4, borderRadius: 2, background: i === testimonialIdx ? TERM.green : TERM.greenMuted, transition: "all 0.3s" }} />
+              <div key={i} style={{ width: i === testimonialIdx ? 18 : 6, height: 4, borderRadius: 2, background: i === testimonialIdx ? INK : "#ccc", transition: "all 0.3s" }} />
             ))}
           </div>
         </HwCard>
@@ -1798,91 +2625,24 @@ function HandwritingShowcase() {
   /* Outer wrapper is 3× the viewport height so the sticky panel
      locks for 2 full screen-lengths of scroll, then releases naturally */
   return (
-    <div style={{ height: "300vh", borderTop: `1px solid ${TERM.border}`, borderBottom: `1px solid ${TERM.border}` }}>
+    <div style={{ height: "200vh", borderTop: `1px solid ${TERM.border}`, borderBottom: `1px solid ${TERM.border}` }}>
       <section style={{
         position: "sticky", top: 0,
         height: "100vh", overflow: "hidden",
-        background: TERM.bg, display: "flex",
+        background: TERM.bg,
       }}>
-        {/* ── Left 60% — matrix rain pane ── */}
-        <div style={{ position: "relative", flex: "0 0 60%", overflow: "hidden" }}>
-          <MatrixCanvas />
-          {/* Scanlines */}
-          <div aria-hidden="true" style={{
-            position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none",
-            backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.18) 2px, rgba(0,0,0,0.18) 4px)",
-          }} />
-          {/* Right-edge fade into right pane */}
-          <div aria-hidden="true" style={{
-            position: "absolute", inset: 0, zIndex: 2, pointerEvents: "none",
-            background: "linear-gradient(to right, transparent 70%, rgba(0,13,0,0.95) 100%)",
-          }} />
-          {/* Phosphor vignette */}
-          <div aria-hidden="true" style={{
-            position: "absolute", inset: 0, zIndex: 2, pointerEvents: "none",
-            background: "radial-gradient(ellipse at 40% 50%, transparent 45%, rgba(0,0,0,0.55) 100%)",
-          }} />
-          {/* Centred heading */}
-          <div style={{
-            position: "absolute", inset: 0, zIndex: 3,
-            display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "1.2rem",
-            padding: "4rem 3rem",
-          }}>
-            <div style={{ fontFamily: TERM.font, fontSize: "0.8rem", color: TERM.greenDim, letterSpacing: "0.28em" }}>
-              SYSTEM:// TYPOGRAPHY_ENGINE v2.4.1
-            </div>
-            <h2 style={{
-              fontFamily: TERM.font, fontSize: "clamp(2rem,4vw,3.6rem)", fontWeight: 400,
-              lineHeight: 1.05, letterSpacing: "0.06em", color: TERM.green, textAlign: "center",
-              textShadow: `0 0 30px ${TERM.green}66, 0 0 60px ${TERM.green}33`,
-            }}>
-              TYPOGRAPHY<br />IN MOTION
-              <span style={{ opacity: blink ? 1 : 0, transition: "opacity 0.1s" }}>_</span>
-            </h2>
-            <div style={{ fontFamily: TERM.font, fontSize: "0.75rem", color: TERM.greenMuted, letterSpacing: "0.15em" }}>
-              [RENDERING LIVE OUTPUT...]
-            </div>
-          </div>
+        {/* Full-width ScannerCardStream background */}
+        <div style={{ position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none" }}>
+          <ScannerCardStream
+            direction={-1}
+            initialSpeed={120}
+            friction={0.97}
+            scanEffect="scramble"
+            cardGap={40}
+            repeat={4}
+          />
         </div>
 
-        {/* ── Right 40% — capability list ── */}
-        <div style={{
-          flex: "0 0 40%", background: "rgba(0,8,0,0.97)",
-          borderLeft: `1px solid ${TERM.border}`,
-          display: "flex", flexDirection: "column", justifyContent: "center",
-          padding: "4rem 3.5rem", gap: "2rem",
-        }}>
-          <div style={{ fontFamily: TERM.font, fontSize: "0.75rem", color: TERM.greenMuted, letterSpacing: "0.2em" }}>
-            &gt; CAPABILITY_STACK.exe
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: "1.4rem" }}>
-            {[
-              { label: "Custom typefaces", sub: "Hand-picked for your brand voice" },
-              { label: "Handwriting animations", sub: "SVG draw-on effects that feel alive" },
-              { label: "Variable font control", sub: "Weight, width, slant — all tuned" },
-              { label: "Motion typography", sub: "Kinetic text that earns attention" },
-            ].map((item, i) => (
-              <div key={i} style={{ display: "flex", gap: "1rem", alignItems: "flex-start" }}>
-                <div style={{ fontFamily: TERM.font, fontSize: "0.85rem", color: TERM.green, flexShrink: 0, marginTop: 2 }}>
-                  [{String(i + 1).padStart(2, "0")}]
-                </div>
-                <div>
-                  <div style={{ fontFamily: TERM.font, fontSize: "1rem", color: TERM.green, letterSpacing: "0.08em" }}>{item.label}</div>
-                  <div style={{ fontFamily: "'Wix Madefor Text', sans-serif", fontSize: "0.8rem", color: TERM.greenMuted, marginTop: "0.2rem", lineHeight: 1.5 }}>{item.sub}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <a href="#" onClick={e => e.preventDefault()} style={{
-            display: "inline-flex", alignItems: "center", gap: "0.5rem", marginTop: "0.5rem",
-            fontFamily: TERM.font, fontSize: "0.85rem", color: TERM.bg,
-            background: TERM.green, padding: "0.7rem 1.4rem", borderRadius: 4,
-            letterSpacing: "0.12em", textDecoration: "none", width: "fit-content",
-            boxShadow: `0 0 20px ${TERM.green}55`,
-          }}>
-            SEE_TYPOGRAPHY_DEMOS &gt;
-          </a>
-        </div>
       </section>
     </div>
   );
@@ -1953,16 +2713,42 @@ function BizMarqueeRow({ items, reverse = false }: {
 /* ══════════════════════════════════════════════════════════════════════
    MAIN PAGE
 ══════════════════════════════════════════════════════════════════════ */
+/* ── Nav themes ─────────────────────────────────────────────────────── */
+const NAV_THEMES = {
+  white:  { bg: "rgba(255,255,255,0.96)", border: "#e8e8e8",               text: "#000",    muted: "#666",                  ctaBg: "#000",    ctaText: "#fff",    logoBg: "#000",    logoIcon: "#fff" },
+  hero:   { bg: "rgba(8,8,8,0.92)",        border: "rgba(255,255,255,0.08)", text: "#fff",   muted: "rgba(255,255,255,0.55)", ctaBg: "#c9ff00", ctaText: "#000",    logoBg: "#fff",    logoIcon: "#000" },
+  dark:   { bg: "rgba(10,10,10,0.95)",    border: "rgba(255,214,0,0.15)", text: "#FFD700", muted: "rgba(255,214,0,0.5)",   ctaBg: "#FFD700", ctaText: "#000",    logoBg: "#FFD700", logoIcon: "#000" },
+  hacker: { bg: "rgba(0,13,0,0.96)",      border: "rgba(0,255,65,0.18)",  text: "#00ff41", muted: "rgba(0,255,65,0.45)",   ctaBg: "#00ff41", ctaText: "#000",    logoBg: "#00ff41", logoIcon: "#000" },
+  blue:   { bg: "rgba(5,13,46,0.96)",     border: "rgba(120,140,255,0.2)",text: "#a5b4fc", muted: "rgba(165,180,252,0.5)", ctaBg: "#6366f1", ctaText: "#fff",    logoBg: "#a5b4fc", logoIcon: "#000" },
+  lime:   { bg: "rgba(185,236,0,0.97)",   border: "transparent",          text: "#000",    muted: "#444",                  ctaBg: "#000",    ctaText: "#c9ff00", logoBg: "#000",    logoIcon: "#fff" },
+} as const;
+type NavThemeKey = keyof typeof NAV_THEMES;
+
 export default function FalconStudioPage() {
   const [scrolled, setScrolled] = useState(false);
+  const [navThemeKey, setNavThemeKey] = useState<NavThemeKey>("white");
   const [menuOpen, setMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll();
 
+  const nt = NAV_THEMES[navThemeKey];
+  const TRANS = "0.5s cubic-bezier(0.23,1,0.32,1)";
+
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 60);
+    const fn = () => {
+      setScrolled(window.scrollY > 60);
+      const sections = document.querySelectorAll<HTMLElement>("[data-nav-theme]");
+      const mid = window.innerHeight * 0.5;
+      let current: NavThemeKey = "white";
+      sections.forEach(s => {
+        const rect = s.getBoundingClientRect();
+        if (rect.top <= mid && rect.bottom > mid) current = (s.dataset.navTheme as NavThemeKey) || "white";
+      });
+      setNavThemeKey(current);
+    };
     window.addEventListener("scroll", fn, { passive: true });
+    fn();
     return () => window.removeEventListener("scroll", fn);
   }, []);
 
@@ -1982,8 +2768,7 @@ export default function FalconStudioPage() {
         }
 
         /* Nav */
-        #fs-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; transition: background 0.5s cubic-bezier(0.23,1,0.32,1), border-color 0.5s cubic-bezier(0.23,1,0.32,1); border-bottom: 1px solid transparent; }
-        #fs-nav.scrolled { background: rgba(255,255,255,0.96); backdrop-filter: blur(14px); border-color: #e8e8e8; }
+        #fs-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; border-bottom: 1px solid transparent; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
         .nav-inner { max-width: 1280px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 2.5rem; height: 68px; }
         .nav-logo { font-family: 'Wix Madefor Display', sans-serif; font-size: 1rem; font-weight: 800; letter-spacing: -0.01em; color: #000; display: flex; align-items: center; gap: 0.5rem; }
         .nav-logo-sq { width: 26px; height: 26px; background: #000; border-radius: 4px; display: flex; align-items: center; justify-content: center; }
@@ -2089,51 +2874,39 @@ export default function FalconStudioPage() {
         .retro-card { transition: transform 0.15s, box-shadow 0.15s !important; }
         .retro-card:hover { transform: translate(-3px,-3px) !important; }
         .biz-marquee-ltr, .biz-marquee-rtl { will-change: transform; }
+        .biz-marquee-up   { animation: biz-up   32s linear infinite; will-change: transform; }
+        .biz-marquee-down { animation: biz-down 32s linear infinite; will-change: transform; }
+        .biz-marquee-up:hover, .biz-marquee-down:hover { animation-play-state: paused; }
+        @keyframes biz-up   { from { transform: translateY(0);    } to { transform: translateY(-50%); } }
+        @keyframes biz-down { from { transform: translateY(-50%); } to { transform: translateY(0);    } }
       `}</style>
 
       {/* ── NAV ──────────────────────────────────────────────────────────── */}
-      <nav id="fs-nav" className={scrolled ? "scrolled" : ""}>
+      <nav id="fs-nav" style={{ background: scrolled ? nt.bg : "transparent", borderColor: scrolled ? nt.border : "transparent", transition: `background ${TRANS}, border-color ${TRANS}` }}>
         <div className="nav-inner">
-          <Link href="/showcase/falcon-studio" className="nav-logo">
-            <div className="nav-logo-sq">
+          <Link href="/showcase/falcon-studio" className="nav-logo" style={{ color: nt.text, transition: `color ${TRANS}` }}>
+            <div className="nav-logo-sq" style={{ background: nt.logoBg, transition: `background ${TRANS}` }}>
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path d="M7 1L13 7L7 13L1 7L7 1Z" fill="white" />
+                <path d="M7 1L13 7L7 13L1 7L7 1Z" style={{ fill: nt.logoIcon, transition: `fill ${TRANS}` }} />
               </svg>
             </div>
             FALCON STUDIO
           </Link>
 
-          <ul className="nav-links">
-            {[
-              { label: "Product", arrow: true },
-              { label: "Resources", arrow: true },
-              { label: "Enterprise", arrow: true },
-              { label: "Pricing", arrow: false },
-            ].map(n => (
-              <li key={n.label}>
-                <a href="#" className="nav-link">
-                  {n.label}
-                  {n.arrow && (
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M4 6l4 4 4-4" stroke="#000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  )}
-                </a>
-              </li>
-            ))}
-          </ul>
-
           <div className="nav-right">
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ cursor: "pointer" }}>
-              <circle cx="9" cy="9" r="7.5" stroke="#000" strokeWidth="1.4"/>
-              <path d="M9 1.5C9 1.5 12 5 12 9s-3 7.5-3 7.5M9 1.5C9 1.5 6 5 6 9s3 7.5 3 7.5M1.5 9h15" stroke="#000" strokeWidth="1.4"/>
-            </svg>
-            <a href="#" className="nav-login">Log In</a>
-            <button className="nav-cta">Start Creating</button>
+            {[
+              { label: "Pricing", href: "/showcase/falcon-studio/pricing" },
+              { label: "Reviews", href: "/showcase/falcon-studio/reviews" },
+            ].map(n => (
+              <Link key={n.label} href={n.href} className="nav-link" style={{ color: nt.text, transition: `color ${TRANS}` }}>
+                {n.label}
+              </Link>
+            ))}
+            <button className="nav-cta" style={{ background: nt.ctaBg, color: nt.ctaText, transition: `background ${TRANS}, color ${TRANS}` }}>Start Creating</button>
             <button className="burger" onClick={() => setMenuOpen(v => !v)} aria-label="Menu">
-              <span style={menuOpen ? { transform: "rotate(45deg) translate(4.5px,4.5px)" } : {}} />
-              <span style={menuOpen ? { opacity: 0, transform: "scaleX(0)" } : {}} />
-              <span style={menuOpen ? { transform: "rotate(-45deg) translate(4.5px,-4.5px)" } : {}} />
+              <span style={{ ...(menuOpen ? { transform: "rotate(45deg) translate(4.5px,4.5px)" } : {}), background: nt.text, transition: `background ${TRANS}` }} />
+              <span style={{ ...(menuOpen ? { opacity: 0, transform: "scaleX(0)" } : {}), background: nt.text, transition: `background ${TRANS}` }} />
+              <span style={{ ...(menuOpen ? { transform: "rotate(-45deg) translate(4.5px,-4.5px)" } : {}), background: nt.text, transition: `background ${TRANS}` }} />
             </button>
           </div>
         </div>
@@ -2144,11 +2917,17 @@ export default function FalconStudioPage() {
         {menuOpen && (
           <motion.div id="mobile-menu" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}>
-            {["Product","Resources","Enterprise","Pricing","Log In"].map(l => (
-              <a key={l} href="#" onClick={() => setMenuOpen(false)}
+            {[
+              { label: "SEO", href: "#seo" },
+              { label: "FAQs", href: "#faq" },
+              { label: "Pricing", href: "/showcase/falcon-studio/pricing" },
+              { label: "Reviews", href: "/showcase/falcon-studio/reviews" },
+              { label: "Log In", href: "#" },
+            ].map(n => (
+              <Link key={n.label} href={n.href} onClick={() => setMenuOpen(false)}
                 style={{ fontFamily: T.display, fontSize: "1.8rem", fontWeight: 700, color: T.text, padding: "0.6rem 2rem" }}>
-                {l}
-              </a>
+                {n.label}
+              </Link>
             ))}
             <button className="nav-cta" style={{ marginTop: "2rem", fontSize: "0.95rem", padding: "0.9rem 2.5rem" }}
               onClick={() => setMenuOpen(false)}>
@@ -2161,7 +2940,7 @@ export default function FalconStudioPage() {
       {/* ══════════════════════════════════════════════════════════════════
           HERO
       ══════════════════════════════════════════════════════════════════ */}
-      <section ref={heroRef} style={{
+      <section ref={heroRef} data-nav-theme="white" style={{
         position: "relative", minHeight: "100svh", display: "flex",
         flexDirection: "column", justifyContent: "center", alignItems: "center",
         textAlign: "center", overflow: "hidden", background: T.bg, paddingTop: 68,
@@ -2262,6 +3041,7 @@ export default function FalconStudioPage() {
       {/* ══════════════════════════════════════════════════════════════════
           FEATURE SECTION — 40/60 split, right side scroll-locked
       ══════════════════════════════════════════════════════════════════ */}
+      <div id="seo" data-nav-theme="hero">
       <CinematicHero
         leftPanel={
           <div>
@@ -2340,46 +3120,13 @@ export default function FalconStudioPage() {
           </div>
         }
       />
+      </div>{/* /data-nav-theme hero */}
 
-      {/* ══════════════════════════════════════════════════════════════════
-          FEATURE CARDS — Cards 1 & 3
-      ══════════════════════════════════════════════════════════════════ */}
-      <section style={{ background: T.bg, padding: "6rem 0" }}>
-        <div style={{ maxWidth: 1380, margin: "0 auto", padding: "0 2rem" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "1.5rem" }}>
-
-            {/* CARD 1 — placeholder */}
-            <Reveal delay={0}>
-              <div style={{
-                borderRadius: 20, overflow: "hidden",
-                border: `1px solid ${T.border}`,
-                minHeight: 480, background: T.surface,
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}>
-                <span style={{ fontFamily: T.body, fontSize: "0.8rem", color: T.muted }}>Card 1</span>
-              </div>
-            </Reveal>
-
-            {/* CARD 3 — placeholder */}
-            <Reveal delay={0.06}>
-              <div style={{
-                borderRadius: 20, overflow: "hidden",
-                border: `1px solid ${T.border}`,
-                minHeight: 480, background: T.surface,
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}>
-                <span style={{ fontFamily: T.body, fontSize: "0.8rem", color: T.muted }}>Card 3</span>
-              </div>
-            </Reveal>
-
-          </div>
-        </div>
-      </section>
 
       {/* ══════════════════════════════════════════════════════════════════
           DARK CANVAS — floating widgets with FlipReveal entrance
       ══════════════════════════════════════════════════════════════════ */}
-      <section id="work" style={{ background: "#0a0a0a" }}>
+      <section id="work" data-nav-theme="dark" style={{ background: "#0a0a0a" }}>
         <HorizontalScrollStrip />
       </section>
 
@@ -2391,196 +3138,164 @@ export default function FalconStudioPage() {
       {/* ══════════════════════════════════════════════════════════════════
           NATIVE BUSINESS SOLUTIONS — RETRO GAMING
       ══════════════════════════════════════════════════════════════════ */}
-      <section style={{ background: "#050d2e", padding: "8rem 0 6rem", position: "relative", overflow: "hidden" }}>
-        {/* Scanline overlay across whole section */}
-        <div className="retro-scanline" style={{ position: "absolute", inset: 0, opacity: 0.14, zIndex: 0 }} />
-        {/* Pixel square grid bg */}
-        <div style={{
-          position: "absolute", inset: 0, zIndex: 0,
-          backgroundImage: `linear-gradient(rgba(255,214,0,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(255,214,0,0.12) 1px, transparent 1px)`,
-          backgroundSize: "32px 32px",
-        }} />
-        {/* Subtle filled squares scattered — second layer with offset */}
-        <div style={{
-          position: "absolute", inset: 0, zIndex: 0,
-          backgroundImage: `linear-gradient(rgba(255,214,0,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,214,0,0.05) 1px, transparent 1px)`,
-          backgroundSize: "8px 8px",
-          backgroundPosition: "16px 16px",
+      <div data-nav-theme="blue" style={{ height: "200vh" }}>
+      <section style={{ position: "sticky", top: 0, height: "100vh", background: "#050d2e", overflow: "hidden", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+        {/* Pac-Man animated background */}
+        <PacManCanvas />
+        {/* Scanline overlay */}
+        <div className="retro-scanline" style={{ position: "absolute", inset: 0, opacity: 0.10, zIndex: 1, pointerEvents: "none" }} />
+        {/* Very subtle grid lines on top for retro CRT texture */}
+        <div aria-hidden="true" style={{
+          position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none",
+          backgroundImage: `linear-gradient(rgba(255,214,0,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,214,0,0.06) 1px, transparent 1px)`,
+          backgroundSize: "34px 34px",
         }} />
 
-        <div style={{ position: "relative", zIndex: 1, maxWidth: 1280, margin: "0 auto", padding: "0 2.5rem", marginBottom: "4.5rem" }}>
-          <div className="split-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4rem", alignItems: "start" }}>
+        {/* ── 3-column layout: slider | centre | slider ── */}
+        <div style={{
+          position: "relative", zIndex: 2,
+          display: "flex", alignItems: "stretch",
+          height: "100%", width: "100%", overflow: "hidden",
+        }}>
 
-            {/* Left — retro headline */}
-            <SlideReveal>
-              <div style={{
-                fontFamily: "'Press Start 2P', monospace",
-                fontSize: "0.6rem", color: RETRO_NEON.cyan,
-                letterSpacing: "0.1em", textTransform: "uppercase",
-                marginBottom: "1.4rem", lineHeight: 2,
-                textShadow: `0 0 8px ${RETRO_NEON.cyan}`,
-              }}>
-                &gt;&gt; SELECT YOUR SOLUTION_
-              </div>
-              <h2 className="retro-flicker" style={{
-                fontFamily: "'Press Start 2P', monospace",
-                fontSize: "clamp(1.1rem, 2.4vw, 1.75rem)",
-                fontWeight: 400,
-                lineHeight: 1.6,
-                color: RETRO_NEON.yellow,
-                textShadow: `3px 3px 0 #7a6000, 0 0 20px ${RETRO_NEON.yellow}66`,
-                letterSpacing: "0.01em",
-                marginBottom: "0.5rem",
-              }}>
-                EVERY CLICK.<br />CRAFTED.
-              </h2>
-            </SlideReveal>
-
-            {/* Right — body + CTAs */}
-            <Reveal delay={0.12}>
-              <p style={{
-                fontFamily: "'VT323', monospace",
-                fontSize: "1.35rem",
-                lineHeight: 1.65,
-                color: "rgba(180,220,255,0.88)",
-                marginBottom: "2rem",
-                maxWidth: 400,
-                letterSpacing: "0.03em",
-              }}>
-                NOT JUST A BUTTON. THE MOMENT SOMEONE DECIDES TO TRUST YOU.
-              </p>
-              <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "center" }}>
-                {/* Pixel CTA primary */}
-                <a href="#cta" style={{
-                  fontFamily: "'Press Start 2P', monospace",
-                  fontSize: "0.52rem", color: "#06000f",
-                  background: RETRO_NEON.pink,
-                  padding: "0.85rem 1.6rem",
-                  boxShadow: `4px 4px 0 #7a0040`,
-                  letterSpacing: "0.06em",
-                  textTransform: "uppercase",
-                  display: "inline-block",
-                  transition: "transform 0.1s, box-shadow 0.1s",
-                }}
-                  onMouseEnter={e => {
-                    (e.currentTarget as HTMLElement).style.transform = "translate(-2px,-2px)";
-                    (e.currentTarget as HTMLElement).style.boxShadow = `6px 6px 0 #7a0040, 0 0 18px ${RETRO_NEON.pink}88`;
-                  }}
-                  onMouseLeave={e => {
-                    (e.currentTarget as HTMLElement).style.transform = "translate(0,0)";
-                    (e.currentTarget as HTMLElement).style.boxShadow = `4px 4px 0 #7a0040`;
-                  }}
-                  onMouseDown={e => {
-                    (e.currentTarget as HTMLElement).style.transform = "translate(2px,2px)";
-                    (e.currentTarget as HTMLElement).style.boxShadow = `2px 2px 0 #7a0040`;
-                  }}>
-                  ▶ START CREATING
-                </a>
-                {/* Ghost secondary */}
-                <a href="#work" style={{
-                  fontFamily: "'Press Start 2P', monospace",
-                  fontSize: "0.48rem", color: RETRO_NEON.cyan,
-                  border: `2px solid ${RETRO_NEON.cyan}`,
-                  padding: "0.75rem 1.4rem",
-                  letterSpacing: "0.06em",
-                  textTransform: "uppercase",
-                  display: "inline-block",
-                  textShadow: `0 0 8px ${RETRO_NEON.cyan}88`,
-                  boxShadow: `3px 3px 0 ${RETRO_NEON.cyan}44`,
-                  transition: "box-shadow 0.1s, text-shadow 0.1s",
-                }}
-                  onMouseEnter={e => {
-                    (e.currentTarget as HTMLElement).style.boxShadow = `4px 4px 0 ${RETRO_NEON.cyan}, 0 0 14px ${RETRO_NEON.cyan}66`;
-                  }}
-                  onMouseLeave={e => {
-                    (e.currentTarget as HTMLElement).style.boxShadow = `3px 3px 0 ${RETRO_NEON.cyan}44`;
-                  }}>
-                  ALL SOLUTIONS »
-                </a>
-              </div>
-            </Reveal>
+          {/* Left vertical slider — scrolls upward */}
+          <div style={{
+            width: 300, flexShrink: 0, overflow: "hidden",
+            maskImage: "linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)",
+          }}>
+            <div className="biz-marquee-up" style={{ display: "flex", flexDirection: "column", gap: 16, paddingTop: 16 }}>
+              {[...BTN_ROW_1, ...BTN_ROW_1].map((card, i) => (
+                <BtnShowcaseCard key={i} card={card} />
+              ))}
+            </div>
           </div>
-        </div>
 
-        {/* Marquee rows */}
-        <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", gap: 20 }}>
-          <BizMarqueeRow items={BTN_ROW_1} reverse={false} />
-          <BizMarqueeRow items={BTN_ROW_2} reverse={true} />
+          {/* Centre — heading + tagline + CTAs */}
+          <div style={{
+            flex: 1, display: "flex", flexDirection: "column",
+            alignItems: "center", justifyContent: "center",
+            padding: "3rem 2.5rem", textAlign: "center", gap: "1.8rem",
+          }}>
+            <div style={{
+              fontFamily: "'Press Start 2P', monospace",
+              fontSize: "0.58rem", color: RETRO_NEON.cyan,
+              letterSpacing: "0.14em", textTransform: "uppercase",
+              textShadow: `0 0 8px ${RETRO_NEON.cyan}`,
+            }}>
+              &gt;&gt; SELECT YOUR SOLUTION_
+            </div>
+
+            <h2 className="retro-flicker" style={{
+              fontFamily: "'Press Start 2P', monospace",
+              fontSize: "clamp(1.6rem, 3.2vw, 2.8rem)",
+              fontWeight: 400,
+              lineHeight: 1.55,
+              color: RETRO_NEON.yellow,
+              textShadow: `4px 4px 0 #7a6000, 0 0 28px ${RETRO_NEON.yellow}77`,
+              letterSpacing: "0.02em",
+              margin: 0,
+            }}>
+              EVERY CLICK.<br />CRAFTED.
+            </h2>
+
+            <p style={{
+              fontFamily: "'VT323', monospace",
+              fontSize: "clamp(1.3rem, 2vw, 1.75rem)",
+              lineHeight: 1.6,
+              color: "rgba(180,220,255,0.85)",
+              maxWidth: 480,
+              letterSpacing: "0.04em",
+              margin: 0,
+            }}>
+              NOT JUST A BUTTON. THE MOMENT SOMEONE DECIDES TO TRUST YOU.
+            </p>
+
+            <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", justifyContent: "center", alignItems: "center" }}>
+              <a href="#cta" style={{
+                fontFamily: "'Press Start 2P', monospace",
+                fontSize: "0.52rem", color: "#06000f",
+                background: RETRO_NEON.pink,
+                padding: "0.85rem 1.6rem",
+                boxShadow: `4px 4px 0 #7a0040`,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+                display: "inline-block",
+                transition: "transform 0.1s, box-shadow 0.1s",
+              }}
+                onMouseEnter={e => {
+                  (e.currentTarget as HTMLElement).style.transform = "translate(-2px,-2px)";
+                  (e.currentTarget as HTMLElement).style.boxShadow = `6px 6px 0 #7a0040, 0 0 18px ${RETRO_NEON.pink}88`;
+                }}
+                onMouseLeave={e => {
+                  (e.currentTarget as HTMLElement).style.transform = "translate(0,0)";
+                  (e.currentTarget as HTMLElement).style.boxShadow = `4px 4px 0 #7a0040`;
+                }}
+                onMouseDown={e => {
+                  (e.currentTarget as HTMLElement).style.transform = "translate(2px,2px)";
+                  (e.currentTarget as HTMLElement).style.boxShadow = `2px 2px 0 #7a0040`;
+                }}>
+                ▶ START CREATING
+              </a>
+              <a href="#work" style={{
+                fontFamily: "'Press Start 2P', monospace",
+                fontSize: "0.48rem", color: RETRO_NEON.cyan,
+                border: `2px solid ${RETRO_NEON.cyan}`,
+                padding: "0.75rem 1.4rem",
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+                display: "inline-block",
+                textShadow: `0 0 8px ${RETRO_NEON.cyan}88`,
+                boxShadow: `3px 3px 0 ${RETRO_NEON.cyan}44`,
+                transition: "box-shadow 0.1s, text-shadow 0.1s",
+              }}
+                onMouseEnter={e => {
+                  (e.currentTarget as HTMLElement).style.boxShadow = `4px 4px 0 ${RETRO_NEON.cyan}, 0 0 14px ${RETRO_NEON.cyan}66`;
+                }}
+                onMouseLeave={e => {
+                  (e.currentTarget as HTMLElement).style.boxShadow = `3px 3px 0 ${RETRO_NEON.cyan}44`;
+                }}>
+                ALL SOLUTIONS »
+              </a>
+            </div>
+          </div>
+
+          {/* Right vertical slider — scrolls downward */}
+          <div style={{
+            width: 300, flexShrink: 0, overflow: "hidden",
+            maskImage: "linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)",
+          }}>
+            <div className="biz-marquee-down" style={{ display: "flex", flexDirection: "column", gap: 16, paddingTop: 16 }}>
+              {[...BTN_ROW_2, ...BTN_ROW_2].map((card, i) => (
+                <BtnShowcaseCard key={i} card={card} />
+              ))}
+            </div>
+          </div>
+
         </div>
       </section>
+      </div>
 
       {/* ══════════════════════════════════════════════════════════════════
           HANDWRITING SHOWCASE
       ══════════════════════════════════════════════════════════════════ */}
-      <HandwritingShowcase />
+      {/* ══════════════════════════════════════════════════════════════════
+          FONT SHOWCASE
+      ══════════════════════════════════════════════════════════════════ */}
+      <FontShowcase />
+
 
       {/* ══════════════════════════════════════════════════════════════════
           MARQUEE 2
       ══════════════════════════════════════════════════════════════════ */}
-      <div className="marquee-wrap">
-        <div className="marquee-track-2 running">
-          {[...MARQUEE_2, ...MARQUEE_2].map((item, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "center", gap: "1rem", padding: "1rem 1.5rem", flexShrink: 0 }}>
-              <span style={{ fontFamily: T.body, fontSize: "0.62rem", fontWeight: 600, color: T.muted, textTransform: "uppercase", letterSpacing: "0.1em" }}>
-                Built by Falcon
-              </span>
-              <span style={{ fontFamily: T.display, fontSize: "0.9rem", fontWeight: 700, color: T.text }}>
-                {item}
-              </span>
-              <span style={{ width: 4, height: 4, background: T.blue, borderRadius: "50%", flexShrink: 0 }} />
-            </div>
-          ))}
-        </div>
-      </div>
 
-      {/* ══════════════════════════════════════════════════════════════════
-          STATS BENTO
-      ══════════════════════════════════════════════════════════════════ */}
-      <section style={{ background: T.dark }}>
-        <div style={{ maxWidth: 1280, margin: "0 auto" }}>
-          <div className="stats-grid">
-            {[
-              { n: 12, s: "+", label: "Industries built" },
-              { n: 20, s: "+", label: "Bespoke templates" },
-              { n: 100, s: "%", label: "Custom code" },
-              { n: 0, s: "", label: "Templates used" },
-            ].map(s => (
-              <div key={s.label} className="stat-cell">
-                <span style={{
-                  fontFamily: T.display,
-                  fontSize: "clamp(2.8rem, 5vw, 4.5rem)",
-                  fontWeight: 800, letterSpacing: "-0.04em", color: "#fff", lineHeight: 1,
-                }}>
-                  <Counter target={s.n} suffix={s.s} />
-                </span>
-                <span style={{ fontFamily: T.body, fontSize: "0.85rem", color: "rgba(255,255,255,0.38)", letterSpacing: "0.02em" }}>
-                  {s.label}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* ══════════════════════════════════════════════════════════════════
           RESOURCES — FlipReveal cards
       ══════════════════════════════════════════════════════════════════ */}
+      <div data-nav-theme="white" style={{ background: "#fff", position: "relative", zIndex: 10 }}>
       <section style={{ maxWidth: 1280, margin: "0 auto", padding: "8rem 2.5rem" }}>
-        <SlideReveal style={{ marginBottom: "3rem" }}>
-          <h2 style={{
-            fontFamily: T.display,
-            fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)",
-            fontWeight: 800, letterSpacing: "-0.02em", color: T.text,
-          }}>
-            Everything you need to succeed
-          </h2>
-        </SlideReveal>
-
-        {/* 4 hacker cards */}
-        <div style={{ marginBottom: "4rem" }}>
-          <HwCardsGrid />
-        </div>
-
         <div className="res-grid">
           {RESOURCES.map((r, i) => (
             <FlipReveal key={r.kicker} delay={i * 0.1}>
@@ -2622,7 +3337,9 @@ export default function FalconStudioPage() {
           ))}
         </div>
       </section>
+      </div>
 
+      <div style={{ background: "#fff", position: "relative", zIndex: 10 }}>
       {/* ══════════════════════════════════════════════════════════════════
           PROCESS
       ══════════════════════════════════════════════════════════════════ */}
@@ -2694,11 +3411,12 @@ export default function FalconStudioPage() {
           ))}
         </div>
       </section>
+      </div>
 
       {/* ══════════════════════════════════════════════════════════════════
           LIME CTA
       ══════════════════════════════════════════════════════════════════ */}
-      <section id="cta" style={{ background: T.lime, padding: "6rem 2.5rem", position: "relative", overflow: "hidden" }}>
+      <section id="cta" data-nav-theme="lime" style={{ background: T.lime, padding: "6rem 2.5rem", position: "relative", overflow: "hidden" }}>
         <div style={{ maxWidth: 1280, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "3rem", flexWrap: "wrap" }}>
           <SlideReveal>
             <h2 style={{
