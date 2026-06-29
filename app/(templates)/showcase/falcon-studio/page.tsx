@@ -361,6 +361,338 @@ const FAQS = [
     a: "We price per project with a fixed proposal — no hourly billing, no surprises. After a discovery call we'll give you a clear scope and timeline. Ongoing retainers are available for clients who want continued support." },
 ];
 
+/* ── FAQ sub-components ──────────────────────────────────────────────── */
+
+type FaqItem = { q: string; a: string };
+
+/* ── FAQ Theme 1: Ransom Note — floating bubbles ─────────────────────── */
+const RANSOM_FONTS = [
+  "'Georgia', serif", "'Arial Black', sans-serif", "'Courier New', monospace",
+  "'Times New Roman', serif", "'Impact', sans-serif", "'Trebuchet MS', sans-serif",
+  "'Palatino', serif", "'Verdana', sans-serif",
+];
+const RANSOM_SIZES = ["0.75rem","1.1rem","0.9rem","1.3rem","0.8rem","1rem","1.2rem","0.85rem"];
+const RANSOM_ROTATIONS = [-3,-6,2,4,-2,5,-4,3];
+const RANSOM_BGS = ["#f5f0e8","#fff","#e8e0d0","#faf5ec","#ede7db","#f0ebe2","#e5dfd5","#fdf8f0"];
+
+function RansomWord({ word, i }: { word: string; i: number }) {
+  const font = RANSOM_FONTS[i % RANSOM_FONTS.length];
+  const size = RANSOM_SIZES[i % RANSOM_SIZES.length];
+  const rot  = RANSOM_ROTATIONS[i % RANSOM_ROTATIONS.length];
+  const bg   = RANSOM_BGS[i % RANSOM_BGS.length];
+  const bold = i % 3 === 0;
+  const colors = ["#111","#c8001a","#0000cc","#111","#222","#b35000","#111","#006600"];
+  const color  = colors[i % colors.length];
+  return (
+    <span style={{
+      fontFamily: font, fontSize: size, fontWeight: bold ? 900 : 400,
+      color, background: bg, display: "inline-block",
+      transform: `rotate(${rot}deg)`, padding: "1px 3px", margin: "1px",
+      border: i % 5 === 0 ? "1px solid #ccc" : "none",
+      lineHeight: 1.2, verticalAlign: "middle",
+    }}>{word}</span>
+  );
+}
+
+function FaqBubbles({ faqs }: { faqs: FaqItem[] }) {
+  const [bubble, setBubble] = useState<{ text: string; q: string; id: number } | null>(null);
+  const [counter, setCounter] = useState(0);
+
+  function show(q: string, a: string) { setCounter(c => c + 1); setBubble({ text: a, q, id: counter }); }
+
+  return (
+    <div onClick={() => setBubble(null)} style={{
+      background: "#f2ede4",
+      backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c4b89a' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
+      position: "relative", overflow: "hidden",
+      borderRight: "1px solid #c4b89a", borderBottom: "1px solid #c4b89a",
+      padding: "2.5rem", display: "flex", flexDirection: "column", height: "100%",
+    }}>
+      <div style={{ fontFamily: "'Courier New', monospace", fontSize: "0.6rem", letterSpacing: "0.15em", color: "#8a7a5a", marginBottom: "1.5rem", textTransform: "uppercase" }}>
+        ✂ cut here — click to reveal
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", flex: 1 }}>
+        {faqs.map((f, qi) => (
+          <button key={qi} onClick={e => { e.stopPropagation(); show(f.q, f.a); }}
+            style={{ background: "none", border: "none", textAlign: "left", cursor: "pointer", padding: 0, lineHeight: 1.6 }}>
+            <div style={{ display: "inline" }}>
+              {f.q.split(" ").map((word, wi) => (
+                <RansomWord key={wi} word={word} i={qi * 7 + wi} />
+              ))}
+              <span style={{ fontFamily: "'Courier New', monospace", fontSize: "0.65rem", color: "#8a7a5a", marginLeft: "0.5rem" }}>→</span>
+            </div>
+          </button>
+        ))}
+      </div>
+      <div style={{ marginTop: "auto", fontFamily: "'Courier New', monospace", fontSize: "0.58rem", color: "#8a7a5a", borderTop: "1px dashed #c4b89a", paddingTop: "0.75rem" }}>
+        no ransom demanded. just answers.
+      </div>
+
+      <AnimatePresence mode="wait">
+        {bubble && (
+          <motion.div key={bubble.id}
+            initial={{ opacity: 0, scale: 0.9, rotate: -1 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.3, ease: EASE }}
+            onClick={e => e.stopPropagation()}
+            style={{
+              position: "absolute", inset: "1.25rem", zIndex: 10,
+              background: "#fff", padding: "2rem",
+              boxShadow: "4px 4px 0 #c4b89a, 8px 8px 0 rgba(196,184,154,0.3)",
+              border: "1px solid #c4b89a", display: "flex", flexDirection: "column", gap: "1rem",
+            }}>
+            {/* Tape strips */}
+            <div aria-hidden style={{ position: "absolute", top: -10, left: "30%", width: 60, height: 20, background: "rgba(255,230,100,0.6)", transform: "rotate(-2deg)", border: "1px solid rgba(200,180,60,0.3)" }} />
+            <div style={{ display: "inline", marginTop: "0.5rem" }}>
+              {bubble.q.split(" ").map((w, i) => <RansomWord key={i} word={w} i={i + 11} />)}
+            </div>
+            <p style={{ fontFamily: "'Courier New', monospace", fontSize: "0.88rem", lineHeight: 1.75, color: "#333", margin: 0, borderTop: "1px dashed #ddd", paddingTop: "0.75rem" }}>{bubble.text}</p>
+            <button onClick={() => setBubble(null)} style={{ alignSelf: "flex-end", fontFamily: "'Courier New', monospace", fontSize: "0.7rem", color: "#8a7a5a", background: "none", border: "1px solid #c4b89a", cursor: "pointer", padding: "0.3rem 0.75rem" }}>
+              ✕ close
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/* ── FAQ Theme 2: Redacted CIA Document — filmstrip ──────────────────── */
+function FaqFilmstrip({ faqs }: { faqs: FaqItem[] }) {
+  const [revealed, setRevealed] = useState<number | null>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStart = useRef(0); const scrollStart = useRef(0);
+
+  function onMouseDown(e: React.MouseEvent) { setIsDragging(true); dragStart.current = e.clientX; scrollStart.current = trackRef.current?.scrollLeft ?? 0; }
+  function onMouseMove(e: React.MouseEvent) { if (!isDragging || !trackRef.current) return; trackRef.current.scrollLeft = scrollStart.current - (e.clientX - dragStart.current); }
+  function onMouseUp() { setIsDragging(false); }
+
+  const docNums = ["DOC-7741-B", "DOC-3892-C", "DOC-5501-A"];
+
+  return (
+    <div style={{
+      background: "#e8e0d0",
+      backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(0,0,0,0.04) 27px, rgba(0,0,0,0.04) 28px)",
+      borderBottom: "1px solid #b8a888",
+      padding: "2.5rem 0 2.5rem 2.5rem",
+      display: "flex", flexDirection: "column", overflow: "hidden", height: "100%",
+      position: "relative",
+    }}>
+      {/* Classified stamp */}
+      <div aria-hidden style={{
+        position: "absolute", top: "1.5rem", right: "1.5rem",
+        border: "3px solid rgba(180,0,0,0.35)", padding: "0.2rem 0.5rem",
+        transform: "rotate(8deg)", pointerEvents: "none",
+        fontFamily: "'Arial Black', sans-serif", fontSize: "0.65rem", fontWeight: 900,
+        color: "rgba(180,0,0,0.35)", letterSpacing: "0.18em",
+      }}>CLASSIFIED</div>
+
+      <div style={{ fontFamily: "'Courier New', monospace", fontSize: "0.6rem", color: "#5a4a3a", letterSpacing: "0.12em", marginBottom: "1.25rem" }}>
+        CENTRAL INTELLIGENCE AGENCY · FALCON DIVISION<br />
+        <span style={{ color: "#8a6a4a" }}>DRAG TO BROWSE · CLICK TO DECLASSIFY</span>
+      </div>
+
+      <div ref={trackRef} onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={onMouseUp} onMouseLeave={onMouseUp}
+        style={{ display: "flex", gap: "1.25rem", overflowX: "auto", paddingRight: "2.5rem", paddingBottom: "1rem", scrollbarWidth: "none", cursor: isDragging ? "grabbing" : "grab", userSelect: "none", flex: 1, alignItems: "flex-start" }}>
+        {faqs.map((f, i) => {
+          const isRevealed = revealed === i;
+          return (
+            <div key={i} onClick={() => { if (!isDragging) setRevealed(isRevealed ? null : i); }}
+              style={{ flexShrink: 0, width: 220, minHeight: 200, background: "#f5f0e5", border: "1px solid #b8a888", padding: "1.25rem", cursor: "pointer", position: "relative", boxShadow: "2px 2px 0 rgba(0,0,0,0.1)" }}>
+              {/* Document header */}
+              <div style={{ fontFamily: "'Courier New', monospace", fontSize: "0.55rem", color: "#8a6a4a", letterSpacing: "0.1em", marginBottom: "0.75rem", borderBottom: "1px solid #c8b898", paddingBottom: "0.5rem" }}>
+                {docNums[i]} · PAGE 1 OF 1
+              </div>
+              {/* Question */}
+              <p style={{ fontFamily: "'Courier New', monospace", fontSize: "0.78rem", color: "#2a1a0a", lineHeight: 1.5, marginBottom: "1rem", fontWeight: 700 }}>{f.q}</p>
+              {/* Answer with redaction bars */}
+              <div style={{ position: "relative" }}>
+                <p style={{ fontFamily: "'Courier New', monospace", fontSize: "0.75rem", color: "#3a2a1a", lineHeight: 1.65, margin: 0, opacity: isRevealed ? 1 : 0.15, transition: "opacity 0.4s ease" }}>
+                  {f.a}
+                </p>
+                {!isRevealed && (
+                  <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", gap: "0.3rem", justifyContent: "center" }}>
+                    {[100, 85, 95, 60].map((w, ri) => (
+                      <div key={ri} style={{ height: 14, width: `${w}%`, background: "#111", borderRadius: 1 }} />
+                    ))}
+                  </div>
+                )}
+              </div>
+              {/* Declassify label */}
+              <div style={{ marginTop: "1rem", fontFamily: "'Courier New', monospace", fontSize: "0.55rem", color: isRevealed ? "rgba(0,120,0,0.8)" : "rgba(180,0,0,0.6)", letterSpacing: "0.12em" }}>
+                {isRevealed ? "► DECLASSIFIED" : "► CLICK TO DECLASSIFY"}
+              </div>
+              {/* Corner fold */}
+              <div aria-hidden style={{ position: "absolute", bottom: 0, right: 0, width: 0, height: 0, borderStyle: "solid", borderWidth: "0 0 18px 18px", borderColor: `transparent transparent #b8a888 transparent` }} />
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/* ── FAQ Theme 3: Retro Arcade — flip cards ──────────────────────────── */
+const ARC = {
+  bg: "#0d0221", surface: "#12042e",
+  neonPink: "#ff2d78", neonYellow: "#ffe600", neonCyan: "#00f5ff",
+  text: "#ffffff", muted: "rgba(255,255,255,0.45)",
+  font: "'VT323', monospace",
+  body: "'DM Sans', 'Inter', sans-serif",
+};
+function FaqFlipCards({ faqs }: { faqs: FaqItem[] }) {
+  const [flipped, setFlipped] = useState<number | null>(null);
+  const neons = [ARC.neonPink, ARC.neonYellow, ARC.neonCyan];
+
+  return (
+    <div style={{
+      background: ARC.bg, borderRight: "1px solid rgba(255,45,120,0.15)",
+      padding: "2.5rem", display: "flex", flexDirection: "column", height: "100%",
+      position: "relative", overflow: "hidden",
+    }}>
+      {/* Scanlines */}
+      <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none", backgroundImage: "repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.12) 3px,rgba(0,0,0,0.12) 4px)", zIndex: 1 }} />
+      {/* Corner pixel decorations */}
+      <div aria-hidden style={{ position: "absolute", top: 12, left: 12, width: 16, height: 16, borderTop: `2px solid ${ARC.neonPink}`, borderLeft: `2px solid ${ARC.neonPink}`, zIndex: 1 }} />
+      <div aria-hidden style={{ position: "absolute", top: 12, right: 12, width: 16, height: 16, borderTop: `2px solid ${ARC.neonCyan}`, borderRight: `2px solid ${ARC.neonCyan}`, zIndex: 1 }} />
+      <div aria-hidden style={{ position: "absolute", bottom: 12, left: 12, width: 16, height: 16, borderBottom: `2px solid ${ARC.neonCyan}`, borderLeft: `2px solid ${ARC.neonCyan}`, zIndex: 1 }} />
+      <div aria-hidden style={{ position: "absolute", bottom: 12, right: 12, width: 16, height: 16, borderBottom: `2px solid ${ARC.neonPink}`, borderRight: `2px solid ${ARC.neonPink}`, zIndex: 1 }} />
+
+      <div style={{ position: "relative", zIndex: 2, display: "flex", flexDirection: "column", height: "100%", gap: "0.85rem" }}>
+        <div style={{ fontFamily: ARC.font, fontSize: "1rem", color: ARC.neonPink, letterSpacing: "0.2em", textShadow: `0 0 12px ${ARC.neonPink}`, marginBottom: "0.25rem" }}>
+          ★ ARCADE FAQ — FLIP TO REVEAL ★
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", flex: 1 }}>
+          {faqs.map((f, i) => {
+            const neon = neons[i % 3];
+            return (
+              <div key={i} onClick={() => setFlipped(flipped === i ? null : i)} style={{ perspective: "900px", cursor: "pointer", flex: 1 }}>
+                <motion.div animate={{ rotateY: flipped === i ? 180 : 0 }} transition={{ duration: 0.6, ease: EASE }}
+                  style={{ position: "relative", width: "100%", height: "100%", transformStyle: "preserve-3d", minHeight: 75 }}>
+                  {/* Front — arcade question panel */}
+                  <div style={{
+                    position: "absolute", inset: 0, background: ARC.surface,
+                    border: `1px solid ${neon}`, padding: "0.85rem 1.1rem",
+                    display: "flex", alignItems: "center", justifyContent: "space-between",
+                    backfaceVisibility: "hidden",
+                    boxShadow: `0 0 12px rgba(${neon === ARC.neonPink ? "255,45,120" : neon === ARC.neonYellow ? "255,230,0" : "0,245,255"},0.15), inset 0 0 20px rgba(0,0,0,0.3)`,
+                  }}>
+                    <div>
+                      <div style={{ fontFamily: ARC.font, fontSize: "0.7rem", color: neon, letterSpacing: "0.14em", marginBottom: "0.2rem", textShadow: `0 0 6px ${neon}` }}>STAGE {i + 1}</div>
+                      <p style={{ fontFamily: ARC.font, fontSize: "clamp(0.9rem, 1.3vw, 1.1rem)", color: ARC.text, margin: 0, lineHeight: 1.3 }}>{f.q}</p>
+                    </div>
+                    <span style={{ fontFamily: ARC.font, fontSize: "1.4rem", color: neon, flexShrink: 0, marginLeft: "0.75rem", textShadow: `0 0 8px ${neon}` }}>▶</span>
+                  </div>
+                  {/* Back — answer */}
+                  <div style={{
+                    position: "absolute", inset: 0,
+                    background: neon === ARC.neonYellow ? ARC.neonYellow : neon === ARC.neonCyan ? "#001a1a" : "#1a0012",
+                    border: `1px solid ${neon}`, padding: "0.85rem 1.1rem",
+                    display: "flex", alignItems: "center", backfaceVisibility: "hidden", transform: "rotateY(180deg)",
+                    boxShadow: `inset 0 0 30px rgba(0,0,0,0.4)`,
+                  }}>
+                    <p style={{ fontFamily: ARC.body, fontSize: "0.82rem", color: neon === ARC.neonYellow ? "#000" : ARC.text, margin: 0, lineHeight: 1.6 }}>{f.a}</p>
+                  </div>
+                </motion.div>
+              </div>
+            );
+          })}
+        </div>
+        <div style={{ fontFamily: ARC.font, fontSize: "0.75rem", color: ARC.muted, letterSpacing: "0.1em" }}>
+          INSERT COIN TO CONTINUE...
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── FAQ Theme 4: Vaporwave — accordion ──────────────────────────────── */
+function FaqNewspaper({ faqs }: { faqs: FaqItem[] }) {
+  const [open, setOpen] = useState<number | null>(null);
+
+  return (
+    <div style={{
+      background: "linear-gradient(160deg, #1a0533 0%, #0d1a3a 50%, #001a2e 100%)",
+      padding: "2.5rem", display: "flex", flexDirection: "column", height: "100%",
+      position: "relative", overflow: "hidden",
+    }}>
+      {/* Perspective grid floor */}
+      <div aria-hidden style={{
+        position: "absolute", bottom: 0, left: 0, right: 0, height: "45%", zIndex: 0,
+        backgroundImage: `linear-gradient(rgba(255,50,220,0.25) 1px, transparent 1px), linear-gradient(90deg, rgba(255,50,220,0.25) 1px, transparent 1px)`,
+        backgroundSize: "40px 40px",
+        transform: "perspective(300px) rotateX(55deg)",
+        transformOrigin: "bottom center",
+        maskImage: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%)",
+        WebkitMaskImage: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%)",
+      }} />
+      {/* Glow orbs */}
+      <div aria-hidden style={{ position: "absolute", top: "10%", left: "60%", width: 200, height: 200, borderRadius: "50%", background: "radial-gradient(circle, rgba(255,50,220,0.18) 0%, transparent 70%)", pointerEvents: "none", zIndex: 0 }} />
+      <div aria-hidden style={{ position: "absolute", top: "30%", left: "10%", width: 150, height: 150, borderRadius: "50%", background: "radial-gradient(circle, rgba(0,220,255,0.12) 0%, transparent 70%)", pointerEvents: "none", zIndex: 0 }} />
+
+      <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", height: "100%" }}>
+        {/* Chrome header text */}
+        <div style={{ marginBottom: "1rem", flexShrink: 0 }}>
+          <div style={{ fontFamily: "'DM Sans','Inter',sans-serif", fontSize: "0.52rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "rgba(0,220,255,0.6)", marginBottom: "0.3rem" }}>
+            A E S T H E T I C · FAQ
+          </div>
+          <div style={{
+            fontFamily: "'Arial Black','Impact',sans-serif", fontSize: "clamp(0.85rem,1.4vw,1.1rem)",
+            fontWeight: 900, letterSpacing: "0.05em",
+            background: "linear-gradient(90deg, #ff32dc, #00dcff, #ff32dc)",
+            WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+            filter: "drop-shadow(0 0 8px rgba(255,50,220,0.5))",
+            lineHeight: 1.2,
+          }}>DREAM ANSWERS</div>
+        </div>
+
+        <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+          {faqs.map((f, i) => {
+            const isOpen = open === i;
+            const accentColors = ["#ff32dc", "#00dcff", "#ffe600"];
+            const accent = accentColors[i % 3];
+            return (
+              <div key={i} onClick={() => setOpen(isOpen ? null : i)}
+                style={{ borderTop: `1px solid rgba(255,255,255,0.08)`, paddingTop: "0.9rem", paddingBottom: "0.9rem", cursor: "pointer", flex: 1 }}>
+                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "1rem" }}>
+                  <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
+                    <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.6rem", color: accent, letterSpacing: "0.1em", opacity: 0.8, filter: `drop-shadow(0 0 4px ${accent})`, flexShrink: 0 }}>◈</span>
+                    <h3 style={{
+                      fontFamily: "'DM Sans','Inter',sans-serif", fontSize: "clamp(0.85rem,1.4vw,1rem)",
+                      fontWeight: 700, lineHeight: 1.25, margin: 0,
+                      color: isOpen ? accent : "rgba(255,255,255,0.9)",
+                      textShadow: isOpen ? `0 0 12px ${accent}` : "none",
+                      transition: "color 0.3s, text-shadow 0.3s",
+                    }}>{f.q}</h3>
+                  </div>
+                  <motion.span animate={{ rotate: isOpen ? 45 : 0 }} transition={{ duration: 0.3 }}
+                    style={{ color: accent, fontSize: "1.1rem", flexShrink: 0, filter: `drop-shadow(0 0 6px ${accent})`, lineHeight: 1, marginTop: 2 }}>+</motion.span>
+                </div>
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.38, ease: [0.37, 0, 0.63, 1] }} style={{ overflow: "hidden" }}>
+                      <div style={{ marginTop: "0.75rem", paddingLeft: "1.5rem", borderLeft: `2px solid ${accent}` }}>
+                        <p style={{ fontFamily: "'DM Sans','Inter',sans-serif", fontSize: "0.85rem", lineHeight: 1.75, color: "rgba(255,255,255,0.55)", margin: 0 }}>{f.a}</p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            );
+          })}
+        </div>
+
+        <div style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.55rem", letterSpacing: "0.2em", color: "rgba(255,50,220,0.4)", paddingTop: "0.75rem", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+          ░░ FALCON STUDIO ░░ EST. MMXXV ░░
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ── FeatureTabs — "Dark Atelier" redesign ───────────────────────────── */
 /*
  * Mix of all 4 directions:
@@ -2715,12 +3047,13 @@ function BizMarqueeRow({ items, reverse = false }: {
 ══════════════════════════════════════════════════════════════════════ */
 /* ── Nav themes ─────────────────────────────────────────────────────── */
 const NAV_THEMES = {
-  white:  { bg: "rgba(255,255,255,0.96)", border: "#e8e8e8",               text: "#000",    muted: "#666",                  ctaBg: "#000",    ctaText: "#fff",    logoBg: "#000",    logoIcon: "#fff" },
-  hero:   { bg: "rgba(8,8,8,0.92)",        border: "rgba(255,255,255,0.08)", text: "#fff",   muted: "rgba(255,255,255,0.55)", ctaBg: "#c9ff00", ctaText: "#000",    logoBg: "#fff",    logoIcon: "#000" },
-  dark:   { bg: "rgba(10,10,10,0.95)",    border: "rgba(255,214,0,0.15)", text: "#FFD700", muted: "rgba(255,214,0,0.5)",   ctaBg: "#FFD700", ctaText: "#000",    logoBg: "#FFD700", logoIcon: "#000" },
-  hacker: { bg: "rgba(0,13,0,0.96)",      border: "rgba(0,255,65,0.18)",  text: "#00ff41", muted: "rgba(0,255,65,0.45)",   ctaBg: "#00ff41", ctaText: "#000",    logoBg: "#00ff41", logoIcon: "#000" },
-  blue:   { bg: "rgba(5,13,46,0.96)",     border: "rgba(120,140,255,0.2)",text: "#a5b4fc", muted: "rgba(165,180,252,0.5)", ctaBg: "#6366f1", ctaText: "#fff",    logoBg: "#a5b4fc", logoIcon: "#000" },
-  lime:   { bg: "rgba(185,236,0,0.97)",   border: "transparent",          text: "#000",    muted: "#444",                  ctaBg: "#000",    ctaText: "#c9ff00", logoBg: "#000",    logoIcon: "#fff" },
+  white:     { bg: "rgba(255,255,255,0.96)", border: "#e8e8e8",                text: "#000",    muted: "#666",                  ctaBg: "#000",    ctaText: "#fff",    logoBg: "#000",    logoIcon: "#fff" },
+  hero:      { bg: "rgba(8,8,8,0.92)",       border: "rgba(255,255,255,0.08)", text: "#fff",    muted: "rgba(255,255,255,0.55)", ctaBg: "#c9ff00", ctaText: "#000",    logoBg: "#fff",    logoIcon: "#000" },
+  dark:      { bg: "rgba(10,10,10,0.95)",    border: "rgba(255,214,0,0.15)",   text: "#FFD700", muted: "rgba(255,214,0,0.5)",   ctaBg: "#FFD700", ctaText: "#000",    logoBg: "#FFD700", logoIcon: "#000" },
+  hacker:    { bg: "rgba(0,13,0,0.96)",      border: "rgba(0,255,65,0.18)",    text: "#00ff41", muted: "rgba(0,255,65,0.45)",   ctaBg: "#00ff41", ctaText: "#000",    logoBg: "#00ff41", logoIcon: "#000" },
+  blue:      { bg: "rgba(5,13,46,0.96)",     border: "rgba(120,140,255,0.2)",  text: "#a5b4fc", muted: "rgba(165,180,252,0.5)", ctaBg: "#6366f1", ctaText: "#fff",    logoBg: "#a5b4fc", logoIcon: "#000" },
+  lime:      { bg: "rgba(185,236,0,0.97)",   border: "transparent",            text: "#000",    muted: "#444",                  ctaBg: "#000",    ctaText: "#c9ff00", logoBg: "#000",    logoIcon: "#fff" },
+  parchment: { bg: "rgba(245,240,224,0.97)", border: "rgba(200,160,80,0.35)",  text: "#1a0e00", muted: "#8a6a2a",               ctaBg: "#c8a050", ctaText: "#fff",    logoBg: "#c8a050", logoIcon: "#fff" },
 } as const;
 type NavThemeKey = keyof typeof NAV_THEMES;
 
@@ -3292,125 +3625,83 @@ export default function FalconStudioPage() {
 
 
       {/* ══════════════════════════════════════════════════════════════════
-          RESOURCES — FlipReveal cards
+          FAQ — scroll-locked 4-quadrant showcase
       ══════════════════════════════════════════════════════════════════ */}
-      <div data-nav-theme="white" style={{ background: "#fff", position: "relative", zIndex: 10 }}>
-      <section style={{ maxWidth: 1280, margin: "0 auto", padding: "8rem 2.5rem" }}>
-        <div className="res-grid">
-          {RESOURCES.map((r, i) => (
-            <FlipReveal key={r.kicker} delay={i * 0.1}>
-              <div style={{
-                borderRadius: 12, overflow: "hidden",
-                border: `1px solid ${T.border}`, transition: "box-shadow 0.3s, transform 0.3s cubic-bezier(0.23,1,0.32,1)",
-              }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLElement).style.boxShadow = "0 16px 48px rgba(0,0,0,0.1)";
-                  (e.currentTarget as HTMLElement).style.transform = "translateY(-4px)";
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLElement).style.boxShadow = "none";
-                  (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
-                }}>
-                <div style={{ position: "relative", overflow: "hidden", aspectRatio: "4/3" }}>
-                  <img src={r.img} alt={r.kicker}
-                    style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.6s cubic-bezier(0.23,1,0.32,1)" }}
-                    onMouseEnter={e => ((e.currentTarget as HTMLImageElement).style.transform = "scale(1.05)")}
-                    onMouseLeave={e => ((e.currentTarget as HTMLImageElement).style.transform = "scale(1)")}
-                  />
-                </div>
-                <div style={{ padding: "1.5rem" }}>
-                  <div style={{ fontFamily: T.body, fontSize: "0.7rem", fontWeight: 700, color: T.blue, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "0.6rem" }}>
-                    {r.kicker}
-                  </div>
-                  <p style={{ fontFamily: T.display, fontSize: "1rem", fontWeight: 700, color: T.text, lineHeight: 1.45, marginBottom: "1rem" }}>
-                    {r.title}
-                  </p>
-                  <a href="#" style={{
-                    fontFamily: T.body, fontSize: "0.82rem", fontWeight: 600, color: T.text,
-                    display: "flex", alignItems: "center", gap: "0.3rem",
-                    borderBottom: `1.5px solid ${T.text}`, paddingBottom: "0.1rem",
-                    width: "fit-content",
-                  }}>{r.cta}</a>
-                </div>
-              </div>
-            </FlipReveal>
-          ))}
-        </div>
-      </section>
-      </div>
+      <div id="faq" data-nav-theme="parchment" style={{ height: "250vh", position: "relative" }}>
+        <div style={{ position: "sticky", top: 68, height: "calc(100vh - 68px)", overflow: "hidden" }}>
 
-      <div style={{ background: "#fff", position: "relative", zIndex: 10 }}>
-      {/* ══════════════════════════════════════════════════════════════════
-          PROCESS
-      ══════════════════════════════════════════════════════════════════ */}
-      <section style={{ borderTop: `1px solid ${T.border}`, borderBottom: `1px solid ${T.border}` }}>
-        <div className="process-grid" style={{ maxWidth: 1280, margin: "0 auto" }}>
-          {[
-            { n: "01", title: "Discovery", desc: "One call. We learn your business, your audience, and what sets you apart. No briefs, no forms." },
-            { n: "02", title: "Design", desc: "A custom visual system — typography, colour, layout, motion — that couldn't belong to anyone else." },
-            { n: "03", title: "Build", desc: "Next.js, TypeScript, zero templates. Clean code that loads fast and ranks well." },
-            { n: "04", title: "Launch", desc: "Live in weeks. Deployment, domain setup, CMS handoff, and ongoing support included." },
-          ].map((step, i) => (
-            <GlideReveal key={step.n} delay={i * 0.08} y={24}>
-              <div className="process-cell">
-                <div style={{
-                  fontFamily: T.display, fontSize: "3.5rem", fontWeight: 800,
-                  color: "#f0f0f0", lineHeight: 1, letterSpacing: "-0.04em",
-                  marginBottom: "1rem", userSelect: "none",
-                }}>{step.n}</div>
-                <h3 style={{ fontFamily: T.display, fontSize: "1.2rem", fontWeight: 700, color: T.text, marginBottom: "0.6rem" }}>{step.title}</h3>
-                <p style={{ fontFamily: T.body, fontSize: "0.88rem", lineHeight: 1.72, color: T.muted }}>{step.desc}</p>
-              </div>
-            </GlideReveal>
-          ))}
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════════
-          FAQ — with smooth chevron rotation
-      ══════════════════════════════════════════════════════════════════ */}
-      <section id="faq" style={{ maxWidth: 960, margin: "0 auto", padding: "8rem 2.5rem" }}>
-        <SlideReveal style={{ marginBottom: "3.5rem" }}>
-          <h2 style={{
-            fontFamily: T.display,
-            fontSize: "clamp(2rem, 4vw, 3.5rem)",
-            fontWeight: 800, letterSpacing: "-0.025em", color: T.text,
+          {/* Center wax-seal badge */}
+          <div style={{
+            position: "absolute", top: "50%", left: "50%",
+            transform: "translate(-50%, -50%) rotate(-6deg)",
+            zIndex: 20, pointerEvents: "none",
+            width: 160, height: 160,
           }}>
-            Falcon Studio FAQ
-          </h2>
-        </SlideReveal>
-        <div>
-          {FAQS.map((faq, i) => (
-            <Reveal key={i} delay={i * 0.04}>
-              <div className="faq-item">
-                <button className="faq-btn" onClick={() => setOpenFaq(openFaq === i ? null : i)}>
-                  {faq.q}
-                  <span className={`faq-chevron${openFaq === i ? " open" : ""}`}>
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                      <path d="M2 4l4 4 4-4" stroke="#000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </span>
-                </button>
-                <AnimatePresence initial={false}>
-                  {openFaq === i && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.38, ease: [0.37, 0, 0.63, 1] }}
-                      style={{ overflow: "hidden" }}>
-                      <p style={{
-                        fontFamily: T.body, fontSize: "0.95rem", lineHeight: 1.78,
-                        color: T.muted, paddingBottom: "1.5rem", maxWidth: 720,
-                      }}>{faq.a}</p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+            {/* Outer serrated ring */}
+            <svg viewBox="0 0 160 160" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
+              {Array.from({ length: 32 }).map((_, i) => {
+                const angle = (i / 32) * Math.PI * 2;
+                const r1 = 76, r2 = 68;
+                const x1 = 80 + Math.cos(angle) * r1, y1 = 80 + Math.sin(angle) * r1;
+                const x2 = 80 + Math.cos(angle) * r2, y2 = 80 + Math.sin(angle) * r2;
+                return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#f5f0e0" strokeWidth="3" />;
+              })}
+              <circle cx="80" cy="80" r="66" fill="#f5f0e0" />
+              <circle cx="80" cy="80" r="62" fill="none" stroke="#c8a050" strokeWidth="1.5" />
+              <circle cx="80" cy="80" r="56" fill="none" stroke="#c8a050" strokeWidth="0.75" />
+            </svg>
+            {/* Inner text */}
+            <div style={{
+              position: "absolute", inset: 0, display: "flex", flexDirection: "column",
+              alignItems: "center", justifyContent: "center", textAlign: "center", padding: "1rem",
+            }}>
+              <div style={{ fontFamily: "'Georgia',serif", fontSize: "0.42rem", letterSpacing: "0.22em", textTransform: "uppercase", color: "#8a6a2a", marginBottom: "0.3rem" }}>§ FALCON STUDIO</div>
+              <div style={{ fontFamily: "'Georgia',serif", fontWeight: 700, fontSize: "0.88rem", lineHeight: 1.15, color: "#1a0e00", letterSpacing: "-0.01em" }}>
+                Even our<br />FAQs have<br />
+                <span style={{ color: "#c8a050", fontStyle: "italic" }}>magic.</span>
               </div>
-            </Reveal>
-          ))}
+              <div style={{ fontFamily: "'Georgia',serif", fontSize: "0.38rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "#8a6a2a", marginTop: "0.3rem" }}>EST. MMXXV</div>
+            </div>
+          </div>
+
+          {/* 2×2 grid */}
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gridTemplateRows: "1fr 1fr",
+            height: "100%",
+          }}>
+
+            {/* TL — Hacker Terminal */}
+            <FaqBubbles faqs={[
+              { q: "What is Falcon Studio?", a: "The premium web design platform for designers, developers, and agencies. Custom code, full canvas freedom, no templates." },
+              { q: "How does pricing work?", a: "Fixed-price proposals only. No hourly billing, no surprises. Ongoing retainers available after launch." },
+              { q: "Do you use templates?", a: "Never. Every project is hand-coded in Next.js and TypeScript. You own the codebase outright." },
+            ]} />
+
+            {/* TR — Luxury Atelier */}
+            <FaqFilmstrip faqs={[
+              { q: "What industries do you build for?", a: "Law firms, dental clinics, hair salons, restaurants, jewellery e-commerce, wedding filmmakers, personal trainers, and many more." },
+              { q: "Can I update the site myself?", a: "Yes. We build a CMS handoff tailored to your comfort level — change photos, text, or blog posts without calling us." },
+              { q: "How long does a project take?", a: "Most projects ship in 3–6 weeks depending on scope. We'll give you a clear timeline in the proposal." },
+            ]} />
+
+            {/* BL — Retro Arcade */}
+            <FaqFlipCards faqs={[
+              { q: "Do you build on Webflow or Wix?", a: "No. We write every line from scratch in Next.js — you get a codebase you own, not a platform licence that can be repriced." },
+              { q: "What happens after launch?", a: "You get a personalised resource kit, live comment access, and the option to retain us for ongoing support." },
+              { q: "Is there a free trial?", a: "We offer a no-cost discovery call and a detailed proposal before any commitment. No pressure, no catch." },
+            ]} />
+
+            {/* BR — Brutalist Print */}
+            <FaqNewspaper faqs={[
+              { q: "How does the design process work?", a: "A single discovery call, then we build a custom visual system — typography, colour, layout, motion — that couldn't belong to anyone else. You review at every stage on a staging environment before we go live." },
+              { q: "What makes Falcon Studio different?", a: "We treat every project as editorial work. Each pixel is deliberate, each decision documented. The result is a site that feels authored, not assembled." },
+              { q: "Can I see examples of your work?", a: "Everything on this page is live Falcon Studio work. Scroll through — the templates, the animations, the interactions — all built by us." },
+            ]} />
+
+          </div>
         </div>
-      </section>
       </div>
 
       {/* ══════════════════════════════════════════════════════════════════
